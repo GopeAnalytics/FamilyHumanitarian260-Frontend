@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:title" content="Fh260-Africa" />
+    <meta
+      property="og:description"
+      content="Digitalising Fh260-Africa Operations"
+    />
+    <meta property="og:image" content="https://fh260.org/og-fhlogo.jpeg" />
+    <meta property="og:url" content="https://fh260.org" />
+    <title>fh260</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        color: #333;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      header {
+        background-color: #003366;
+        color: white;
+        padding: 20px;
+        text-align: center;
+        position: relative;
+        z-index: 2;
+      }
+
+      header .logo img {
+        height: 40px;
+      }
+
+      .hero-mandate-wrapper {
+        position: relative;
+        color: white;
+        overflow: hidden;
+      }
+
+      .background-video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+      }
+
+      .video-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 10, 50, 0.3);
+        z-index: -1;
+      }
+
+      .hero {
+        padding: 20px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 70vh;
+      }
+
+      .hero h1 {
+        font-size: 3rem;
+        margin-bottom: 10px;
+      }
+
+      .hero p {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+      }
+
+      .hero .cta {
+        padding: 12px 20px;
+        background-color: #004080;
+        color: white;
+        font-size: 1.2rem;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+      }
+
+      .hero .cta:hover {
+        background-color: #005db3;
+      }
+
+      .timezone-section {
+        display: flex;
+        justify-content: center;
+        padding: 40px 20px;
+      }
+
+      .calculator-box {
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        max-width: 800px;
+        width: 100%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        backdrop-filter: blur(5px);
+      }
+
+      .calculator-box h1 {
+        margin-bottom: 15px;
+        font-size: 2rem;
+      }
+
+      .calculator-box p {
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+      }
+
+      .carousel-container {
+        position: relative;
+        margin-top: 20px;
+        overflow: hidden;
+        height: 200px;
+      }
+
+      .carousel-item {
+        display: none;
+        text-align: center;
+        padding: 20px;
+        background-color: rgba(0, 64, 128, 0.7);
+        border-radius: 10px;
+        color: white;
+      }
+
+      .carousel-item.active {
+        display: block;
+        animation: fade-in 1s;
+      }
+
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .main-footer {
+        background-color: #003366;
+        color: white;
+        text-align: center;
+        padding: 20px 10px;
+        font-size: 0.9rem;
+      }
+
+      .main-footer a {
+        color: #ffcc00;
+        text-decoration: none;
+        font-weight: bold;
+        margin: 0 5px;
+      }
+
+      .main-footer a:hover {
+        text-decoration: underline;
+        color: #ffd700;
+      }
+
+      .main-footer p {
+        margin: 10px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <img src="assets/images/logo.png" alt="KCAU Logo" />
+      </div>
+    </header>
+
+    <div class="hero-mandate-wrapper">
+      <video class="background-video" autoplay muted loop playsinline>
+        <source src="assets/videos/transaction2.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      <div class="video-overlay"></div>
+
+      <section class="hero">
+        <h1>Welcome to fh260</h1>
+        <p>We start counting from here</p>
+        <a href="sign.html" class="cta">Sign In Now</a>
+      </section>
+
+      <section class="timezone-section">
+        <div class="calculator-box">
+          <h1>Time Zone</h1>
+          <p>Your Country: <span id="country"></span></p>
+          <div class="carousel-container" id="carousel"></div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      const states = [
+        { name: "Texas", timeZone: "America/Chicago" },
+        { name: "Kisumu", timeZone: "Africa/Nairobi" },
+        { name: "Utah", timeZone: "America/Denver" },
+        { name: "Idaho", timeZone: "America/Denver" },
+        { name: "Mbale", timeZone: "Africa/Kampala" },
+        { name: "Accra", timeZone: "Africa/Accra" },
+      ];
+      let currentIndex = 0;
+
+      async function detectCountry() {
+        try {
+          const response = await fetch("https://ipapi.co/json/");
+          const data = await response.json();
+          return data.country_name || "Unknown";
+        } catch (error) {
+          console.error("Error fetching country:", error);
+          return "Unknown";
+        }
+      }
+
+      function calculateTimeDifference(localTimeZone, targetTimeZone) {
+        const now = new Date();
+        const localTime = now.toLocaleString("en-US", {
+          timeZone: localTimeZone,
+        });
+        const targetTime = now.toLocaleString("en-US", {
+          timeZone: targetTimeZone,
+        });
+        const timeDifference =
+          (new Date(targetTime) - new Date(localTime)) / (1000 * 60 * 60);
+        return timeDifference;
+      }
+
+      function updateTimeCarousel() {
+        const now = new Date();
+        const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const carousel = document.getElementById("carousel");
+        carousel.innerHTML = "";
+
+        states.forEach((state, index) => {
+          const stateTime = new Intl.DateTimeFormat("en-US", {
+            timeZone: state.timeZone,
+            timeStyle: "medium",
+            dateStyle: "short",
+          }).format(now);
+
+          const timeDifference = calculateTimeDifference(
+            localTimeZone,
+            state.timeZone
+          );
+          const item = document.createElement("div");
+          item.className = `carousel-item ${
+            index === currentIndex ? "active" : ""
+          }`;
+
+          item.innerHTML = `
+            <h2>${state.name}</h2>
+            <p><strong>State Time:</strong> ${stateTime}</p>
+            <p><strong>Time Difference:</strong> ${Math.abs(
+              timeDifference
+            )} hours (${timeDifference > 0 ? "ahead" : "behind"})</p>
+          `;
+
+          carousel.appendChild(item);
+        });
+
+        currentIndex = (currentIndex + 1) % states.length;
+      }
+
+      async function init() {
+        const country = await detectCountry();
+        document.getElementById("country").textContent = country;
+        updateTimeCarousel();
+        setInterval(updateTimeCarousel, 3000);
+      }
+
+      init();
+    </script>
+
+    <footer class="main-footer">
+      <p>&copy; 2025 Fh260. All rights reserved.</p>
+      <p>
+        <a href="sign.html">Sign In</a> | <a href="home.html">Home</a> |
+        <a href="sign.html">Sign Up</a>
+      </p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="Fh260-Africa" />
+    <meta
+      property="og:description"
+      content="Digitalising Fh260-Africa Operations"
+    />
+    <!-- <meta property="og:image" content="https://fh260.org/og-fhlogo.jpeg" /> -->
+    <!-- <meta property="og:url" content="https://fh260.org" /> -->
+  <title>fh260 - Online Request</title>
+  <!-- <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" /> -->
+  <!-- <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" /> -->
+  <!-- <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" /> -->
+  <!-- <link rel="manifest" href="/site.webmanifest" /> -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body><body>
+  <header>
+      <h1>fh260</h1>
+      <p>This portal will help you Request, Upload and Reconcile funds being sent to you.</p>
+  </header>
+      <div class="top-nav">
+        <div class="log"></div>
+        <nav>
+          <a href="home.html">Home</a>
+          <a href="downloads.html">Downloads</a>
+          <a href="apply.html">Apply</a>
+          <a href="receipts.html">Receipts</a>  
+        </nav>
+      </div>
+  </div>
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Fund Request Platform</h1>
+    <p> Apply for funds using the button below.</p>
+    <a href="apply.html" class="cta-btn">Request Funds</a>
+  </section>
+  <!-- Features Section -->
+  <section class="features">
+    <div class="feature">
+      <h3>Expense Account</h3>
+<p>This helps show you how much money flows on your account.</p>
+<div id="loadingSpinner" style="text-align:center; margin: 20px;">
+  <div class="spinner"></div>
+  <p>Loading your account summary...</p>
+</div>
+
+<div id="accountSummary" style="display: none;">
+  <div class="container">
+    <div class="feature">
+      <h3>Expenditure Amount</h3>
+      <p>This is the figure approved in the expenditure data.</p>
+      <div id="expenditureOutput" style="color: blue; font-weight: bold;"></div>
+    </div>
+
+    <div class="feature">
+      <h3>Receipts Amount</h3>
+      <p>This is the figure reconciled in the receipts.</p>
+      <div id="receiptsOutput" style="color: blue; font-weight: bold;"></div>
+    </div>
+
+    <div class="feature">
+      <h3>Balance Amount</h3>
+      <p>Money left at hand.</p>
+      <div id="balanceOutput" style="color: blue; font-weight: bold;"></div>
+    </div>
+  </div>
+</div>
+      </body>
+      </html>
+    </div>         
+    <div class="feature forex-calculator">
+      <h3>Forex Calculator</h3>
+      <div class="calculator-container">
+        <div class="currency">
+          <img id="fromFlag" src="" alt="From Flag" width="40" />
+          <div class="form-group">
+            <label for="fromCurrency">From Currency:</label>
+            <select id="fromCurrency" class="form-control">
+              <option value="USD">USD - US Dollar</option>
+              <option value="EUR">EUR - Euro</option>
+              <option value="GBP">GBP - British Pound</option>
+              <option value="KES">KES - Kenyan Shilling</option>
+              <option value="UGX">UGX - Ugandan Shilling</option>
+              <option value="GHS">GHS - Ghanaian Cedi</option>
+              <option value="TZS">TZS - Tanzanian Shilling</option>
+              <option value="ZMW">ZMW - Zambian Kwacha</option>
+            </select>
+          </div>
+        </div>
+    
+        <button id="swapButton" style="font-size: 24px; margin: 10px;">⇄</button>
+    
+        <div class="currency">
+          <img id="toFlag" src="" alt="To Flag" width="40" />
+          <div class="form-group">
+            <label for="toCurrency">To Currency:</label>
+            <select id="toCurrency" class="form-control">
+              <option value="USD">USD - US Dollar</option>
+              <option value="EUR">EUR - Euro</option>
+              <option value="GBP">GBP - British Pound</option>
+              <option value="KES">KES - Kenyan Shilling</option>
+              <option value="UGX">UGX - Ugandan Shilling</option>
+              <option value="GHS">GHS - Ghanaian Cedi</option>
+              <option value="TZS">TZS - Tanzanian Shilling</option>
+              <option value="ZMW">ZMW - Zambian Kwacha</option>
+            </select>
+          </div>
+        </div>
+    
+        <div class="currency-input" style="margin-top: 20px;">
+          <input type="number" id="amount" placeholder="Enter amount" style="padding: 10px; width: 80%; font-size: 16px; border-radius: 5px; border: 1px solid #ccc;" />
+        </div>
+    
+        <div class="forex-result" style="margin-top: 20px;">
+          <p><strong>Buy Rate:</strong> <span id="buyRate">-</span></p>
+          <p><strong>Sell Rate:</strong> <span id="sellRate">-</span></p>
+          <p id="result"><strong>Converted:</strong> -</p>
+        </div>
+      </div>
+    </div>
+    
+    </div>
+    
+  </section>
+ <!-- Footer -->
+<footer>
+  <p>&copy; 2025 Fh260. All rights reserved.</p>
+  <p>
+    <a href="sign.html">Sign In</a> | 
+    <a href="index.html">Back Page</a> | 
+    <a href="admin.html">Admin</a> 
+  </p>
+</footer>
+   <script src="js/script.js"></script>
+</body>
+</html>

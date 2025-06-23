@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:title" content="Fh260-Africa" />
+    <meta
+      property="og:description"
+      content="Digitalising Fh260-Africa Operations"
+    />
+    <meta property="og:image" content="https://fh260.org/og-fhlogo.jpeg" />
+    <meta property="og:url" content="https://fh260.org" />
+    <title>Reset PIN</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="stylesheet" href="css/sign-styles.css" />
+  </head>
+  <body>
+    <header class="main-header">
+      <a href="#" class="logo">
+        <img src="assets/images/logo.png" alt="FH260 Logo" />
+      </a>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="sign.html">Sign In</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="auth-container">
+      <div class="form-box" id="reset-pin-form">
+        <h2>Create New PIN</h2>
+        <p class="hint-message" id="email-display"></p>
+
+        <label for="new-pin">New 4-Digit PIN:</label>
+        <input
+          type="password"
+          id="new-pin"
+          maxlength="4"
+          placeholder="Enter new PIN"
+        />
+        <p class="hint-message" id="new-pin-hint">
+          4-digit PIN without sequential numbers
+        </p>
+
+        <label for="confirm-new-pin">Confirm New PIN:</label>
+        <input
+          type="password"
+          id="confirm-new-pin"
+          maxlength="4"
+          placeholder="Confirm new PIN"
+        />
+        <p class="hint-message" id="confirm-new-pin-hint">PINs must match</p>
+
+        <button id="reset-pin-btn">Reset PIN</button>
+        <p class="message" id="reset-pin-message"></p>
+      </div>
+    </main>
+
+    <footer class="main-footer">
+      <p>&copy; 2025 Fh260. All rights reserved.</p>
+      <p>
+        <a href="sign.html">Sign In</a> | <a href="home.html">Home</a> |
+        <a href="index.html">Back Page</a>
+      </p>
+    </footer>
+    <script src="js/reset-pin.js"></script>
+  </body>
+</html>

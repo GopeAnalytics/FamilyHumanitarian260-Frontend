@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <meta property="og:title" content="Fh260-Africa" />
+    <meta
+      property="og:description"
+      content="Digitalising Fh260-Africa Operations"
+    />
+    <!-- <meta property="og:image" content="https://fh260.org/og-fhlogo.jpeg" /> -->
+    <!-- <meta property="og:url" content="https://fh260.org" /> -->
+    <title>Downloadable Receipts</title>
+    <!-- <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" /> -->
+    <!-- <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" /> -->
+    <!-- <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" /> -->
+    <!-- <link rel="manifest" href="/site.webmanifest" /> -->
+    <style>
+      /* Global reset and viewport control */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        height: 100%;
+        width: 100%;
+        overflow-x: hidden;
+        position: relative;
+      }
+
+      /* General styling */
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa;
+        color: #333;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Header styles */
+      header {
+        background-color: #003366;
+        color: white;
+        padding: 12px 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+      }
+
+      header .logo img {
+        height: 36px;
+      }
+
+      /* Top navigation */
+      .top-nav {
+        background-color: #737a81;
+        color: white;
+        padding: 8px 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        width: 100%;
+      }
+
+      .top-nav nav {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        width: 100%;
+      }
+
+      .top-nav nav a {
+        text-decoration: none;
+        color: white;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        font-size: 14px;
+        padding: 5px;
+      }
+
+      .top-nav nav a:hover {
+        color: #ffcc00;
+      }
+
+      /* Page content */
+      .content-container {
+        flex: 1;
+        width: 100%;
+        max-width: 100%;
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      h1 {
+        color: #003366;
+        text-align: center;
+        margin: 10px 0;
+        font-size: 1.5rem;
+      }
+
+      /* Filter container */
+      .filter-container {
+        margin: 12px 0;
+        text-align: center;
+        background-color: #fff;
+        padding: 12px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: 100%;
+      }
+
+      .filter-container label {
+        font-weight: bold;
+        color: #003366;
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+      }
+
+      select {
+        padding: 8px 12px;
+        font-size: 14px;
+        border-radius: 6px;
+        border: 1px solid #ddd;
+        background-color: white;
+        cursor: pointer;
+        width: 100%;
+        max-width: 300px;
+      }
+
+      /* Enhanced table container */
+      .table-container {
+        width: 100%;
+        margin: 12px 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+        padding-bottom: 15px;
+        position: relative;
+      }
+
+      .table-responsive::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 60px;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.9) 100%
+        );
+        pointer-events: none;
+      }
+
+      .table-responsive::-webkit-scrollbar {
+        height: 8px;
+        width: 6px;
+      }
+
+      .table-responsive::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 8px;
+      }
+
+      .table-responsive::-webkit-scrollbar-thumb {
+        background: #003366;
+        border-radius: 10px;
+      }
+
+      /* Advanced table styling */
+      #receiptsTable {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+      }
+
+      #receiptsTable th {
+        position: sticky;
+        top: 0;
+        background-color: #003366;
+        color: white;
+        font-weight: 600;
+        text-align: left;
+        padding: 10px 12px;
+        font-size: 13px;
+        z-index: 2;
+      }
+
+      #receiptsTable td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #eee;
+        font-size: 13px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      #receiptsTable tr:hover {
+        background-color: rgba(0, 51, 102, 0.05);
+      }
+
+      #receiptsTable tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+
+      #receiptsTable a {
+        color: #0066cc;
+        text-decoration: none;
+        font-weight: 500;
+        padding: 5px 8px;
+        border-radius: 4px;
+        display: inline-block;
+        background: #00336612;
+        transition: all 0.2s ease;
+      }
+
+      #receiptsTable a:hover {
+        background: #00336625;
+      }
+
+      /* Column width management */
+      #receiptsTable th:nth-child(1),
+      #receiptsTable td:nth-child(1) {
+        min-width: 120px;
+      }
+      #receiptsTable th:nth-child(2),
+      #receiptsTable td:nth-child(2) {
+        min-width: 100px;
+      }
+      #receiptsTable th:nth-child(3),
+      #receiptsTable td:nth-child(3),
+      #receiptsTable th:nth-child(4),
+      #receiptsTable td:nth-child(4) {
+        min-width: 110px;
+      }
+      #receiptsTable th:nth-child(5),
+      #receiptsTable td:nth-child(5) {
+        min-width: 150px;
+      }
+      #receiptsTable th:nth-child(6),
+      #receiptsTable td:nth-child(6) {
+        min-width: 100px;
+      }
+
+      /* Mobile-first adaptations */
+      @media (max-width: 768px) {
+        #receiptsTable th:nth-child(1) {
+          color: #003366 !important; /* Blue color matching other headers */
+          background: #f9f9f9;
+          box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #receiptsTable td {
+          white-space: normal;
+          padding: 12px 8px;
+          line-height: 1.4;
+          vertical-align: top;
+        }
+
+        #receiptsTable th:nth-child(1),
+        #receiptsTable td:nth-child(1) {
+          min-width: 80px;
+          max-width: 100px;
+          position: sticky;
+          left: 0;
+          background: #f9f9f9;
+          z-index: 1;
+          box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #receiptsTable th:nth-child(2),
+        #receiptsTable td:nth-child(2) {
+          min-width: 100px;
+          max-width: 120px;
+        }
+
+        #receiptsTable td:nth-child(4) {
+          min-width: 120px;
+          background: #fff;
+          position: relative;
+        }
+
+        .swipe-indicator {
+          display: block;
+          background: #003366;
+          color: white;
+          padding: 12px;
+          border-radius: 8px;
+          margin: 0 auto 15px;
+          width: 90%;
+          text-align: center;
+        }
+
+        .swipe-indicator i {
+          animation: swipeBounce 1.5s infinite;
+          display: inline-block;
+        }
+
+        h1 {
+          font-size: 1.3rem;
+        }
+
+        .filter-container {
+          padding: 10px;
+        }
+
+        .content-container {
+          padding: 8px;
+        }
+      }
+
+      /* Swipe animation */
+      @keyframes swipeBounce {
+        0%,
+        100% {
+          transform: translateX(-10px);
+        }
+        50% {
+          transform: translateX(10px);
+        }
+      }
+
+      /* Mobile typography enhancements */
+      @media (max-width: 480px) {
+        #receiptsTable {
+          min-width: 650px;
+        }
+
+        #receiptsTable td {
+          font-size: 12px;
+        }
+
+        #receiptsTable a {
+          font-size: 12px;
+          padding: 4px 6px;
+        }
+
+        .swipe-indicator {
+          font-size: 14px;
+        }
+
+        .swipe-indicator i::after {
+          content: " →";
+          margin-left: 8px;
+        }
+
+        .top-nav nav a {
+          font-size: 13px;
+        }
+
+        h1 {
+          font-size: 1.2rem;
+          margin: 8px 0;
+        }
+      }
+
+      /* Footer styles */
+      .main-footer {
+        background-color: #003366;
+        color: white;
+        text-align: center;
+        padding: 15px 10px;
+        font-size: 0.8rem;
+        width: 100%;
+      }
+
+      .main-footer a {
+        color: #ffcc00;
+        text-decoration: none;
+        font-weight: bold;
+        margin: 0 5px;
+      }
+
+      .main-footer p {
+        margin: 5px 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Header -->
+    <header>
+      <div class="logo">
+        <img src="assets/images/logo.png" alt="FH260 Logo" />
+      </div>
+    </header>
+
+    <!-- Navigation Bar -->
+    <div class="top-nav">
+      <nav>
+        <a href="home.html">Home</a>
+        <a href="apply.html">Apply</a>
+        <a href="receipts.html">Receipts</a>
+      </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-container">
+      <h1>Downloadable Receipts</h1>
+
+      <!-- Filter Options -->
+      <div class="filter-container">
+        <label for="durationSelect">Select Receipt Duration:</label>
+        <select id="durationSelect">
+          <option value="ANNUALLY" selected>Annually</option>
+          <option value="THREE-QUARTER">Three-Quarter</option>
+          <option value="HALF-YEARLY">Half-Yearly</option>
+          <option value="QUARTERLY">Quarterly</option>
+          <option value="1-MONTH">1 Month</option>
+        </select>
+      </div>
+
+      <!-- Table container -->
+      <div class="table-container">
+        <!-- Mobile swipe indicator -->
+        <div class="swipe-indicator">
+          <i>← Swipe to view full table →</i>
+        </div>
+
+        <!-- Responsive table container -->
+        <div class="table-responsive">
+          <table id="receiptsTable">
+            <thead>
+              <tr>
+                <th>Reference</th>
+                <th>Date</th>
+                <th>Total Amount</th>
+                <th>Balance</th>
+                <th>Applicant</th>
+                <th>Receipt Link</th>
+              </tr>
+            </thead>
+            <tbody id="receiptsBody">
+              <!-- Table content will be loaded by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+      <p>&copy; 2025 Fh260. All rights reserved.</p>
+      <p>
+        <a href="home.html">Home</a> | <a href="index.html">Back Page</a> |
+        <a href="sign.html">Sign In</a>
+      </p>
+    </footer>
+
+    <!-- Script -->
+    <script src="js/downloads-script.js"></script>
+  </body>
+</html>

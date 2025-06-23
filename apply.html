@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:title" content="Fh260-Africa" />
+    <meta
+      property="og:description"
+      content="Digitalising Fh260-Africa Operations"
+    />
+  <meta property="og:image" content="https://fh260.org/og-fhlogo.jpeg" />
+     <meta property="og:url" content="https://fh260.org" />
+    <title>Fund Request Form</title>
+    <link rel="stylesheet" href="css/apply-styles.css" />
+     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" /> 
+     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" /> 
+     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" /> 
+     <link rel="manifest" href="/site.webmanifest" /> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="assets/images/logo.png" alt="KCAU Logo">
+        </div>
+    </header> 
+    <div class="top-nav">
+      <div class="log"></div>
+      <nav>
+        <a href="home.html">Home</a>
+        <a href="downloads.html">Downloads</a>
+        <a href="receipts.html">Receipts</a>
+      </nav>
+    </div><div class="right-offset">
+       
+    </div>
+    
+</div>
+
+    <h1>Fund Request</h1>
+
+    <label for="requestType">Request Type:</label>
+    <select id="requestType">
+        <option value="New">New</option>
+        <option value="Reimbursement">Reimbursement</option>
+    </select> <!-- Reimbursement Section -->
+    <div id="reimbursementButtons" class="hidden space-y-4">
+      <div id="attachmentsContainer" class="space-y-2"></div>
+      <div class="flex gap-2">
+        <button
+          id="uploadButton"
+          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Upload
+        </button>
+        <button
+          id="photoButton"
+          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Photo
+        </button>
+        <button
+          id="reconcileButton"
+          class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Reconcile
+        </button>
+      </div>
+    </div>
+   
+   
+    <label for="category">Category:</label>
+    <select id="category">
+        <option value="" disabled selected>Select category</option>
+        <option value="Fuel">Fuel</option>
+        <option value="Borehole Expenses">Borehole Expenses</option>
+        <option value="Construction">Construction</option>
+        <option value="Parts/Supplies">Parts/Supplies</option>
+        <option value="Permits">Permits</option>
+        <option value="Internet/Electricity">Internet/Electricity</option>
+        <option value="Rent">Rent</option>
+        <option value="Vehicle Repair">Vehicle Repair</option>
+        <option value="Expeditions">Expeditions</option>
+        <option value="Transport">Transport</option>
+        <option value="Meals">Meals</option>
+        <option value="Accommodations">Accommodations</option>
+        <option value="Projects">Projects</option>
+        <option value="Vehicle Service">Vehicle Service</option>
+        <option value="Other">Other</option>
+    </select>
+
+    <label for="subCategory">Sub-category:</label>
+    <select id="subCategory">
+        <option value="None">None</option>
+    </select>
+    <input type="text" id="otherSubCategory" class="hidden" placeholder="Specify Other Sub-category">
+
+    <button class="add-model-button" onclick="addModel()">Add sub-category</button>
+
+    <div class="models"></div>
+    <div id="transactionCostContainer" style="margin-top: 20px;">
+      <label for="transactionCost">Transaction Cost (Optional):</label>
+      <input type="number" id="transactionCost" name="transactionCost" placeholder="Enter transaction cost" />
+      <input type="hidden" id="currencyCode" name="currencyCode">
+    <div id="summary" class="hidden"></div>
+    <button id="proceedButton" onclick="proceed()">Proceed</button> 
+    </div> 
+    <div id="totalRequestContainer" style="margin-top: 20px;">
+        <label for="totalRequest">Total Request:</label>
+        <input type="text" id="totalRequest" name="totalRequest" readonly />
+    </div>
+   
+  <button id="sendReceiptButton" onclick="sendAndDownloadReceipt()">Send and Download Receipt</button>
+
+  
+  <div id="feedback" style="display: none;"></div>
+</div>
+
+<div id="reconcileContainer"></div>
+
+<script>
+// Get the user's country from localStorage to determine currency
+function getUserCurrency() {
+  const user = JSON.parse(localStorage.getItem('user')) || { country: 'Unknown' };
+  const countryToCurrency = {
+    'Kenya': 'KES',
+    'Tanzania': 'TZS',
+    'Uganda': 'UGX',
+    'Zambia': 'ZMW',
+    'Ghana': 'GHS'
+  };
+  
+  // Default to USD if country not in the list
+  return countryToCurrency[user.country] || 'USD';
+}
+
+// Create a currency formatter that uses the user's currency
+function createCurrencyFormatter() {
+  const currencyCode = getUserCurrency();
+  return new Intl.NumberFormat(undefined, {
+    style: 'currency',
+    currency: currencyCode,
+    minimumFractionDigits: 2
+  });
+}
+
+    // Handle category change and populate sub-categories
+    document.getElementById('category').addEventListener('change', function () {
+        const subCategory = document.getElementById('subCategory');
+        subCategory.innerHTML = "";
+
+        const selectedCategory = this.value;
+
+        const subCategories = {
+    "Fuel": ["Other"],
+    "Borehole Expenses": [ "Drilling Permits", "Surveying", "Pump Installation", "Water Testing", "Casing Pipes", "Grouting", "Other"],
+    "Construction": ["Cement", "Sand", "Gravel", "Bricks", "Iron Sheets", "Nails", "Timber", "Other"],
+    "Parts/Supplies": [ "Rods", "Centralizers", "Rubber", "Casings", "Drill Bits", "Mud Pumps", "Water Hoses", "Filters", "Bearings", "Grease", "Other"],
+    "Permits": [ "Other"],
+    "Internet/Electricity": [ "Other"],
+    "Rent": [ "Other"],
+    "Vehicle Repair": [ "Tires", "Battery", "Oil Change", "Brake Pads", "Suspension", "Other"],
+    "Expeditions": [ "Other"],
+    "Transport": [ "Other"],
+    "Meals": ["Other"],
+    "Accommodations": [ "Other"],
+    "Projects": [ "Other"],
+    "Vehicle Service": [ "Other"],
+    "Other": [ "Other"]
+};
+        // Always start with "None"
+        const options = ["None"];
+
+        if (subCategories[selectedCategory]) {
+            options.push(...subCategories[selectedCategory]);
+        } else {
+            options.push("Other"); // Fallback if category not found
+        }
+
+        // Populate dropdown
+        options.forEach(option => {
+            const opt = document.createElement("option");
+            opt.value = option;
+            opt.textContent = option;
+            subCategory.appendChild(opt);
+        });
+    });
+
+    // Show/hide reimbursement buttons
+    document.getElementById('requestType').addEventListener('change', function () {
+        const reimbursementButtons = document.getElementById('reimbursementButtons');
+        this.value === "Reimbursement"
+            ? reimbursementButtons.classList.remove('hidden')
+            : reimbursementButtons.classList.add('hidden');
+    });
+
+    // Show "Other" input field if "Other" is selected
+    document.getElementById('subCategory').addEventListener('change', function () {
+        const otherInput = document.getElementById("otherSubCategory");
+        this.value === "Other"
+            ? otherInput.classList.remove("hidden")
+            : otherInput.classList.add("hidden");
+    });
+
+
+    function addModel() {
+    const reqType = document.getElementById('requestType');
+    const category = document.getElementById('category');
+    const subCategory = document.getElementById('subCategory');
+    const otherSubCategoryInput = document.getElementById("otherSubCategory");
+
+    let selectedModel = subCategory.value;
+
+   
+
+    if (selectedModel === "Other") {
+        selectedModel = otherSubCategoryInput.value.trim();
+        if (!selectedModel) {
+            alert("Please enter a sub-category name.");
+            return;
+        }
+    }
+
+    // Lock the dropdowns after first sub-category is added
+    reqType.disabled = true;
+    category.disabled = true;
+
+    const modelContainer = document.createElement('div');
+    modelContainer.className = 'subcategory-container';
+    modelContainer.innerHTML = `
+        <div class="subcategory-header">
+            <h2>${selectedModel}</h2>
+            <button class="remove-button" onclick="removeSubCategory(this)">Remove</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="text" placeholder="Description"></td>
+                    <td><input type="number" class="amount" placeholder="Amount"></td>
+                    <td><input type="number" class="quantity" placeholder="Quantity"></td>
+                </tr>
+            </tbody>
+        </table>
+    `;
+    document.querySelector('.models').appendChild(modelContainer);
+
+    // Reset and hide the "Other" input field
+    otherSubCategoryInput.value = "";
+    otherSubCategoryInput.classList.add("hidden");
+}
+//UploadButton event listener:
+document.getElementById("uploadButton").addEventListener("click", async function () {
+  const fileInput = document.createElement("input");
+  fileInput.type = "file";
+  
+  fileInput.addEventListener("change", async function () {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    // Show loading state
+    this.disabled = true;
+    
+    try {
+      const formData = new FormData();
+      formData.append("attachment", file);
+
+      const response = await fetch("http://localhost:3000/api/upload", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem("token")}`
+        },
+        body: formData
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        createFileAttachment(file.name, data.driveLink, "file");
+      } else {
+        alert("Upload failed: " + (data.error || "Unknown error"));
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("File upload failed");
+    } finally {
+      this.disabled = false;
+    }
+  });
+
+  fileInput.click();
+});
+
+function createFileAttachment(fileName, driveLink, type) {
+  const attachmentItem = document.createElement("div");
+  attachmentItem.className = "attachment-item";
+  attachmentItem.innerHTML = `
+    <div class="file-info">
+      <span class="file-name">${fileName}</span>
+      <button onclick="this.parentElement.parentElement.remove()">✕</button>
+    </div>
+    <input type="hidden" name="attachments[]" 
+           data-type="${type}"
+           data-filename="${fileName}"
+           value="${driveLink}">
+  `;
+  document.getElementById("attachmentsContainer").appendChild(attachmentItem);
+}
+  // Photo Capture Modal
+document.getElementById("photoButton").addEventListener("click", async function () {
+  // Create modal overlay with improved positioning and styling
+  const modal = document.createElement("div");
+  modal.style.position = "fixed";
+  modal.style.top = "0";
+  modal.style.left = "0";
+  modal.style.width = "100%";
+  modal.style.height = "100%";
+  modal.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+  modal.style.display = "flex";
+  modal.style.alignItems = "center";
+  modal.style.justifyContent = "center";
+  modal.style.zIndex = "1000";
+
+  // Camera container with better styling
+  const cameraContainer = document.createElement("div");
+  cameraContainer.style.backgroundColor = "white";
+  cameraContainer.style.borderRadius = "8px";
+  cameraContainer.style.padding = "20px";
+  cameraContainer.style.width = "90%";
+  cameraContainer.style.maxWidth = "600px";
+  cameraContainer.style.boxShadow = "0 4px 15px rgba(0,0,0,0.2)";
+  
+  cameraContainer.innerHTML = `
+    <h4 style="font-size: 20px; margin-bottom: 15px; font-weight: 600;">Take Photo</h4>
+    <div class="video-preview" style="background-color: black; aspect-ratio: 16/9; width: 100%; margin-bottom: 15px;"></div>
+    <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 15px;">
+      <button class="cancel-btn" style="padding: 8px 16px; background-color: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;">
+        Cancel
+      </button>
+      <button class="capture-btn" style="padding: 8px 16px; background-color: #0d6efd; color: white; border: none; border-radius: 4px; cursor: pointer;">
+        Capture
+      </button>
+    </div>
+  `;
+
+  modal.appendChild(cameraContainer);
+  document.body.appendChild(modal);
+
+  navigator.mediaDevices
+    .getUserMedia({ video: true })
+    .then(function (stream) {
+      const video = document.createElement("video");
+      video.style.width = "100%";
+      video.style.height = "100%";
+      video.style.objectFit = "contain";
+      video.srcObject = stream;
+      video.play();
+
+      cameraContainer
+        .querySelector(".video-preview")
+        .appendChild(video);
+
+      // Capture handler
+      cameraContainer
+        .querySelector(".capture-btn")
+        .addEventListener("click", function () {
+          const canvas = document.createElement("canvas");
+          const context = canvas.getContext("2d");
+          canvas.width = video.videoWidth;
+          canvas.height = video.videoHeight;
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+          canvas.toBlob(async (blob) => {
+            try {
+              const formData = new FormData();
+              formData.append("attachment", blob, `photo_${Date.now()}.png`);
+
+              const response = await fetch("http://localhost:3000/api/upload", {
+                method: "POST",
+                headers: {
+                  "Authorization": `Bearer ${localStorage.getItem("token")}`
+                },
+                body: formData
+              });
+
+              const data = await response.json();
+              
+              if (response.ok) {
+                const attachmentItem = document.createElement("div");
+                attachmentItem.className = "attachment-item";
+                attachmentItem.innerHTML = `
+                  <img src="${data.driveLink}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px;">
+                  <input type="hidden" name="attachments[]" 
+                         data-type="photo" 
+                         data-filename="photo_${Date.now()}.png" 
+                         value="${data.driveLink}">
+                `;
+                document.getElementById("attachmentsContainer").appendChild(attachmentItem);
+              }
+            } catch (error) {
+              console.error("Photo upload failed:", error);
+              alert("Photo upload failed");
+            }
+          }, "image/png");
+          
+          // Cleanup
+          stream.getTracks().forEach((track) => track.stop());
+          modal.remove();
+        });
+
+      // Cancel handler
+      cameraContainer
+        .querySelector(".cancel-btn")
+        .addEventListener("click", function () {
+          stream.getTracks().forEach((track) => track.stop());
+          modal.remove();
+        });
+    })
+    .catch(function (error) {
+      console.error("Camera error:", error);
+      modal.remove();
+      alert("Could not access camera. Please check permissions.");
+    });
+});
+
+// Styled Reconciliation Editor as a centered popup
+document.getElementById("reconcileButton").addEventListener("click", function () {
+  // Create modal overlay with improved positioning and styling
+  const modal = document.createElement("div");
+  modal.style.position = "fixed";
+  modal.style.top = "0";
+  modal.style.left = "0";
+  modal.style.width = "100%";
+  modal.style.height = "100%";
+  modal.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+  modal.style.display = "flex";
+  modal.style.alignItems = "center";
+  modal.style.justifyContent = "center";
+  modal.style.zIndex = "1000";
+
+  // Reconciliation container with better styling
+  const editor = document.createElement("div");
+  editor.style.backgroundColor = "white";
+  editor.style.borderRadius = "8px";
+  editor.style.padding = "20px";
+  editor.style.width = "90%";
+  editor.style.maxWidth = "700px";
+  editor.style.boxShadow = "0 4px 15px rgba(0,0,0,0.2)";
+  
+  editor.innerHTML = `
+    <h3 style="font-size: 20px; margin-bottom: 15px; font-weight: 600;">Reconciliation Letter</h3>
+    <textarea 
+        style="width: 100%; padding: 12px; border: 1px solid #ced4da; border-radius: 4px; min-height: 300px; font-family: Arial, sans-serif; margin-bottom: 15px; resize: vertical;"
+        placeholder="Write your reconciliation letter here..."
+    ></textarea>
+    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+        <button class="cancel-btn" style="padding: 8px 16px; background-color: #6c757d; color: white; border: none; border-radius: 4px; cursor: pointer;">
+            Cancel
+        </button>
+        <button class="save-btn" style="padding: 8px 16px; background-color: #0d6efd; color: white; border: none; border-radius: 4px; cursor: pointer;">
+            Save Letter
+        </button>
+    </div>
+  `;
+
+  modal.appendChild(editor);
+  document.body.appendChild(modal);
+
+  // Save handler
+  editor.querySelector(".save-btn").addEventListener("click", async function () {
+    const letterContent = editor.querySelector("textarea").value.trim();
+    
+    if (!letterContent) {
+      alert("Please write something in the letter.");
+      return;
+    }
+
+    try {
+      const blob = new Blob([letterContent], { type: "text/plain" });
+      const formData = new FormData();
+      formData.append("attachment", blob, `reconciliation_${Date.now()}.txt`);
+
+      const response = await fetch("http://localhost:3000/api/upload", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${localStorage.getItem("token")}`
+        },
+        body: formData
+      });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        createFileAttachment(
+          `reconciliation_${Date.now()}.txt`,
+          data.driveLink,
+          "reconcile"
+        );
+        modal.remove();
+      }
+    } catch (error) {
+      console.error("Reconciliation upload failed:", error);
+      alert("Failed to save reconciliation letter");
+    }
+  });
+  
+  // Cancel handler
+  editor.querySelector(".cancel-btn").addEventListener("click", function () {
+    modal.remove();
+  });
+});
+      function createAttachmentElement(content, type) {
+        const div = document.createElement("div");
+        div.className =
+          "p-3 border rounded bg-gray-50 flex items-center justify-between";
+
+        if (type === "photo") {
+          div.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <img src="${content}" class="h-12 w-12 object-cover">
+                        <span>Photo</span>
+                    </div>
+                    <button onclick="this.parentElement.remove()" class="text-red-600 hover:text-red-700">✕</button>
+                `;
+        } else if (type === "file") {
+          div.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl"></span>
+                        <span>${content.name}</span>
+                    </div>
+                    <button onclick="this.parentElement.remove()" class="text-red-600 hover:text-red-700">✕</button>
+                `;
+        } else if (type === "reconciliation") {
+          div.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl"></span>
+                        <div>
+                            <p class="font-medium">Reconciliation Letter</p>
+                            <p class="text-sm text-gray-600">${content.substring(
+                              0,
+                              50
+                            )}...</p>
+                        </div>
+                    </div>
+                    <button onclick="this.parentElement.remove()" class="text-red-600 hover:text-red-700">✕</button>
+                `;
+        }
+        return div;
+      }
+    function removeSubCategory(button) {
+        button.closest('.subcategory-container').remove();
+    }
+    document.getElementById("proceedButton").style.display = "block";
+    function proceed() {
+    // Create formatter first, before using it
+    const formatter = createCurrencyFormatter();
+    
+    // Get the user's locale
+    const userLocale = navigator.language || 'en-US';
+
+    let total = 0;
+    let summaryHTML = `<h3>Summary</h3>
+        <p><strong>Request Type:</strong> ${document.getElementById("requestType").value}</p>
+        <p><strong>Category:</strong> ${document.getElementById("category").value}</p>`;
+
+    // Loop through all subcategories
+    document.querySelectorAll(".subcategory-container").forEach(box => {
+        let name = box.querySelector("h2").innerText;
+        let desc = box.querySelector("input[type='text']").value;
+        let amount = parseFloat(box.querySelector(".amount").value) || 0;
+        let qty = parseInt(box.querySelector(".quantity").value) || 1;
+        let subtotal = amount * qty;
+        total += subtotal;
+
+        // Now formatter is defined before it's used here
+        summaryHTML += `
+            <div><strong>${name}</strong><br>
+            Description: ${desc}<br>
+            Amount: ${formatter.format(amount)} x Quantity: ${qty} = ${formatter.format(subtotal)}</div><hr>`;
+    });
+
+    // Get transaction cost (if any)
+    const transactionCost = parseFloat(document.getElementById("transactionCost").value) || 0;
+    
+    // Calculate total request amount (items total + transaction cost)
+    const totalRequest = total + transactionCost;
+
+    // Get the currency code for later use
+    const currencyCode = getUserCurrency();
+    // If transaction cost exists, add it to the summary
+    if (transactionCost > 0) {
+        summaryHTML += `<p>Transaction Cost: ${formatter.format(transactionCost)}</p>`;
+    }
+
+    // Display the total
+    summaryHTML += `<p class="total-display">Total Amount: ${formatter.format(total)}</p>`;
+    if (transactionCost > 0) {
+        summaryHTML += `<p class="total-display">Total Request: ${formatter.format(totalRequest)}</p>`;
+    } else {
+        summaryHTML += `<p class="total-display">Total Request: ${formatter.format(total)}</p>`;
+    }
+
+    // Update the totalRequest input field and store currency information
+    document.getElementById("totalRequest").value = totalRequest;
+    document.getElementById("currencyCode").value = currencyCode; // Add a hidden field for currency
+
+    // Show the summary and the proceed button
+    document.getElementById("summary").innerHTML = summaryHTML;
+    document.getElementById("summary").classList.remove("hidden");
+    document.getElementById("sendReceiptButton").style.display = "block";
+}
+
+async function sendAndDownloadReceipt() {
+    // Show spinner and hide button
+    const sendBtn = document.getElementById("sendReceiptButton");
+    const spinner = document.getElementById("spinner");
+    const feedback = document.getElementById("feedback");
+    sendBtn.disabled = true;
+    sendBtn.innerHTML = `<span class="spinner"></span> Submitting...`;
+    feedback.style.display = "none";
+
+    // Get user data from localStorage
+    const user = JSON.parse(localStorage.getItem('user')) || {
+        name: "Unknown User",
+        email: "unknown@example.com",
+        country: "Unknown"
+    };
+
+    // Get currency code based on user's country
+    const currencyCode = getUserCurrency();
+
+    // Collect form data
+    const formData = {
+        requestType: document.getElementById("requestType").value,
+        category: document.getElementById("category").value,
+        subCategory: document.getElementById("subCategory").value,
+        transactionCost: parseFloat(document.getElementById("transactionCost").value) || 0,
+        currencyCode: currencyCode, // Include currency code in form data
+        expenseItems: []
+    };
+
+    // Collect expense items from subcategories
+    document.querySelectorAll('.subcategory-container').forEach(container => {
+        const inputs = container.querySelectorAll('input');
+        formData.expenseItems.push({
+            description: inputs[0].value,
+            amount: parseFloat(inputs[1].value),
+            quantity: parseInt(inputs[2].value)
+        });
+    });
+
+    if (formData.expenseItems.length === 0) {
+        alert("Please add at least one expense item");
+        sendBtn.disabled = false;
+        sendBtn.innerHTML = "Submit Request";
+        return;
+    }
+
+    // Calculate totals
+    const totalAmount = formData.expenseItems.reduce((sum, item) => sum + (item.amount * item.quantity), 0);
+    const totalRequest = totalAmount + formData.transactionCost;
+    
+    // Include these in the form data
+    formData.totalAmount = totalAmount;
+    formData.totalRequest = totalRequest;
+    // Process attachments
+    formData.attachments = [];
+    
+    document.querySelectorAll('[name="attachments[]"]').forEach(input => {
+        if (input.value) {
+            const type = input.dataset.type;
+            const fileName = input.dataset.filename;
+            const content = input.value;
+
+            formData.attachments.push({
+                type: type,
+                fileName: fileName,
+                content: content
+            });
+        }
+    });
+    
+    // Send to backend
+    try {
+        const response = await fetch('http://localhost:3000/api/requests', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify({
+                requestType: formData.requestType,
+                category: formData.category,
+                subCategory: formData.subCategory,
+                expenseItems: formData.expenseItems,
+                transactionCost: formData.transactionCost,
+                attachments: formData.attachments
+            })
+        });
+
+        if (!response.ok) throw new Error('Request failed with status: ' + response.status);
+        
+        const data = await response.json();
+        
+        // Generate and download PDF form
+        const receiptContent = generateReceiptContent(user, formData, totalAmount, totalRequest);
+        downloadReceipt(user, formData, totalAmount, totalRequest);
+        
+        feedback.style.color = "green";
+        feedback.innerText = "Request successfully sent!";
+    } catch (error) {
+        console.error('Submission Error:', error);
+        alert(`Submission Failed: ${error.message}`);
+        feedback.style.color = "red";
+        feedback.innerText = "Request failed. Please try again.";
+    } finally {
+         sendBtn.innerHTML = `Send and Download Receipt`;
+        sendBtn.disabled = false;
+        feedback.style.display = "block";
+        
+        // Refresh after 30 seconds
+        setTimeout(() => location.reload(), 30000);
+    }
+}
+
+function generateReceiptContent(user, formData, totalAmount, totalRequest) {
+    return `
+        FUND REQUEST RECEIPT
+        ----------------------------
+        User Information:
+        Name: ${user.name}
+        Email: ${user.email}
+        Country: ${user.country}
+        
+        Request Details:
+        Type: ${formData.requestType}
+        Category: ${formData.category}
+        Sub-category: ${formData.subCategory}
+        
+        Expense Items:
+        ${formData.expenseItems.map((item, index) => `
+        Item ${index + 1}:
+          Description: ${item.description}
+          Amount: ${item.amount}
+          Quantity: ${item.quantity}
+          Subtotal: ${item.amount * item.quantity}
+        `).join('')}
+        
+        ----------------------------
+        Total Amount: ${totalAmount}
+        Transaction Cost: ${formData.transactionCost}
+        Total Request: ${totalRequest}
+        
+        Date: ${new Date().toLocaleString()}
+        Status: Submitted
+    `;
+}
+
+function downloadReceipt(user, formData, totalAmount, totalRequest) {
+    // Create a new jsPDF instance
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Current date for submission
+    const currentDate = new Date();
+    const dateString = currentDate.toLocaleDateString();
+    
+    // Add top logo
+    const topLogoImg = new Image();
+    topLogoImg.src = 'logo.png'; // Your top logo path
+    
+    // Add bottom logo (different from top)
+    const bottomLogoImg = new Image();
+    bottomLogoImg.src = 'footer-logo.png'; 
+    // Counter to track loaded images
+    let loadedImages = 0;
+    const totalImages = 2;
+    
+    // Function to continue when all images are loaded
+    function continueWithPdf() {
+        loadedImages++;
+        if (loadedImages === totalImages) {
+            generatePdf();
+        }
+    }
+    
+    // Error handling for images
+    function handleImageError(imgType) {
+        console.error(`Failed to load ${imgType} logo`);
+        loadedImages++;
+        if (loadedImages === totalImages) {
+            generatePdf();
+        }
+    }
+    
+    // Set up image load and error handlers
+    topLogoImg.onload = continueWithPdf;
+    topLogoImg.onerror = () => handleImageError('top');
+    
+    bottomLogoImg.onload = continueWithPdf;
+    bottomLogoImg.onerror = () => handleImageError('bottom');
+    
+    // Main function to generate the PDF
+    function generatePdf() {
+        // Add top logo with proper aspect ratio and larger size
+        if (topLogoImg.complete && topLogoImg.naturalWidth !== 0) {
+            // Calculate aspect ratio to prevent stretching
+            const imgWidth = 45; // Increased from 30 to 45
+            const imgHeight = (topLogoImg.height / topLogoImg.width) * imgWidth;
+            
+            // Position closer to title by moving it right
+            doc.addImage(topLogoImg, 'PNG', 25, 10, imgWidth, imgHeight);
+        }
+        
+        // Add title - centered and positioned for better alignment with logo
+        doc.setFontSize(18);
+        doc.setFont('helvetica', 'bold');
+        doc.text('FUND REQUEST FORM', 120, 25, { align: 'center' });
+        
+        // Add date
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Date: ${dateString}`, 195, 25, { align: 'right' });
+        
+        // Add user information
+        doc.setFontSize(12);
+        doc.setFont('helvetica', 'bold');
+        doc.text('User Information:', 15, 50);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Name: ${user.name}`, 15, 60);
+        doc.text(`Email: ${user.email}`, 15, 70);
+        doc.text(`Country: ${user.country}`, 15, 80);
+        
+        // Add request details
+        doc.setFont('helvetica', 'bold');
+        doc.text('Request Details:', 15, 100);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Type: ${formData.requestType}`, 15, 110);
+        doc.text(`Category: ${formData.category}`, 15, 120);
+        doc.text(`Sub-category: ${formData.subCategory}`, 15, 130);
+        
+        // Add expense items table
+        doc.setFont('helvetica', 'bold');
+        doc.text('Expense Items:', 15, 150);
+        
+        // Table headers and data
+        const headers = [['Description', 'Amount', 'Quantity', 'Subtotal']];
+        const data = formData.expenseItems.map(item => [
+            item.description,
+            item.amount.toFixed(2),
+            item.quantity,
+            (item.amount * item.quantity).toFixed(2)
+        ]);
+        
+        // Generate table
+        doc.autoTable({
+            startY: 155,
+            head: headers,
+            body: data,
+            theme: 'grid',
+            headStyles: { fillColor: [66, 133, 244] }
+        });
+        
+        // Add totals
+        const finalY = doc.previousAutoTable.finalY + 10;
+        doc.text('Transaction Cost:', 130, finalY);
+        doc.text(`${formData.transactionCost.toFixed(2)}`, 180, finalY, { align: 'right' });
+        
+        doc.text('Total Amount:', 130, finalY + 10);
+        doc.text(`${totalAmount.toFixed(2)}`, 180, finalY + 10, { align: 'right' });
+        
+        doc.setFont('helvetica', 'bold');
+        doc.text('Total Request:', 130, finalY + 20);
+        doc.text(`${totalRequest.toFixed(2)}`, 180, finalY + 20, { align: 'right' });
+        
+        // Add signature fields with "Submitted" status
+        doc.setFont('helvetica', 'bold');
+        doc.text('Approvals:', 15, finalY + 40);
+        
+        doc.setFont('helvetica', 'normal');
+        doc.text('Colleague Approval:', 15, finalY + 50);
+        doc.text('SUBMITTED', 15, finalY + 60);
+        doc.line(15, finalY + 65, 100, finalY + 65);
+        doc.text('Date:', 110, finalY + 50);
+        doc.text(`${dateString}`, 110, finalY + 60);
+        doc.line(110, finalY + 65, 180, finalY + 65);
+        
+        doc.text('Boss Approval:', 15, finalY + 80);
+        doc.text('SUBMITTED', 15, finalY + 90);
+        doc.line(15, finalY + 95, 100, finalY + 95);
+        doc.text('Date:', 110, finalY + 80);
+        doc.text(`${dateString}`, 110, finalY + 90);
+        doc.line(110, finalY + 95, 180, finalY + 95);
+        
+        // Add footer text first
+        doc.setFontSize(8);
+        doc.text('Form generated by FHE Funds Management System', 105, 275, { align: 'center' });
+        
+        // Add bottom logo (different from top) BELOW the footer text
+        if (bottomLogoImg.complete && bottomLogoImg.naturalWidth !== 0) {
+            // Calculate aspect ratio for bottom logo
+            const bottomWidth = 35;
+            const bottomHeight = (bottomLogoImg.height / bottomLogoImg.width) * bottomWidth;
+            doc.addImage(bottomLogoImg, 'PNG', 85, 280, bottomWidth, bottomHeight);
+        }
+        
+        // Save the PDF
+        doc.save(`fund_request_form_${Date.now()}.pdf`);
+    }
+}
+</script>
+<!-- Footer -->
+<footer class="main-footer">
+<p>&copy; 2025 Fh260. All rights reserved.</p>
+<p>
+    <a href="sign.html">Sign In</a> | 
+    <a href="index.html">Back Page</a> | 
+    <a href="admin.html">Admin</a>
+</p>
+<script src="js/auth-script.js"></script>
+</footer>
+</html>

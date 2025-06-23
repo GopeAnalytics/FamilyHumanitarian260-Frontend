@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:title" content="Fh260-Africa" />
+    <meta
+      property="og:description"
+      content="Digitalising Fh260-Africa Operations"
+    />
+    <meta property="og:image" content="https://fh260.org/og-fhlogo.jpeg" />
+    <meta property="og:url" content="https://fh260.org" />
+    <title>Admin Dashboard</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+      }
+
+      header {
+        background-color: #003366;
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      header .logo img {
+        height: 40px;
+      }
+
+      .top-nav {
+        background-color: #737a81;
+        color: white;
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .top-nav nav a {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        margin-right: 15px;
+      }
+
+      .top-nav nav a:hover {
+        text-decoration: underline;
+      }
+
+      .login-container {
+        max-width: 800px;
+        margin: 40px auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      input[type="text"],
+      input[type="password"] {
+        width: 100%;
+        padding: 0.75rem;
+        margin: 0.5rem 0;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+
+      button {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        background-color: #4caf50;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      #errorMessage {
+        color: red;
+        text-align: center;
+      }
+
+      .dashboard {
+        padding: 20px;
+      }
+
+      #requestsContainer {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+      }
+
+      .request-card {
+        width: 300px;
+        background-color: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .request-card .name {
+        font-weight: bold;
+        color: #007bff;
+        font-size: 1.2rem;
+      }
+
+      .request-card .row {
+        margin: 0.3rem 0;
+      }
+
+      .request-card button.clear-btn {
+        width: 100%;
+        background-color: red;
+        color: white;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        margin-top: 1rem;
+        border: none;
+        border-radius: 0.5rem;
+        cursor: pointer;
+      }
+
+      .details {
+        background-color: #fff;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        margin: 20px auto;
+      }
+
+      .details .btns {
+        display: flex;
+        justify-content: space-between;
+        gap: 0.5rem;
+        margin-top: 10px;
+      }
+
+      .details .btns button {
+        flex: 1;
+      }
+
+      .spinner-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+
+      .spinner {
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(255, 255, 255, 0.3);
+        border-top: 5px solid #4caf50;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Notification styles */
+      .notification {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 15px 25px;
+        border-radius: 5px;
+        color: white;
+        font-weight: bold;
+        z-index: 1000;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.3s, transform 0.3s;
+        max-width: 80%;
+      }
+
+      .notification.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .notification.success {
+        background-color: #4caf50;
+      }
+
+      .notification.error {
+        background-color: #f44336;
+      }
+
+      .admin-section {
+        padding: 20px;
+        margin: 20px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .admin-section h2 {
+        color: #003366;
+        margin-top: 0;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #f0f0f0;
+      }
+
+      .table-container {
+        width: 100%;
+        overflow-x: auto;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        border: 1px solid #e0e0e0;
+      }
+
+      .requests-table,
+      .admin-dashboard {
+        width: 100%;
+      }
+
+      .table-header,
+      .table-row,
+      .receipt-header,
+      .receipt-row {
+        display: grid;
+        width: 100%;
+        min-width: 800px;
+      }
+
+      .table-header,
+      .receipt-header {
+        font-weight: bold;
+        background-color: #f2f2f2;
+        border-bottom: 2px solid #ddd;
+        padding: 12px 15px;
+      }
+
+      .table-header {
+        grid-template-columns:
+          minmax(150px, 1fr) minmax(200px, 1.5fr) minmax(120px, 1fr)
+          minmax(150px, 1fr) minmax(180px, 1fr);
+      }
+
+      .receipt-header,
+      .receipt-row {
+        grid-template-columns: repeat(6, minmax(120px, 1fr));
+      }
+
+      .table-row {
+        grid-template-columns:
+          minmax(150px, 1fr) minmax(200px, 1.5fr) minmax(120px, 1fr)
+          minmax(150px, 1fr) minmax(180px, 1fr);
+        padding: 12px 15px;
+        border-bottom: 1px solid #e0e0e0;
+        align-items: center;
+      }
+
+      .table-header > div,
+      .table-row > div {
+        padding: 8px;
+      }
+
+      .table-row:hover,
+      .receipt-row:hover {
+        background-color: #f8f9fa;
+      }
+
+      .receipt-row {
+        padding: 12px 15px;
+        border-bottom: 1px solid #e0e0e0;
+        align-items: center;
+      }
+
+      .receipt-header > div,
+      .receipt-row > div {
+        padding: 8px;
+        text-align: center;
+      }
+
+      .no-results,
+      .no-requests {
+        padding: 20px;
+        text-align: center;
+        color: #666;
+        font-style: italic;
+      }
+
+      /* Buttons within tables */
+      .actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+      }
+
+      .approve-btn {
+        background-color: #4caf50;
+      }
+
+      .reject-btn {
+        background-color: #f44336;
+      }
+
+      .approve-btn,
+      .reject-btn {
+        padding: 8px 15px;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 14px;
+      }
+
+      .approve-btn:hover {
+        background-color: #45a049;
+      }
+
+      .reject-btn:hover {
+        background-color: #d32f2f;
+      }
+
+      footer {
+        background-color: #004080;
+        color: white;
+        text-align: center;
+        padding: 20px 10px;
+        margin-top: 40px;
+      }
+
+      footer a {
+        color: #00aaff;
+        text-decoration: none;
+      }
+
+      footer a:hover {
+        text-decoration: underline;
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .top-nav {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .top-nav nav {
+          margin-top: 10px;
+        }
+
+        .admin-section {
+          margin: 10px;
+          padding: 15px;
+        }
+
+        .table-header,
+        .table-row,
+        .receipt-header,
+        .receipt-row {
+          min-width: 800px;
+        }
+
+        button {
+          padding: 0.6rem 1rem;
+        }
+
+        .actions {
+          flex-direction: column;
+          gap: 5px;
+        }
+      }
+
+      /* Improved filter controls */
+      .filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 20px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        border: 1px solid #e0e0e0;
+      }
+
+      .filters select {
+        padding: 8px 12px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        background-color: white;
+        min-width: 150px;
+        font-size: 14px;
+      }
+
+      @media (max-width: 600px) {
+        .filters {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .filters select {
+          width: 100%;
+        }
+      }
+
+      /* Section titles */
+      .admin-dashboard h2,
+      .admin-section h2 {
+        margin-bottom: 20px;
+        color: #003366;
+        font-size: 24px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <img src="logo.png" alt="KCAU Logo" />
+      </div>
+    </header>
+
+    <div class="top-nav">
+      <div class="logo-text">Admin Panel</div>
+      <nav>
+        <a href="home.html">Home</a>
+        <a href="downloads.html">Downloads</a>
+        <a href="apply.html">Apply</a>
+        <a href="receipts.html">Receipts</a>
+      </nav>
+    </div>
+
+    <div class="admin-dashboard">
+      <h2>Admin Receipts Dashboard</h2>
+
+      <div class="filters">
+        <select id="receiptTypeFilter">
+          <option value="Uploaded">Uploaded</option>
+          <option value="Pending">Pending</option>
+        </select>
+
+        <select id="countryFilter">
+          <option value="All">All</option>
+        </select>
+
+        <select id="userFilter">
+          <option value="All">All</option>
+        </select>
+      </div>
+
+      <div class="table-container">
+        <!-- Column Titles -->
+        <div class="receipt-header">
+          <div>Receipt Reference Number</div>
+          <div>Date</div>
+          <div>Total Amount</div>
+          <div>Balance</div>
+          <div>Applicant</div>
+          <div>Receipt Link</div>
+        </div>
+
+        <div id="receiptsSection" class="receipts-section">
+          <!-- Receipts will render here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Pending Signup Requests section -->
+    <div class="admin-section">
+      <h2>Pending Signup Requests</h2>
+      <div class="table-container">
+        <div class="requests-table">
+          <div class="table-header">
+            <div>Name</div>
+            <div>Email</div>
+            <div>Country</div>
+            <div>Request Date</div>
+            <div>Actions</div>
+          </div>
+          <div id="requests-list" class="table-body">
+            <!-- Requests will be loaded here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2025 Fh260. All rights reserved.</p>
+      <p>
+        <a href="sign.html">Sign In</a> | <a href="index.html">Back Page</a> |
+        <a href="home.html">Home</a>
+      </p>
+    </footer>
+    <script src="js/admin-script.js"></script>
+  </body>
+</html>

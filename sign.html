@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:title" content="Fh260-Africa" />
+    <meta
+      property="og:description"
+      content="Digitalising Fh260-Africa Operations"
+    />
+    <!-- <meta property="og:image" content="https://fh260.org/og-fhlogo.jpeg" /> -->
+    <!-- <meta property="og:url" content="https://fh260.org" /> -->
+    <title>Sign In & Sign Up</title>
+    <!-- <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" /> -->
+    <!-- <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" /> -->
+    <!-- <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" /> -->
+    <!-- <link rel="manifest" href="/site.webmanifest" /> -->
+    <link rel="stylesheet" href="css/sign-styles.css" />
+  </head>
+  <body>
+    <header class="main-header">
+      <a href="#" class="logo">
+        <img src="assets/images/logo.png" alt="FH260 Logo" />
+      </a>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="sign.html">Sign In</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="auth-container">
+      <!-- Sign In Form -->
+      <div class="form-box" id="sign-in">
+        <form class="auth-form">
+          <h2>Welcome Back</h2>
+          <label for="sign-in-name">Email or Username:</label>
+          <input
+            type="text"
+            id="sign-in-name"
+            placeholder="Enter your email or username"
+          />
+
+          <label for="sign-in-pin">4-Digit PIN:</label>
+          <input
+            type="password"
+            id="sign-in-pin"
+            maxlength="4"
+            placeholder="Enter PIN"
+          />
+
+          <button id="sign-in-btn" type="button">Sign In</button>
+          <p class="message" id="sign-in-message"></p>
+        </form>
+
+        <div class="auth-switch">
+          <p>
+            <span>Not registered?</span>
+            <a href="#" id="show-request-signup">Request sign up</a> |
+            <a href="#" id="show-forgot-pin">Forgot your PIN?</a> |
+            <a href="#" id="show-code-signup">Have a sign up code?</a>
+          </p>
+        </div>
+      </div>
+
+      <!-- Request Signup Form -->
+      <div class="form-box" id="request-signup" style="display: none">
+        <form class="auth-form">
+          <h2>Request Signup Access</h2>
+          <label for="request-name">Full Name:</label>
+          <input
+            type="text"
+            id="request-name"
+            placeholder="Enter your full name"
+            required
+          />
+
+          <label for="request-email">Email:</label>
+          <input
+            type="email"
+            id="request-email"
+            placeholder="Enter your email"
+            required
+          />
+
+          <label for="request-country">Country:</label>
+          <select id="request-country" required>
+            <option value="">-- Select Country --</option>
+            <option value="Kenya">Kenya</option>
+            <option value="Tanzania">Tanzania</option>
+            <option value="Uganda">Uganda</option>
+            <option value="Zambia">Zambia</option>
+            <option value="Ghana">Ghana</option>
+          </select>
+
+          <button id="submit-request" type="button">Submit Request</button>
+          <p class="message" id="request-message"></p>
+        </form>
+
+        <div class="auth-switch">
+          <p>
+            Already have an account?
+            <a href="#" id="back-to-signin-from-request">Sign In</a>
+          </p>
+        </div>
+      </div>
+
+      <!-- Sign Up Form -->
+      <div class="form-box" id="sign-up" style="display: none">
+        <form class="auth-form">
+          <h2>Create Account</h2>
+          <label for="sign-up-code">Signup Code:</label>
+          <input
+            type="text"
+            id="sign-up-code"
+            placeholder="Enter your signup code"
+          />
+          <button id="verify-code-btn" type="button">Verify Code</button>
+          <p class="hint-message" id="code-hint"></p>
+
+          <label for="sign-up-name">Username:</label>
+          <input
+            type="text"
+            id="sign-up-name"
+            placeholder="Enter username"
+            readonly
+          />
+          <p class="hint-message" id="name-hint">
+            Username must be at least 3 characters
+          </p>
+
+          <label for="sign-up-email">Email:</label>
+          <input
+            type="email"
+            id="sign-up-email"
+            placeholder="Enter your email"
+            readonly
+          />
+          <p class="hint-message" id="email-hint">Valid email required</p>
+
+          <label for="sign-up-pin">4-Digit PIN:</label>
+          <input
+            type="password"
+            id="sign-up-pin"
+            maxlength="4"
+            placeholder="Enter PIN"
+          />
+          <p class="hint-message" id="pin-hint">
+            4-digit PIN without sequential numbers
+          </p>
+
+          <label for="sign-up-confirm-pin">Confirm PIN:</label>
+          <input
+            type="password"
+            id="sign-up-confirm-pin"
+            maxlength="4"
+            placeholder="Confirm PIN"
+          />
+          <p class="hint-message" id="confirm-pin-hint">PINs must match</p>
+
+          <label for="sign-up-country">Country:</label>
+          <select id="sign-up-country" disabled>
+            <option value="">-- Select Country --</option>
+            <option value="Kenya">Kenya</option>
+            <option value="Tanzania">Tanzania</option>
+            <option value="Uganda">Uganda</option>
+            <option value="Zambia">Zambia</option>
+            <option value="Ghana">Ghana</option>
+          </select>
+
+          <button id="sign-up-btn" type="button">Sign Up</button>
+          <p class="message" id="sign-up-message"></p>
+        </form>
+
+        <div class="auth-switch">
+          <p>
+            Already have an account? <a href="#" id="show-signin">Sign In</a>
+          </p>
+        </div>
+      </div>
+
+      <!-- Change PIN Form -->
+      <div class="form-box" id="change-pin" style="display: none">
+        <form class="auth-form">
+          <h2>Reset Your PIN</h2>
+          <label for="reset-email">Email Address:</label>
+          <input
+            type="email"
+            id="reset-email"
+            placeholder="Enter your registered email"
+          />
+          <p class="hint-message" id="reset-email-hint">
+            Enter the email address associated with your account
+          </p>
+
+          <button id="request-reset-btn" type="button">Send Reset Link</button>
+          <p class="message" id="reset-pin-message"></p>
+        </form>
+
+        <div class="auth-switch">
+          <p>
+            Remember your PIN?
+            <a href="#" id="back-to-signin">Back to Sign In</a>
+          </p>
+        </div>
+      </div>
+    </main>
+
+    <footer class="main-footer">
+      <p>&copy; 2025 Fh260. All rights reserved.</p>
+      <p>
+        <a href="sign.html">Sign In</a> | <a href="home.html">Home</a> |
+        <a href="index.html">Back Page</a>
+      </p>
+    </footer>
+    <script src="js/sign-script.js"></script>
+  </body>
+</html>

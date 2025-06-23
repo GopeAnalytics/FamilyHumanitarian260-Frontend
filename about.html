@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About FH260 - Family Humanitarian Organisation</title>
+    <link rel="stylesheet" href="css/sign-styles.css" />
+    <style>
+      .about-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      .about-header {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      .about-header h1 {
+        color: #0066cc;
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+      }
+
+      .about-header p {
+        font-size: 1.2rem;
+        color: #555;
+        max-width: 800px;
+        margin: 0 auto;
+        line-height: 1.6;
+      }
+
+      .mission-section {
+        background-color: powderblue;
+        padding: 2rem;
+        border-radius: 10px;
+        margin-bottom: 3rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .mission-section h2 {
+        color: #0066cc;
+        margin-bottom: 1rem;
+        text-align: center;
+      }
+
+      .mission-section p {
+        line-height: 1.6;
+        color: #555;
+        margin-bottom: 1rem;
+      }
+
+      .leaders-section {
+        margin-bottom: 3rem;
+      }
+
+      .leaders-section h2 {
+        color: #0066cc;
+        margin-bottom: 2rem;
+        text-align: center;
+      }
+
+      .leaders-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 2rem;
+      }
+
+      .leader-card {
+        background-color: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+      }
+
+      .leader-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .leader-image {
+        width: 100%;
+        height: 220px;
+        background-color: #e0e0e0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+
+      .leader-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .leader-info {
+        padding: 1.5rem;
+      }
+
+      .leader-info h3 {
+        margin-top: 0;
+        color: #0066cc;
+        font-size: 1.2rem;
+      }
+
+      .leader-info h4 {
+        color: #666;
+        font-size: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .leader-quote {
+        font-style: italic;
+        color: #555;
+        line-height: 1.5;
+        border-left: 3px solid #0066cc;
+        padding-left: 1rem;
+      }
+
+      .stats-section {
+        background-color: #0066cc;
+        color: white;
+        padding: 3rem 2rem;
+        border-radius: 10px;
+        margin-bottom: 3rem;
+        text-align: center;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+      }
+
+      .stat-item h3 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .stat-item p {
+        font-size: 1rem;
+        opacity: 0.9;
+      }
+
+      .contact-section {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      .contact-section h2 {
+        color: #0066cc;
+        margin-bottom: 1rem;
+      }
+
+      .contact-info {
+        display: inline-block;
+        text-align: left;
+        margin: 0 auto;
+      }
+
+      .contact-info p {
+        margin: 0.5rem 0;
+        color: #555;
+      }
+
+      .contact-info i {
+        margin-right: 0.5rem;
+        color: #0066cc;
+      }
+
+      @media (max-width: 768px) {
+        .leaders-grid {
+          grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        }
+
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="main-header">
+      <a href="#" class="logo">
+        <img src="assets/images/logo.png" alt="FH260 Logo" />
+      </a>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="sign.html">Sign In</a></li>
+          <li><a href="about.html">About</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="about-container">
+      <div class="about-header">
+        <h1>About Family Humanitarian Organisation</h1>
+        <p>
+          Bringing clean water and sanitation to underserved communities across
+          Africa, one well at a time.
+        </p>
+      </div>
+
+      <section class="mission-section">
+        <h2>Our Mission</h2>
+        <p>
+          The Family Humanitarian Organisation (FH260) is dedicated to
+          addressing one of the most fundamental human rights: access to clean
+          water. Our mission is to transform lives in underserved communities
+          across Africa by providing sustainable water solutions through well
+          drilling projects and sanitation initiatives.
+        </p>
+        <p>
+          Since our founding, we have focused on creating lasting change in
+          Kenya, Uganda, Ghana and with advancement into Zambia and Tanzania
+          soon, empowering communities to break the cycle of water scarcity and
+          build healthier futures. We believe that water is the foundation of
+          community development, enabling education, health, and economic
+          growth.
+        </p>
+        <p>
+          Through partnerships with local leaders and communities, we ensure
+          that each project is sustainable, culturally appropriate, and managed
+          by those it serves. Our holistic approach combines infrastructure
+          development with education and training, creating lasting solutions to
+          water challenges.
+        </p>
+      </section>
+
+      <section class="stats-section">
+        <h2>Our Impact</h2>
+        <div class="stats-grid">
+          <div class="stat-item">
+            <h3>500+</h3>
+            <p>Wells Drilled</p>
+          </div>
+          <div class="stat-item">
+            <h3>1.2M+</h3>
+            <p>People Served</p>
+          </div>
+          <div class="stat-item">
+            <h3>5</h3>
+            <p>Countries</p>
+          </div>
+          <div class="stat-item">
+            <h3>85%</h3>
+            <p>Reduction in Water-borne Illness</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="leaders-section">
+        <h2>Our Country Leaders</h2>
+        <div class="leaders-grid">
+          <div class="leader-card">
+            <div class="leader-image">
+              <img
+                src="assets/images/kenyaDr.jpg"
+                alt="Kenya Country Director"
+              />
+            </div>
+            <div class="leader-info">
+              <h3>Kelvine Inganga</h3>
+              <h4>Kenya Country Director</h4>
+              <div class="leader-quote">
+                "Water is not just a resource; it's the lifeblood of
+                communities. When we provide clean water, we don't just quench
+                thirst—we nurture dreams, enable education, and cultivate
+                prosperity."
+              </div>
+            </div>
+          </div>
+
+          <div class="leader-card">
+            <div class="leader-image">
+              <img
+                src="assets/images/ugandaDr.jpg"
+                alt="Uganda Country Director"
+              />
+            </div>
+            <div class="leader-info">
+              <h3>Michael Mbithi</h3>
+              <h4>Uganda Country Director</h4>
+              <div class="leader-quote">
+                "Every well we drill represents hope. Hope for mothers who no
+                longer walk miles for water, hope for children who can attend
+                school instead of collecting water, hope for communities to
+                flourish."
+              </div>
+            </div>
+          </div>
+
+          <div class="leader-card">
+            <div class="leader-image">
+              <img
+                src="assets/images/tanzaniaDr.png"
+                alt="Uganda Country Co-director"
+              />
+            </div>
+            <div class="leader-info">
+              <h3>Francis Wailagala</h3>
+              <h4>Uganda Country Co-director</h4>
+              <div class="leader-quote">
+                "Clean water transforms everything. When communities have
+                reliable water access, hygiene improves, disease diminishes, and
+                children—especially girls—return to school. Water is the
+                foundation of dignity."
+              </div>
+            </div>
+          </div>
+
+          <div class="leader-card">
+            <div class="leader-image">
+              <img
+                src="assets/images/ghanaDr.jpg"
+                alt="Ghana Country Director"
+              />
+            </div>
+            <div class="leader-info">
+              <h3>Emmanuel Fiagbedzi</h3>
+              <h4>Ghana Country Director</h4>
+              <div class="leader-quote">
+                "Our work isn't charity—it's justice. Access to clean water is a
+                right, not a privilege. When we drill wells, we're not giving
+                handouts; we're removing barriers to people's inherent
+                potential."
+              </div>
+            </div>
+          </div>
+
+          <div class="leader-card">
+            <div class="leader-image">
+              <img
+                src="assets/images/ghanaCdr.jpg"
+                alt="Ghana Country Co-director"
+              />
+            </div>
+            <div class="leader-info">
+              <h3>Michael Yemoh</h3>
+              <h4>Ghana Country Co-director</h4>
+              <div class="leader-quote">
+                "Water security means food security, economic security, and
+                health security. Our wells don't just provide water—they provide
+                the foundation for communities to build their futures on their
+                own terms."
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact-section">
+        <h2>Contact Us</h2>
+        <div class="contact-info">
+          <p><strong>Email:</strong> info@fh260.org</p>
+          <p><strong>Phone:</strong> +1 (123) 456-7890</p>
+          <p>
+            <strong>Address:</strong> Family Humanitarian Africa Headquaters
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="main-footer">
+      <p>&copy; 2025 FH260. All rights reserved.</p>
+      <p>
+        <a href="sign.html">Sign In</a> | <a href="home.html">Home</a> |
+        <a href="index.html">Back Page</a>
+      </p>
+    </footer>
+  </body>
+</html>
