@@ -43,3 +43,38 @@ const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
+const express = require('express');
+const nodemailer = require('nodemailer');
+const app = express();
+
+app.use(express.json());  // To parse JSON requests
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',  // Or another email service like SendGrid, etc.
+  auth: {
+    user: 'your-email@gmail.com',
+    pass: 'your-email-password',
+  },
+});
+
+app.post('/send-verification', (req, res) => {
+  const { email, verificationCode } = req.body;
+
+  const mailOptions = {
+    from: 'your-email@gmail.com',
+    to: email,
+    subject: 'Verification Code',
+    text: `Your verification code is: ${verificationCode}`,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return res.status(500).send('Error sending email');
+    }
+    res.status(200).send('Verification email sent');
+  });
+});
+
+app.listen(3000, () => {
+  console.log('Server is running on port 3000');
+});

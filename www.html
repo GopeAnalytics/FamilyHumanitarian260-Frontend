@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Office of the Attorney General Profile</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background-color: #f8f9fa;
+    }
+
+    /* Top navbar */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fff;
+      padding: 10px 20px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-left img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    .navbar-menu a {
+      margin: 0 10px;
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .navbar-right {
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-right span {
+      font-weight: bold;
+      margin-right: 15px;
+    }
+
+    .logout-button {
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    /* Header banner */
+    .gov-header {
+      background-image: url('Screenshot (85).png');
+      background-size: cover;
+      background-repeat: no-repeat;
+      height: 65px;
+      display: flex;
+      align-items: center;
+      padding-left: 20px;
+    }
+
+    .gov-header h1 {
+      color: white;
+      font-size: 20px;
+      font-weight: 500;
+      margin-left: 15px;
+    }
+
+    /* Profile card */
+    .profile-container {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .profile-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .profile-left img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      margin-right: 15px;
+    }
+
+    .profile-name {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .profile-role {
+      font-size: 14px;
+      color: gray;
+    }
+
+    .profile-right {
+      text-align: right;
+    }
+
+    .profile-right p {
+      margin: 5px 0;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Nav -->
+  <div class="navbar">
+    <div class="navbar-left">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Ecitizen_logo.png" alt="eCitizen Logo">
+      <div class="navbar-menu">
+        <a href="#">Home</a>
+        <a href="#">History</a>
+        <a href="#">Services</a>
+        <a href="#">Profile</a>
+      </div>
+    </div>
+    <div class="navbar-right">
+      <span>Hello, KELVINE</span>
+      <button class="logout-button">LOGOUT</button>
+    </div>
+  </div>
+
+  <!-- OAG Header -->
+  <div class="gov-header">
+    <h1>OFFICE OF THE ATTORNEY GENERAL</h1>
+  </div>
+
+  <!-- Profile Section -->
+  <div class="profile-container">
+    <div class="profile-left">
+      <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="User Icon">
+      <div>
+        <div class="profile-name">Kelvine Owino Inganga</div>
+        <div class="profile-role">Citizen</div>
+      </div>
+    </div>
+    <div class="profile-right">
+      <p>Phone: +254701572470</p>
+      <p>Email: kelvinekiganga999@gmail.com</p>
+    </div>
+  </div>
+
+</body>
+</html>

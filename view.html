@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+        }html, body {
+  height: 100%; /* Full height of the screen */
+  margin: 0; /* Remove default margin */
+}
+
+* {
+  box-sizing: border-box; /* Ensure padding and borders are included in element's total width/height */
+}
+
+.container {
+  display: flex;
+  justify-content: center; /* Center the content horizontally */
+  align-items: center; /* Center the content vertically */
+  height: 100vh; /* Full viewport height */
+  overflow: hidden; /* Prevent overflow */
+}
+
+.content {
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  overflow: auto; /* Allow scrolling if content overflows */
+}
+header {
+            background-color: #003366; /* KCAU's branding color */
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .logo img {
+            height: 40px;
+        }
+
+        header nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+/* Navigation Bar */
+.top-nav {
+      background-color: #737a81;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .top-nav .logo {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    .top-nav nav {
+      display: flex;
+      gap: 20px;
+    }
+    .top-nav nav a {
+      text-decoration: none;
+      color: white;
+      font-weight: bold;
+    }
+    .top-nav nav a:hover {
+      text-decoration: underline;
+    }
+
+
+        .pdf-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .receipt-box {
+            margin-bottom: 20px;
+            text-align: center;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 80%;
+        }
+
+        .pdf-viewer {
+            width: 100%;
+            height: 500px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .filter-container {
+            margin-top: 20px;
+        }
+
+        select {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+        }
+
+        .main-footer {
+            background-color: #003366;
+            color: white;
+            text-align: center;
+            padding: 20px 10px;
+            font-size: 0.9rem;
+            margin-top: 30px;
+            
+        }
+
+        .main-footer a {
+            color: #ffcc00;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 0 5px;
+        }
+
+        .main-footer a:hover {
+            text-decoration: underline;
+            color: #ffd700;
+        }
+    </style><!-- Header Section -->
+    <header>
+        <div class="logo">
+            <img src="logo.png" alt="KCAU Logo">
+        </div>
+        <nav>
+            <ul>
+                
+                
+            </ul>
+        </nav>
+    </header> <!-- Navigation Bar -->
+    <div class="top-nav">
+      <div class="log"></div>
+      <nav>
+        <a href="home.html">Home</a>
+        <a href="apply.html">Apply</a>
+        <a href="receipts.html">Receipts</a>
+        
+      </nav>
+    </div><div class="right-offset">
+        <!-- all your content here -->
+    </div>
+    
+</div>
+
+</head>
+<body>
+    <h1>Downloadable Receipts</h1>
+
+    <div class="filter-container">
+        <label for="durationSelect">Select Receipt Duration:</label>
+        <select id="durationSelect" onchange="filterReceipts()">
+            <option value="ANNUALLY" selected>Annually</option>
+            <option value="THREE-QUARTER">Three-Quarter</option>
+            <option value="HALF-YEARLY">Half-Yearly</option>
+            <option value="QUARTERLY">Quarterly</option>
+            <option value="1-MONTH">1 Month</option>
+        </select>
+    </div>
+
+    <div class="pdf-container" id="pdfContainer"></div>
+
+    <script>
+        let allReceipts = [];
+
+        async function fetchReceipts() {
+            const sheetId = "1V1QEK-7d6tSe5OuheuqQuL2iPSpf5xbOL62fGb2G35g";
+            const sheetName = "Receipts";
+            const apiKey = "15s980bx-T-wxdNVxpUjtxIzEik87T-HXLuFNSsM70KI4unakF20L1Jsr";
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${sheetName}?key=${apiKey}`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                allReceipts = data.values;
+                filterReceipts(); // Apply filter on load
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        function filterReceipts() {
+            const selectedDuration = document.getElementById("durationSelect").value;
+            const now = new Date();
+            const pdfContainer = document.getElementById("pdfContainer");
+            pdfContainer.innerHTML = "";
+
+            if (!allReceipts || allReceipts.length <= 1) {
+                pdfContainer.innerHTML = "<p>No receipts available.</p>";
+                return;
+            }
+
+            const groupedReceipts = {};
+
+            // Skip header row
+            allReceipts.slice(1).forEach(row => {
+                const dateStr = row[0]; // Column A (Date)
+                const referenceNumber = row[1]; // Column B
+                const receiptUrl = row[3]; // Column D
+
+                const receiptDate = new Date(dateStr);
+                let show = false;
+
+                switch (selectedDuration) {
+                    case "1-MONTH":
+                        show = now - receiptDate <= 30 * 24 * 60 * 60 * 1000;
+                        break;
+                    case "QUARTERLY":
+                        show = now - receiptDate <= 90 * 24 * 60 * 60 * 1000;
+                        break;
+                    case "HALF-YEARLY":
+                        show = now - receiptDate <= 182 * 24 * 60 * 60 * 1000;
+                        break;
+                    case "THREE-QUARTER":
+                        show = now - receiptDate <= 273 * 24 * 60 * 60 * 1000;
+                        break;
+                    default: // ANNUALLY
+                        show = now - receiptDate <= 365 * 24 * 60 * 60 * 1000;
+                        break;
+                }
+
+                if (show) {
+                    if (!groupedReceipts[referenceNumber]) {
+                        groupedReceipts[referenceNumber] = [];
+                    }
+                    groupedReceipts[referenceNumber].push(receiptUrl);
+                }
+            });
+
+            const refs = Object.keys(groupedReceipts);
+            if (refs.length === 0) {
+                pdfContainer.innerHTML = "<p>No receipts found for the selected duration.</p>";
+                return;
+            }
+
+            refs.forEach(reference => {
+                const refDiv = document.createElement('div');
+                refDiv.className = "receipt-box";
+                refDiv.innerHTML = `<h3>Reference: ${reference}</h3>`;
+
+                groupedReceipts[reference].forEach(url => {
+                    const iframe = document.createElement('iframe');
+                    iframe.src = `${url}#toolbar=0`;
+                    iframe.className = "pdf-viewer";
+                    refDiv.appendChild(iframe);
+                });
+
+                pdfContainer.appendChild(refDiv);
+            });
+        }
+
+        window.onload = fetchReceipts;
+    </script>
+
+    <footer class="main-footer">
+        <p>&copy; 2025 Fh260. All rights reserved.</p>
+        <p>
+            <a href="admin.html">Admin</a> |
+            <a href="index.html">Back Page</a> |
+            <a href="sign.html">Sign In</a>
+        </p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>eTA Kenya Replica</title>
+  <style>
+    /* Reset and basic */
+    body, h1, h2, p, ul {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    ul {
+      list-style: none;
+    }
+
+    /* Navigation */
+    header {
+      background-color: hsl(210, 29%, 92%);
+      color: white;
+      padding: 1rem 2rem;
+    }
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      height: 50px;
+    }
+    nav ul {
+      display: flex;
+      gap: 1.5rem;
+    }
+    nav ul li a {
+      color: white;
+      font-weight: bold;
+    }
+
+    /* Hero Section */
+    .hero {
+      background-image: url('hero-bg.jpg'); /* Replace with your image path */
+      background-size: cover;
+      background-position: center;
+      color: white;
+      text-align: center;
+      padding: 6rem 2rem;
+    }
+    .hero-content {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 2rem;
+      border-radius: 10px;
+      display: inline-block;
+    }
+    .cta-button {
+      background-color: #ffa500;
+      color: black;
+      padding: 0.8rem 1.5rem;
+      border-radius: 5px;
+      margin-top: 1rem;
+      display: inline-block;
+    }
+
+    /* Info Section */
+    .info-section {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+      padding: 4rem 2rem;
+      background-color: #f4f4f4;
+    }
+    .card {
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      width: 30%;
+      min-width: 250px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin: 1rem;
+      text-align: center;
+    }
+
+    /* Footer */
+    footer {
+      background-color: hsl(102, 53%, 13%);
+      color: white;
+      text-align: center;
+      padding: 10rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav-container">
+      <img src="log123.png" alt="eTA Kenya Logo" class="logo" />
+      <nav>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">Apply</a></li>
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content">
+      <h1>Welcome to eTA Kenya</h1>
+      <p>Apply online for your electronic travel authorization.</p>
+      <a href="#" class="cta-button">Apply Now</a>
+    </div>
+  </section>
+
+  <section class="info-section">
+    <div class="card">
+      <h2>What is eTA?</h2>
+      <p>Learn about the electronic travel authorization for Kenya.</p>
+    </div>
+    <div class="card">
+      <h2>How to Apply</h2>
+      <p>Step-by-step guide to completing your application.</p>
+    </div>
+    <div class="card">
+      <h2>Support</h2>
+      <p>Contact our team if you need help with the process.</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 eTA Kenya. All rights reserved.</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mavab Agency</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: white;
+        }
+
+        header {
+            background-color: green;
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+
+        .logo {
+            height: 50px;
+            margin-right: 20px;
+        }
+
+        .hero {
+            position: relative;
+            height: 60vh;
+            overflow: hidden;
+        }
+
+        .background-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .overlay-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            background-color: rgba(0,0,0,0.4);
+            text-align: center;
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        .containers {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .container {
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .about {
+            background-color: #E0F7FA;
+        }
+
+        .form {
+            background-color: #FFF9C4;
+        }
+
+        .recommendations {
+            background-color: #FFCCBC;
+        }
+
+        .inspiration {
+            background-color: #C8E6C9;
+            text-align: center;
+        }
+
+        .drilling-image {
+            width: 100%;
+            max-width: 500px;
+            margin-top: 10px;
+            border-radius: 10px;
+        }
+
+        footer {
+            background-color: grey;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        
+        <h1>Mavab Agency</h1>
+    </header>
+
+    <section class="hero">
+        <video autoplay muted loop class="background-video">
+            <source src="drilling-water.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div class="overlay-text">
+            <h2>Mavab Agency — The Pool of Water</h2>
+        </div>
+    </section>
+
+    <main class="containers">
+        <div class="container about">
+            <h2>About Mavab Agency</h2>
+            <p>Mavab Agency is a trusted drilling company committed to providing water solutions across communities. With state-of-the-art drilling technology and a skilled team, we help turn dry lands into flourishing, life-giving resources.</p>
+        </div>
+
+        <div class="container form">
+            <h2>Request Our Services</h2>
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdDeWrJkwoIjdsiKUADVDqp6QLmTBe1XKyyuqClE5YxYU/viewform?embedded=true" width="100%" height="600" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+        </div>
+
+        <div class="container recommendations">
+            <h2>What Our Clients Say</h2>
+            <ul>
+                <li>"Mavab Agency brought life to our village. Highly professional!" — James W.</li>
+                <li>"Fast, reliable, and affordable drilling services." — Sarah K.</li>
+                <li>"They went above and beyond. Highly recommend them!" — Daniel M.</li>
+            </ul>
+        </div>
+
+        <div class="container inspiration">
+            <h2>Inspired by Water</h2>
+            <p>"Where there is water, there is life. Where there is Mavab, there is hope."</p>
+            <img src="drilling-image.jpg" alt="Drilling Action" class="drilling-image">
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Mavab Agency. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>

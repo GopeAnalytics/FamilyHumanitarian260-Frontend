@@ -1,0 +1,127 @@
+
+// Function to handle form submissions
+function onFormSubmit(e) {
+  try {
+    var sheet = e.range.getSheet(); // Get the sheet where the form response was submitted
+    var lastRow = e.range.getRow(); // Get the row of the new submission
+
+    // Get the necessary values from the sheet
+    var submitterName = sheet.getRange(lastRow, 3).getValue(); // Submitter Name (Column C)
+    var country = sheet.getRange(lastRow, 4).getValue();       // Country (Column D)
+    var requestType = sheet.getRange(lastRow, 5).getValue();   // Type of Request (Column E)
+    var quantity = sheet.getRange(lastRow, 6).getValue();      // Quantity (Column F)
+    var note = sheet.getRange(lastRow, 7).getValue();          // Note (Column G)
+    var totalAmount = sheet.getRange(lastRow, 8).getValue();   // Total Amount (Column H)
+    var submitterEmail = sheet.getRange(lastRow, 2).getValue(); // Submitter Email (Column B)
+    var adminEmail = "kelvinekiganga999@gmail.com"; // Admin email
+
+    // Auto-generate reference number in Column I (9th column)
+    var referenceColumn = 9; // Column I
+    var lastReference = sheet.getRange(lastRow - 1, referenceColumn).getValue(); // Get previous reference number
+    var newReferenceNumber = (lastReference === '') ? 1 : Number(lastReference) + 1; // Increment reference number starting from 1
+    sheet.getRange(lastRow, referenceColumn).setValue(newReferenceNumber); // Set new reference number in column I
+
+    // Compose the email for the admin with the new reference number
+    var subject = "New Fund Request #" + newReferenceNumber + " from " + submitterName;
+    var message = "Hi Michaela,<br><br>" + 
+                  submitterName + " from " + country + " has requested the following funds:<br><br>" +
+                  "Type of Request: " + requestType + "<br><br>" +
+                  "Quantity: " + quantity + "<br><br>" +
+                  "Explanation: " + note + "<br><br>" +
+                  "Total Amount: " + totalAmount + "<br><br>" +
+                  "Kindly verify and approve.<br><br>";
+
+    // Web app URL for approval/rejection
+    var baseUrl = "https://script.google.com/macros/s/AKfycbzpcl-1xwO9rb4iRQu61YqMrOZlB2sTLfe7j4pFC9nqe5lLhRVFzo4mfGSVD7elm0WxYg/exec";
+    var approvalUrl = baseUrl + "?row=" + encodeURIComponent(lastRow) + "&action=" + encodeURIComponent("approve");
+    var rejectionUrl = baseUrl + "?row=" + encodeURIComponent(lastRow) + "&action=" + encodeURIComponent("reject");
+
+    
+
+   // HTML message with styled buttons
+var htmlMessage = message + 
+    '<br><a href="' + approvalUrl + '" ' +
+    'style="color: white; background-color: green; padding: 10px 20px; text-decoration: none; ' +
+    'border-radius: 10px; margin-right: 4cm;">Approve</a>' + // 2 cm space between buttons
+    '<a href="' + rejectionUrl + '" ' +
+    'style="color: white; background-color: red; padding: 10px 20px; text-decoration: none; ' +
+    'border-radius: 10px;">Reject</a>' +
+    '<br><br>' + // Line break to move "See the Receipts" button below
+    '<div style="text-align: center; margin-top: 20px;">' + // Centering the button
+    '</div>';
+
+
+    // Send email to admin
+    MailApp.sendEmail({
+        to: adminEmail,
+        subject: subject,
+        htmlBody: htmlMessage
+    });
+
+  } catch (error) {
+    Logger.log("Error in onFormSubmit: " + error.message); // Log any errors for debugging
+  }
+}
+
+// Function to handle approval/rejection from email link
+function doGet(e) {
+  try {
+    // Open the target sheet
+    var sheet = SpreadsheetApp.openById('166DC42HCQ6Kmq1EGhvP1q2K1fNez90R6BXifTcI6m08').getSheetByName('Requests'); // Replace with your actual sheet ID
+    var row = parseInt(e.parameter.row); // Row number passed as a parameter in URL (convert to integer)
+    var action = e.parameter.action; // Action ('approve' or 'reject') passed as a parameter in URL
+
+    // Column indices
+    var emailColumn = 2; // Column B for submitter email
+    var statusColumn = 10; // Column J for approval status
+    var referenceColumn = 9; // Column I for reference number
+
+    // Fetch submitter details from the row
+    var submitterEmail = sheet.getRange(row, emailColumn).getValue(); // Get submitter email
+    var submitterName = sheet.getRange(row, 3).getValue(); // Get submitter name (Column C)
+    var reference = sheet.getRange(row, referenceColumn).getValue(); // Get reference number (Column I)
+
+    // Variables to store email subject and message
+    var subject, message;
+
+    // If action is 'approve'
+    if (action === "approve") {
+      // Set the status in column J to "Yes"
+      sheet.getRange(row, statusColumn).setValue("Yes");
+
+      // Compose approval email
+      subject = "Your Fund Request #" + reference + " has been Approved";
+      message = "Dear " + submitterName + ",<br><br>" +
+                "We are pleased to inform you that your request for funds has been approved. " +
+                "Please upload the receipt later using this Google Form: " +
+                '<a href="https://docs.google.com/forms/d/e/1FAIpQLSc710D0RocMA1RBIFU4NmdUbw1_uI2CHc8RRVuS90mDBTBBhA/viewform">Upload Receipt</a><br><br>' +
+                "Reference Number: " + reference + "<br><br>" +
+                "Best regards,<br>Admin";
+
+    } else if (action === "reject") {
+      // Set the status in column J to "No"
+      sheet.getRange(row, statusColumn).setValue("No");
+
+      // Compose rejection email
+      subject = "Your Fund Request #" + reference + " has been Rejected";
+      message = "Dear " + submitterName + ",<br><br>" +
+                "We regret to inform you that your request for funds has been rejected. " +
+                "Kindly contact Michaela for further details.<br><br>" +
+                "Best regards,<br>Admin";
+    }
+
+    // Send the email to the submitter
+    MailApp.sendEmail({
+      to: submitterEmail,
+      subject: subject,
+      htmlBody: message
+    });
+
+    // Return an acknowledgment message to the user
+    return ContentService.createTextOutput("Your response has been recorded. Thank you.");
+
+  } catch (error) {
+    Logger.log("Error in doGet: " + error.message); // Log any errors for debugging
+    return ContentService.createTextOutput("An error occurred. Please try again later.");
+  }
+}  

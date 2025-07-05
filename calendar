@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planner with Email Reminder</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        .container { max-width: 500px; margin: auto; }
+        input, button { padding: 10px; margin: 5px; width: 100%; }
+        ul { list-style-type: none; padding: 0; }
+        li { background: #f4f4f4; padding: 10px; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Planner</h2>
+        <input type="text" id="task" placeholder="Enter task...">
+        <input type="datetime-local" id="reminderTime">
+        <input type="email" id="email" placeholder="Enter your email">
+        <button onclick="addTask()">Add Task</button>
+        <ul id="taskList"></ul>
+    </div>
+    
+    <script>
+        function addTask() {
+            const task = document.getElementById('task').value;
+            const time = document.getElementById('reminderTime').value;
+            const email = document.getElementById('email').value;
+            if (!task || !time || !email) {
+                alert('Please fill all fields!');
+                return;
+            }
+            fetch('/addTask', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ task, time, email })
+            }).then(response => response.json())
+              .then(data => {
+                alert(data.message);
+                document.getElementById('taskList').innerHTML += `<li>${task} - ${time} - ${email}</li>`;
+              });
+        }
+    </script>
+</body>
+</html>

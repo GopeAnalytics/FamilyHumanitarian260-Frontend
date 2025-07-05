@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fund Request Form</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="apply-style.css" />
+  </head>
+  <body class="bg-gray-100">
+    <!-- Header Section -->
+    <header
+      class="bg-blue-900 text-white p-5 flex justify-between items-center"
+    >
+      <div class="logo">
+        <img src="logo.png" alt="Logo" class="h-10" />
+      </div>
+      <nav class="flex gap-4">
+        <a href="home.html" class="hover:text-blue-200">Home</a>
+        <a href="apply.html" class="hover:text-blue-200">Apply</a>
+        <a href="receipts.html" class="hover:text-blue-200">Receipts</a>
+      </nav>
+    </header>
+
+    <main
+      class="container mx-auto max-w-2xl p-4 bg-white rounded-lg shadow-md mt-5"
+    >
+      <h1 class="text-2xl font-bold text-center mb-6">Fund Request</h1>
+
+      <div class="space-y-4">
+        <!-- Request Type -->
+        <div>
+          <label class="block mb-2 font-medium">Request Type:</label>
+          <select id="requestType" class="w-full p-2 border rounded">
+            <option value="New">New</option>
+            <option value="Reimbursement">Reimbursement</option>
+          </select>
+        </div>
+
+        <!-- Reimbursement Section -->
+        <div id="reimbursementButtons" class="hidden space-y-4">
+          <div id="attachmentsContainer" class="space-y-2"></div>
+          <div class="flex gap-2">
+            <button
+              id="uploadButton"
+              class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              Upload
+            </button>
+            <button
+              id="photoButton"
+              class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              Photo
+            </button>
+            <button
+              id="reconcileButton"
+              class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            >
+              Reconcile
+            </button>
+          </div>
+        </div>
+
+        <!-- Category Section -->
+        <div>
+          <label class="block mb-2 font-medium">Category:</label>
+          <select id="category" class="w-full p-2 border rounded">
+            <!-- Options remain same -->
+            <option value="" disabled selected>Select category</option>
+            <option value="Fuel">Fuel</option>
+            <option value="Borehole Expenses">Borehole Expenses</option>
+            <option value="Construction">Construction</option>
+            <option value="Parts/Supplies">Parts/Supplies</option>
+            <option value="Permits">Permits</option>
+            <option value="Internet/Electricity">Internet/Electricity</option>
+            <option value="Rent">Rent</option>
+            <option value="Vehicle Repair">Vehicle Repair</option>
+            <option value="Expeditions">Expeditions</option>
+            <option value="Transport">Transport</option>
+            <option value="Meals">Meals</option>
+            <option value="Accommodations">Accommodations</option>
+            <option value="Projects">Projects</option>
+            <option value="Vehicle Service">Vehicle Service</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+
+        <!-- Subcategory Section -->
+        <div>
+          <label class="block mb-2 font-medium">Sub-category:</label>
+          <div class="flex gap-2">
+            <select id="subCategory" class="flex-1 p-2 border rounded">
+              <option value="None">None</option>
+            </select>
+            <input
+              type="text"
+              id="otherSubCategory"
+              class="hidden flex-1 p-2 border rounded"
+              placeholder="Specify Other Sub-category"
+            />
+            <button
+              onclick="addModel()"
+              class="bg-yellow-400 text-black px-4 py-2 rounded hover:bg-yellow-500"
+            >
+              Add sub-category
+            </button>
+          </div>
+        </div>
+
+        <!-- Models Container -->
+        <div class="models space-y-4"></div>
+
+        <!-- Summary Section -->
+        <div id="summary" class="hidden p-4 bg-gray-50 rounded"></div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-2 justify-end">
+          <button
+            id="proceedButton"
+            onclick="proceed()"
+            class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          >
+            Proceed
+          </button>
+          <button
+            id="sendReceiptButton"
+            onclick="sendAndDownloadReceipt()"
+            class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          >
+            Send Receipt
+          </button>
+        </div>
+      </div>
+    </main>
+
+    <footer class="bg-blue-900 text-white mt-8 py-4 text-center">
+      <p>&copy; 2025 Fh260. All rights reserved.</p>
+      <div class="mt-2">
+        <a href="sign.html" class="text-blue-200 hover:text-white mx-2"
+          >Sign In</a
+        >
+        <a href="index.html" class="text-blue-200 hover:text-white mx-2"
+          >Back Page</a
+        >
+        <a href="sign.html" class="text-blue-200 hover:text-white mx-2"
+          >Sign Up</a
+        >
+      </div>
+    </footer>
+
+    <script>
+      // JavaScript remains mostly the same, just update DOM insertion points
+      // Add this to handle attachment display
+      document
+        .getElementById("category")
+        .addEventListener("change", function () {
+          const subCategory = document.getElementById("subCategory");
+          subCategory.innerHTML = "";
+          const selectedCategory = this.value;
+          let options = ["None"];
+
+          const subCategories = {
+            "Parts/Supplies": [
+              "Rods",
+              "Centralizers",
+              "Rubber",
+              "Casings",
+              "Drill Bits",
+              "Mud Pumps",
+              "Water Hoses",
+              "Filters",
+              "Bearings",
+              "Grease",
+              "Other",
+            ],
+            "Borehole Expenses": [
+              "Drilling Permits",
+              "Surveying",
+              "Pump Installation",
+              "Water Testing",
+              "Casing Pipes",
+              "Grouting",
+              "Other",
+            ],
+            Construction: [
+              "Cement",
+              "Sand",
+              "Gravel",
+              "Bricks",
+              "Iron Sheets",
+              "Nails",
+              "Timber",
+              "Other",
+            ],
+            "Vehicle Repair": [
+              "Tires",
+              "Battery",
+              "Oil Change",
+              "Brake Pads",
+              "Suspension",
+              "Other",
+            ],
+          };
+
+          if (subCategories[selectedCategory]) {
+            options = options.concat(subCategories[selectedCategory]);
+          } else {
+            options.push("Other");
+          }
+
+          options.forEach((option) => {
+            const opt = document.createElement("option");
+            opt.value = option;
+            opt.textContent = option;
+            subCategory.appendChild(opt);
+          });
+        });
+      document
+        .getElementById("requestType")
+        .addEventListener("change", function () {
+          const reimbursementButtons = document.getElementById(
+            "reimbursementButtons"
+          );
+          if (this.value === "Reimbursement") {
+            reimbursementButtons.classList.remove("hidden"); // Show the buttons
+          } else {
+            reimbursementButtons.classList.add("hidden"); // Hide the buttons
+          }
+        });
+
+      document
+        .getElementById("subCategory")
+        .addEventListener("change", function () {
+          const otherInput = document.getElementById("otherSubCategory");
+          this.value === "Other"
+            ? otherInput.classList.remove("hidden")
+            : otherInput.classList.add("hidden");
+        });
+
+      function addModel() {
+        const reqType = document.getElementById("requestType");
+        const category = document.getElementById("category");
+        const subCategory = document.getElementById("subCategory");
+        const otherSubCategoryInput =
+          document.getElementById("otherSubCategory");
+
+        let selectedModel = subCategory.value;
+
+        if (selectedModel === "None") return;
+
+        if (selectedModel === "Other") {
+          selectedModel = otherSubCategoryInput.value.trim();
+          if (!selectedModel) {
+            alert("Please enter a sub-category name.");
+            return;
+          }
+        }
+
+        // Lock the dropdowns after first sub-category is added
+        reqType.disabled = true;
+        category.disabled = true;
+
+        const modelContainer = document.createElement("div");
+        modelContainer.className = "subcategory-container";
+        modelContainer.innerHTML = `
+        <div class="subcategory-header">
+            <h2>${selectedModel}</h2>
+            <button class="remove-button" onclick="removeSubCategory(this)">Remove</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="text" placeholder="Description"></td>
+                    <td><input type="number" class="amount" placeholder="Amount"></td>
+                    <td><input type="number" class="quantity" placeholder="Quantity"></td>
+                </tr>
+            </tbody>
+        </table>
+    `;
+        document.querySelector(".models").appendChild(modelContainer);
+
+        // Reset and hide the "Other" input field
+        otherSubCategoryInput.value = "";
+        otherSubCategoryInput.classList.add("hidden");
+      }
+      document
+        .getElementById("uploadButton")
+        .addEventListener("click", function () {
+          const fileInput = document.createElement("input");
+          fileInput.type = "file";
+
+          fileInput.click();
+
+          fileInput.addEventListener("change", function () {
+            const file = fileInput.files[0];
+            if (file) {
+              const attachmentItem = document.createElement("div");
+              attachmentItem.className = "attachment-item";
+
+              // Create preview element
+              const previewDiv = document.createElement("div");
+              previewDiv.className = "attachment-preview";
+
+              // Add appropriate icon or preview
+              if (file.type.startsWith("image/")) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                  const img = document.createElement("img");
+                  img.src = e.target.result;
+                  img.alt = file.name;
+                  previewDiv.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+              } else {
+                previewDiv.innerHTML = "📄"; // Document icon
+              }
+
+              // File info and remove button
+              attachmentItem.innerHTML = `
+                <div class="file-info">
+                    ${previewDiv.outerHTML}
+                    <span class="file-name">${file.name}</span>
+                </div>
+                <button onclick="this.parentElement.parentElement.remove()" 
+                            class="text-red-600 hover:text-red-700 mt-2">
+                        ✕ Remove
+                    </button>
+                <input type="hidden" name="attachments[]" value="${file.name}">
+            `;
+
+              // Add to attachments container
+              document
+                .getElementById("attachmentsContainer")
+                .appendChild(attachmentItem);
+              saveUploadedFile(file);
+            }
+          });
+        });
+      // Photo Capture Modal
+      document
+        .getElementById("photoButton")
+        .addEventListener("click", function () {
+          // Create modal overlay
+          const modal = document.createElement("div");
+          modal.className =
+            "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50";
+
+          // Camera container
+          const cameraContainer = document.createElement("div");
+          cameraContainer.className =
+            "bg-white rounded-lg p-6 w-full max-w-2xl";
+          cameraContainer.innerHTML = `
+        <h4 class="text-xl font-semibold mb-4">Take Photo</h4>
+        <div class="video-preview bg-black aspect-video"></div>
+        <div class="flex gap-2 mt-4 justify-end">
+            <button class="cancel-btn px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
+                Cancel
+            </button>
+            <button class="capture-btn px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                Capture
+            </button>
+        </div>
+    `;
+
+          modal.appendChild(cameraContainer);
+          document.body.appendChild(modal);
+
+          navigator.mediaDevices
+            .getUserMedia({ video: true })
+            .then(function (stream) {
+              const video = document.createElement("video");
+              video.className = "w-full h-full object-contain";
+              video.srcObject = stream;
+              video.play();
+
+              cameraContainer
+                .querySelector(".video-preview")
+                .appendChild(video);
+
+              // Capture handler
+              cameraContainer
+                .querySelector(".capture-btn")
+                .addEventListener("click", function () {
+                  const canvas = document.createElement("canvas");
+                  const context = canvas.getContext("2d");
+                  canvas.width = video.videoWidth;
+                  canvas.height = video.videoHeight;
+                  context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                  const photoDataUrl = canvas.toDataURL("image/png");
+
+                  // Create attachment item
+                  const attachmentItem = document.createElement("div");
+                  attachmentItem.className =
+                    "flex items-center gap-4 bg-gray-50 p-3 rounded mb-2";
+                  attachmentItem.innerHTML = `
+                <img src="${photoDataUrl}" class="w-32 h-32 object-cover rounded">
+                <div class="flex-1">
+                    <p class="font-medium">Captured Photo</p>
+                    <button onclick="this.parentElement.parentElement.remove()" 
+                            class="text-red-600 hover:text-red-700 mt-2">
+                        ✕ Remove
+                    </button>
+                </div>
+                <input type="hidden" name="attachments[]" value="${photoDataUrl}">
+            `;
+
+                  document
+                    .getElementById("attachmentsContainer")
+                    .appendChild(attachmentItem);
+
+                  // Cleanup
+                  stream.getTracks().forEach((track) => track.stop());
+                  modal.remove();
+                });
+
+              // Cancel handler
+              cameraContainer
+                .querySelector(".cancel-btn")
+                .addEventListener("click", function () {
+                  stream.getTracks().forEach((track) => track.stop());
+                  modal.remove();
+                });
+            })
+            .catch(function (error) {
+              console.error("Camera error:", error);
+              modal.remove();
+              alert("Could not access camera. Please check permissions.");
+            });
+        });
+
+      // Styled Reconciliation Editor
+      document
+        .getElementById("reconcileButton")
+        .addEventListener("click", function () {
+          // Create modal overlay
+          const modal = document.createElement("div");
+          modal.className =
+            "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50";
+
+          // Reconciliation container
+          const editor = document.createElement("div");
+          editor.className = "bg-white rounded-lg p-6 w-full max-w-3xl";
+          editor.innerHTML = `
+        <h3 class="text-xl font-semibold mb-4">Reconciliation Letter</h3>
+        <textarea 
+            class="w-full p-4 border rounded-lg mb-4 min-h-[300px] focus:ring-2 focus:ring-blue-500"
+            placeholder="Write your reconciliation letter here..."
+        ></textarea>
+        <div class="flex gap-2 justify-end">
+            <button class="cancel-btn px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600">
+                Cancel
+            </button>
+            <button class="save-btn px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                Save Letter
+            </button>
+        </div>
+    `;
+
+          modal.appendChild(editor);
+          document.body.appendChild(modal);
+
+          // Save handler
+          editor
+            .querySelector(".save-btn")
+            .addEventListener("click", function () {
+              const letterContent = editor
+                .querySelector("textarea")
+                .value.trim();
+              if (letterContent) {
+                const attachmentItem = document.createElement("div");
+                attachmentItem.className =
+                  "flex items-center gap-4 bg-gray-50 p-3 rounded mb-2";
+                attachmentItem.innerHTML = `
+                <div class="w-16 h-16 bg-purple-100 rounded flex items-center justify-center">
+                    📝
+                </div>
+                <div class="flex-1">
+                    <p class="font-medium">Reconciliation Letter</p>
+                    <p class="text-sm text-gray-600">${letterContent.substring(
+                      0,
+                      50
+                    )}...</p>
+                    <button onclick="this.parentElement.parentElement.remove()" 
+                            class="text-red-600 hover:text-red-700 mt-2">
+                        ✕ Remove
+                    </button>
+                </div>
+                <input type="hidden" name="reconciliation_letter" value="${encodeURIComponent(
+                  letterContent
+                )}">
+            `;
+
+                document
+                  .getElementById("attachmentsContainer")
+                  .appendChild(attachmentItem);
+                modal.remove();
+              } else {
+                alert("Please write something in the letter.");
+              }
+            });
+
+          // Cancel handler
+          editor
+            .querySelector(".cancel-btn")
+            .addEventListener("click", function () {
+              modal.remove();
+            });
+        });
+
+      /* // Add authentication check
+      document.addEventListener("DOMContentLoaded", function () {
+        if (!localStorage.getItem("authToken")) {
+          alert("Please sign in first");
+          window.location.href = "sign.html";
+        }
+      }); */
+      function createAttachmentElement(content, type) {
+        const div = document.createElement("div");
+        div.className =
+          "p-3 border rounded bg-gray-50 flex items-center justify-between";
+
+        if (type === "photo") {
+          div.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <img src="${content}" class="h-12 w-12 object-cover">
+                        <span>Photo</span>
+                    </div>
+                    <button onclick="this.parentElement.remove()" class="text-red-600 hover:text-red-700">✕</button>
+                `;
+        } else if (type === "file") {
+          div.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl"></span>
+                        <span>${content.name}</span>
+                    </div>
+                    <button onclick="this.parentElement.remove()" class="text-red-600 hover:text-red-700">✕</button>
+                `;
+        } else if (type === "reconciliation") {
+          div.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl"></span>
+                        <div>
+                            <p class="font-medium">Reconciliation Letter</p>
+                            <p class="text-sm text-gray-600">${content.substring(
+                              0,
+                              50
+                            )}...</p>
+                        </div>
+                    </div>
+                    <button onclick="this.parentElement.remove()" class="text-red-600 hover:text-red-700">✕</button>
+                `;
+        }
+        return div;
+      }
+      document.getElementById("proceedButton").style.display = "block";
+      function proceed() {
+        // Get the user's locale (this will return the language/country code like 'en-US', 'en-KE', etc.)
+        const userLocale = navigator.language || "en-US"; // Default to 'en-US' if locale is not found
+
+        // Get the currency code based on the user's locale
+        const currencyCode = getCurrencyCode(userLocale);
+
+        // Use the user's locale and their currency
+        const formatter = new Intl.NumberFormat(userLocale, {
+          style: "currency",
+          currency: currencyCode || "USD", // Default to 'USD' if currency code is empty
+        });
+
+        let total = 0;
+        let summaryHTML = `<h3>Summary</h3>
+        <p><strong>Request Type:</strong> ${
+          document.getElementById("requestType").value
+        }</p>
+        <p><strong>Category:</strong> ${
+          document.getElementById("category").value
+        }</p>`;
+
+        // Loop through all subcategories
+        document.querySelectorAll(".subcategory-container").forEach((box) => {
+          let name = box.querySelector("h2").innerText;
+          let desc = box.querySelector("input[type='text']").value;
+          let amount = parseFloat(box.querySelector(".amount").value) || 0;
+          let qty = parseInt(box.querySelector(".quantity").value) || 1;
+          let subtotal = amount * qty;
+          total += subtotal;
+
+          // Add each item's info to the summary HTML
+          summaryHTML += `
+            <div><strong>${name}</strong><br>
+            Description: ${desc}<br>
+            Amount: ${formatter.format(
+              amount
+            )} x Quantity: ${qty} = ${formatter.format(subtotal)}</div><hr>`;
+        });
+
+        // Display the total
+        summaryHTML += `<p class="total-display">Total Request: ${formatter.format(
+          total
+        )}</p>`;
+
+        // Show the summary and the proceed button
+        document.getElementById("summary").innerHTML = summaryHTML;
+        document.getElementById("summary").classList.remove("hidden");
+        document.getElementById("sendReceiptButton").style.display = "block";
+      }
+
+      // This function returns the currency code based on the user's locale
+      function getCurrencyCode(locale) {
+        // Example of mapping some locales to their respective currency codes
+        const currencyMap = {
+          "en-US": "USD", // United States Dollar (USA)
+          "en-KE": "KES", // Kenyan Shilling (Kenya)
+          "en-TZ": "TZS", // Tanzanian Shilling (Tanzania)
+          "en-UG": "UGX", // Ugandan Shilling (Uganda)
+          "en-ZM": "ZMW", // Zambian Kwacha (Zambia)
+          "en-GH": "GHS", // Ghanaian Cedi (Ghana)
+          // Add more mappings as necessary
+        };
+
+        // Default to USD if locale is not recognized
+        return currencyMap[locale] || "USD";
+      }
+
+      async function sendAndDownloadReceipt() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        // Loading the logo image asynchronously
+        const logo = new Image();
+        logo.src =
+          "https://familyhumanitarian.org/wp-content/uploads/2020/04/logo-wide-blue.png";
+
+        await new Promise((res) => {
+          logo.onload = res; // Ensure the logo is fully loaded before proceeding
+        });
+
+        // Add the logo to the PDF
+        doc.addImage(logo, "PNG", 10, 10, 60, 20);
+
+        // Set the font for the document title
+        doc.setFontSize(16);
+        doc.text("Family Humanitarian Expense Request", 10, 40);
+
+        // Get the summary text content from the page
+        const summaryText = document.getElementById("summary").innerText;
+
+        // Set up y-coordinate for text placement
+        let y = 50;
+
+        // Split the summary into lines and add each line to the PDF
+        summaryText.split("\n").forEach((line) => {
+          doc.text(line, 10, y);
+          y += 7; // Adjust vertical position for the next line
+          if (y > 280) {
+            // If we are nearing the end of the page
+            doc.addPage(); // Add a new page
+            y = 20; // Reset the y-position to the top of the new page
+          }
+        });
+
+        // Trigger the download of the PDF
+        doc.save("Expense_Request.pdf");
+      }
+      // Function to handle user logout
+      function logoutUser() {
+        // Clear user session or data (example for localStorage)
+        localStorage.clear(); // Adjust based on your storage method (session, cookies, etc.)
+
+        // Redirect to a login or home page
+        alert("You have successfully logged out.");
+        window.location.href = "sign.html"; // Redirect to the sign-in page
+      }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  </body>
+</html>

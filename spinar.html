@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send and Download Receipt</title>
+  <link rel="stylesheet" href="styles.css"> <!-- Optional if using an external stylesheet -->
+  <style>
+    /* Spinner CSS */
+    #spinner {
+      display: none;
+      border: 4px solid #f3f3f3; /* Light gray background */
+      border-top: 4px solid #3498db; /* Blue color for the spinner */
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 2s linear infinite;
+      margin: 20px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Optional: Style the button */
+    #sendReceiptButton {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    /* Optional: Style the feedback message */
+    #feedback {
+      font-size: 18px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Send and Download Receipt Button -->
+  <button id="sendReceiptButton" onclick="sendAndDownloadReceipt()">Send and Download Receipt</button>
+
+  <!-- Spinner (Initially hidden) -->
+  <div id="spinner"></div>
+
+  <!-- Feedback Message (Initially hidden) -->
+  <div id="feedback" style="display: none;"></div>
+
+  <script>
+    function sendAndDownloadReceipt() {
+      // Show spinner and hide the button
+      document.getElementById("sendReceiptButton").style.display = "none";
+      document.getElementById("spinner").style.display = "block"; // Show the spinner
+  
+      // Simulate sending data (you can replace this with a real API call or data sending process)
+      setTimeout(function() {
+        // Simulate success or failure (you can replace this with actual success or failure logic)
+        const isSuccess = Math.random() > 0.5; // Random success or failure
+  
+        // Hide spinner and show feedback message
+        document.getElementById("spinner").style.display = "none";
+        document.getElementById("sendReceiptButton").style.display = "block"; // Show button again
+        
+        const feedbackMessage = isSuccess ? "Request successfully sent" : "Request failed";
+        document.getElementById("feedback").innerText = feedbackMessage;
+        document.getElementById("feedback").style.display = "block"; // Show feedback message
+  
+        // Trigger receipt download if success (you can replace this with real download logic)
+        if (isSuccess) {
+          downloadReceipt(); // Call the function to download the receipt
+        }
+  
+        // Refresh the page after a short delay to allow the feedback to be visible
+        setTimeout(function() {
+          location.reload(); // Refresh the page
+        }, 2000); // Delay refresh by 2 seconds for feedback visibility
+      }, 3000); // Simulate a 3-second delay for sending data
+    }
+  
+    function downloadReceipt() {
+      // This function simulates downloading the receipt
+      // Create a dummy receipt as an example
+      const receiptContent = "Receipt Data: \nItem 1: $10\nItem 2: $20\nTotal: $30";
+      
+      // Create a Blob from the receipt content
+      const blob = new Blob([receiptContent], { type: "text/plain" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "receipt.txt"; // Filename for the download
+      
+      // Trigger download
+      link.click(); // This will download the file
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,23 @@
+/* Remove button styling */
+.remove-attachment {
+  @apply text-red-600 hover:text-red-700 bg-white rounded-full p-1 transition-all;
+}
+
+/* Camera modal styling */
+.camera-modal {
+  @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50;
+}
+
+.camera-content {
+  @apply bg-white p-6 rounded-lg w-full max-w-2xl;
+}
+
+/* Reconciliation editor styling */
+.reconcile-editor {
+  @apply border rounded-lg p-4 bg-white shadow-lg;
+}
+
+.reconcile-textarea {
+  @apply w-full p-3 border rounded mb-4 focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+  min-height: 200px;
+}
