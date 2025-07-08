@@ -220,6 +220,7 @@ function createCurrencyFormatter() {
             alert("Please enter a sub-category name.");
             return;
         }
+        selectedModel = `Other: ${selectedModel}`; // Prepend "Other: " to distinguish it
     }
 
     // Lock the dropdowns after first sub-category is added
@@ -239,23 +240,52 @@ function createCurrencyFormatter() {
                     <th>Description</th>
                     <th>Amount</th>
                     <th>Quantity</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td><input type="text" placeholder="Description"></td>
-                    <td><input type="number" class="amount" placeholder="Amount"></td>
-                    <td><input type="number" class="quantity" placeholder="Quantity"></td>
+                    <td><input type="number" class="amount" placeholder="Amount" oninput="updateTotals()"></td>
+                    <td><input type="number" class="quantity" placeholder="Quantity" oninput="updateTotals()"></td>
+                    <td><button class="remove-item-button" onclick="removeItem(this)">Remove</button></td>
                 </tr>
             </tbody>
         </table>
+        <button class="add-item-button" onclick="addItem(this)">Add Item</button>
     `;
     document.querySelector('.models').appendChild(modelContainer);
 
     // Reset and hide the "Other" input field
     otherSubCategoryInput.value = "";
     otherSubCategoryInput.classList.add("hidden");
+    subCategory.value = "None"; // Reset dropdown
 }
+
+function addItem(button) {
+    const tbody = button.previousElementSibling.querySelector('tbody');
+    const newRow = document.createElement('tr');
+    newRow.innerHTML = `
+        <td><input type="text" placeholder="Description"></td>
+        <td><input type="number" class="amount" placeholder="Amount" oninput="updateTotals()"></td>
+        <td><input type="number" class="quantity" placeholder="Quantity" oninput="updateTotals()"></td>
+        <td><button class="remove-item-button" onclick="removeItem(this)">Remove</button></td>
+    `;
+    tbody.appendChild(newRow);
+}
+
+function removeItem(button) {
+    const row = button.closest('tr');
+    const tbody = row.parentElement;
+    if (tbody.rows.length > 1) {
+        row.remove();
+    } else {
+        alert("You must have at least one item in a sub-category.");
+    }
+    updateTotals();
+}
+
+
 //UploadButton event listener:
 document.getElementById("uploadButton").addEventListener("click", async function () {
   const fileInput = document.createElement("input");
@@ -556,15 +586,32 @@ document.getElementById("reconcileButton").addEventListener("click", function ()
       }
     function removeSubCategory(button) {
         button.closest('.subcategory-container').remove();
+        updateTotals();
     }
+
+    function updateTotals() {
+        const formatter = createCurrencyFormatter();
+        let total = 0;
+        document.querySelectorAll(".subcategory-container").forEach(box => {
+            box.querySelectorAll("tbody tr").forEach(row => {
+                const amount = parseFloat(row.querySelector(".amount").value) || 0;
+                const qty = parseInt(row.querySelector(".quantity").value) || 1;
+                total += amount * qty;
+            });
+        });
+
+        const transactionCost = parseFloat(document.getElementById("transactionCost").value) || 0;
+        const totalRequest = total + transactionCost;
+
+        document.getElementById("totalRequest").value = formatter.format(totalRequest);
+    }
+
+
     document.getElementById("proceedButton").style.display = "block";
     function proceed() {
     // Create formatter first, before using it
     const formatter = createCurrencyFormatter();
     
-    // Get the user's locale
-    const userLocale = navigator.language || 'en-US';
-
     let total = 0;
     let summaryHTML = `<h3>Summary</h3>
         <p><strong>Request Type:</strong> ${document.getElementById("requestType").value}</p>
@@ -573,17 +620,24 @@ document.getElementById("reconcileButton").addEventListener("click", function ()
     // Loop through all subcategories
     document.querySelectorAll(".subcategory-container").forEach(box => {
         let name = box.querySelector("h2").innerText;
-        let desc = box.querySelector("input[type='text']").value;
-        let amount = parseFloat(box.querySelector(".amount").value) || 0;
-        let qty = parseInt(box.querySelector(".quantity").value) || 1;
-        let subtotal = amount * qty;
-        total += subtotal;
+        summaryHTML += `<div class="summary-subcategory"><h4>${name}</h4>`;
+        
+        let subCategoryTotal = 0;
+        box.querySelectorAll("tbody tr").forEach(row => {
+            let desc = row.querySelector("input[type='text']").value;
+            let amount = parseFloat(row.querySelector(".amount").value) || 0;
+            let qty = parseInt(row.querySelector(".quantity").value) || 1;
+            let subtotal = amount * qty;
+            subCategoryTotal += subtotal;
 
-        // Now formatter is defined before it's used here
-        summaryHTML += `
-            <div><strong>${name}</strong><br>
-            Description: ${desc}<br>
-            Amount: ${formatter.format(amount)} x Quantity: ${qty} = ${formatter.format(subtotal)}</div><hr>`;
+            summaryHTML += `
+                <div class="summary-item">
+                    <span>${desc}</span>
+                    <span>${formatter.format(amount)} x ${qty} = ${formatter.format(subtotal)}</span>
+                </div>`;
+        });
+        total += subCategoryTotal;
+        summaryHTML += `</div>`;
     });
 
     // Get transaction cost (if any)
@@ -594,6 +648,8 @@ document.getElementById("reconcileButton").addEventListener("click", function ()
 
     // Get the currency code for later use
     const currencyCode = getUserCurrency();
+    document.getElementById("currencyCode").value = currencyCode;
+
     // If transaction cost exists, add it to the summary
     if (transactionCost > 0) {
         summaryHTML += `<p>Transaction Cost: ${formatter.format(transactionCost)}</p>`;
@@ -601,15 +657,9 @@ document.getElementById("reconcileButton").addEventListener("click", function ()
 
     // Display the total
     summaryHTML += `<p class="total-display">Total Amount: ${formatter.format(total)}</p>`;
-    if (transactionCost > 0) {
-        summaryHTML += `<p class="total-display">Total Request: ${formatter.format(totalRequest)}</p>`;
-    } else {
-        summaryHTML += `<p class="total-display">Total Request: ${formatter.format(total)}</p>`;
-    }
-
-    // Update the totalRequest input field and store currency information
-    document.getElementById("totalRequest").value = totalRequest;
-    document.getElementById("currencyCode").value = currencyCode; // Add a hidden field for currency
+    summaryHTML += `<p class="total-display">Total Request: ${formatter.format(totalRequest)}</p>`;
+    
+    document.getElementById("totalRequest").value = formatter.format(totalRequest);
 
     // Show the summary and the proceed button
     document.getElementById("summary").innerHTML = summaryHTML;
@@ -620,7 +670,6 @@ document.getElementById("reconcileButton").addEventListener("click", function ()
 async function sendAndDownloadReceipt() {
     // Show spinner and hide button
     const sendBtn = document.getElementById("sendReceiptButton");
-    const spinner = document.getElementById("spinner");
     const feedback = document.getElementById("feedback");
     sendBtn.disabled = true;
     sendBtn.innerHTML = `<span class="spinner"></span> Submitting...`;
@@ -640,49 +689,60 @@ async function sendAndDownloadReceipt() {
     const formData = {
         requestType: document.getElementById("requestType").value,
         category: document.getElementById("category").value,
-        subCategory: document.getElementById("subCategory").value,
         transactionCost: parseFloat(document.getElementById("transactionCost").value) || 0,
-        currencyCode: currencyCode, // Include currency code in form data
-        expenseItems: []
+        currencyCode: currencyCode,
+        subCategories: [] // This will hold our grouped data
     };
 
-    // Collect expense items from subcategories
+    // Collect subcategories and their expense items
     document.querySelectorAll('.subcategory-container').forEach(container => {
-        const inputs = container.querySelectorAll('input');
-        formData.expenseItems.push({
-            description: inputs[0].value,
-            amount: parseFloat(inputs[1].value),
-            quantity: parseInt(inputs[2].value)
+        const subCategoryName = container.querySelector('h2').innerText;
+        const items = [];
+        container.querySelectorAll('tbody tr').forEach(row => {
+            const inputs = row.querySelectorAll('input');
+            const description = inputs[0].value;
+            const amount = parseFloat(inputs[1].value);
+            const quantity = parseInt(inputs[2].value);
+
+            // Only add item if it has a description and valid numbers
+            if (description && !isNaN(amount) && amount > 0 && !isNaN(quantity) && quantity > 0) {
+                 items.push({
+                    description: description,
+                    amount: amount,
+                    quantity: quantity
+                });
+            }
         });
+
+        if (items.length > 0) {
+            formData.subCategories.push({
+                name: subCategoryName,
+                items: items
+            });
+        }
     });
 
-    if (formData.expenseItems.length === 0) {
-        alert("Please add at least one expense item");
+    if (formData.subCategories.length === 0) {
+        alert("Please add at least one sub-category with valid expense items.");
         sendBtn.disabled = false;
         sendBtn.innerHTML = "Submit Request";
         return;
     }
 
-    // Calculate totals
-    const totalAmount = formData.expenseItems.reduce((sum, item) => sum + (item.amount * item.quantity), 0);
+    // Calculate totals from the structured data
+    const totalAmount = formData.subCategories.reduce((sum, subCat) => {
+        return sum + subCat.items.reduce((subSum, item) => subSum + (item.amount * item.quantity), 0);
+    }, 0);
     const totalRequest = totalAmount + formData.transactionCost;
     
-    // Include these in the form data
-    formData.totalAmount = totalAmount;
-    formData.totalRequest = totalRequest;
     // Process attachments
     formData.attachments = [];
-    
     document.querySelectorAll('[name="attachments[]"]').forEach(input => {
         if (input.value) {
-            const type = input.dataset.type;
-            const fileName = input.dataset.filename;
-            const content = input.value;
-
             formData.attachments.push({
-                type: type,
-                fileName: fileName,
-                content: content
+                type: input.dataset.type,
+                fileName: input.dataset.filename,
+                content: input.value
             });
         }
     });
@@ -698,8 +758,7 @@ async function sendAndDownloadReceipt() {
             body: JSON.stringify({
                 requestType: formData.requestType,
                 category: formData.category,
-                subCategory: formData.subCategory,
-                expenseItems: formData.expenseItems,
+                subCategories: formData.subCategories, // Send the new structured data
                 transactionCost: formData.transactionCost,
                 attachments: formData.attachments
             })
@@ -710,7 +769,6 @@ async function sendAndDownloadReceipt() {
         const data = await response.json();
         
         // Generate and download PDF form
-        const receiptContent = generateReceiptContent(user, formData, totalAmount, totalRequest);
         downloadReceipt(user, formData, totalAmount, totalRequest);
         
         feedback.style.color = "green";
@@ -730,107 +788,55 @@ async function sendAndDownloadReceipt() {
     }
 }
 
-function generateReceiptContent(user, formData, totalAmount, totalRequest) {
-    return `
-        FUND REQUEST RECEIPT
-        ----------------------------
-        User Information:
-        Name: ${user.name}
-        Email: ${user.email}
-        Country: ${user.country}
-        
-        Request Details:
-        Type: ${formData.requestType}
-        Category: ${formData.category}
-        Sub-category: ${formData.subCategory}
-        
-        Expense Items:
-        ${formData.expenseItems.map((item, index) => `
-        Item ${index + 1}:
-          Description: ${item.description}
-          Amount: ${item.amount}
-          Quantity: ${item.quantity}
-          Subtotal: ${item.amount * item.quantity}
-        `).join('')}
-        
-        ----------------------------
-        Total Amount: ${totalAmount}
-        Transaction Cost: ${formData.transactionCost}
-        Total Request: ${totalRequest}
-        
-        Date: ${new Date().toLocaleString()}
-        Status: Submitted
-    `;
-}
 
 function downloadReceipt(user, formData, totalAmount, totalRequest) {
-    // Create a new jsPDF instance
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     
-    // Current date for submission
-    const currentDate = new Date();
-    const dateString = currentDate.toLocaleDateString();
+    const backgroundLogo = new Image();
+    backgroundLogo.src = 'assets/images/receiptlogo.png'; // Path to your logo
+
+    backgroundLogo.onload = () => {
+        generatePdf();
+    };
+
+    backgroundLogo.onerror = () => {
+        console.error("Failed to load background logo. Proceeding without it.");
+        generatePdf(); // Proceed even if the logo fails to load
+    };
     
-    // Add top logo
-    const topLogoImg = new Image();
-    topLogoImg.src = 'assets/images/logo.png'; // Your top logo path
-    
-    // Add bottom logo (different from top)
-    const bottomLogoImg = new Image();
-    bottomLogoImg.src = 'assets/images/logo.png'; 
-    // Counter to track loaded images
-    let loadedImages = 0;
-    const totalImages = 2;
-    
-    // Function to continue when all images are loaded
-    function continueWithPdf() {
-        loadedImages++;
-        if (loadedImages === totalImages) {
-            generatePdf();
-        }
-    }
-    
-    // Error handling for images
-    function handleImageError(imgType) {
-        console.error(`Failed to load ${imgType} logo`);
-        loadedImages++;
-        if (loadedImages === totalImages) {
-            generatePdf();
-        }
-    }
-    
-    // Set up image load and error handlers
-    topLogoImg.onload = continueWithPdf;
-    topLogoImg.onerror = () => handleImageError('top');
-    
-    bottomLogoImg.onload = continueWithPdf;
-    bottomLogoImg.onerror = () => handleImageError('bottom');
-    
-    // Main function to generate the PDF
     function generatePdf() {
-        // Add top logo with proper aspect ratio and larger size
-        if (topLogoImg.complete && topLogoImg.naturalWidth !== 0) {
-            // Calculate aspect ratio to prevent stretching
-            const imgWidth = 45; // Increased from 30 to 45
-            const imgHeight = (topLogoImg.height / topLogoImg.width) * imgWidth;
+        const pageCount = doc.internal.getNumberOfPages();
+
+        // Add background logo to all pages
+        for (let i = 1; i <= pageCount; i++) {
+            doc.setPage(i);
             
-            // Position closer to title by moving it right
-            doc.addImage(topLogoImg, 'PNG', 25, 10, imgWidth, imgHeight);
+            // Add watermark
+            if (backgroundLogo.complete && backgroundLogo.naturalWidth !== 0) {
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+                // Set transparency
+                doc.setGState(new doc.GState({opacity: 0.1}));
+                // Add the image, centered and covering the page
+                doc.addImage(backgroundLogo, 'PNG', 40, 60, pageWidth - 80, pageHeight - 120);
+                // Reset transparency
+                doc.setGState(new doc.GState({opacity: 1}));
+            }
         }
-        
-        // Add title - centered and positioned for better alignment with logo
+
+        const currentDate = new Date();
+        const dateString = currentDate.toLocaleDateString();
+
         doc.setFontSize(18);
         doc.setFont('helvetica', 'bold');
-        doc.text('FH-EXPERIENCE', 100, 15, { align: 'center' });
-        doc.text('FUND REQUEST FORM', 100, 25, { align: 'center' });
+        doc.text('FH-EXPERIENCE', 105, 20, { align: 'center' });
+        doc.text('FUND REQUEST FORM', 105, 30, { align: 'center' });
         
-        // Add date
         doc.setFontSize(10);
         doc.setFont('helvetica', 'normal');
         doc.text(`Date: ${dateString}`, 195, 25, { align: 'right' });
         
-        // Add user information
         doc.setFontSize(12);
         doc.setFont('helvetica', 'bold');
         doc.text('Applicant Details:', 15, 50);
@@ -839,37 +845,39 @@ function downloadReceipt(user, formData, totalAmount, totalRequest) {
         doc.text(`Email: ${user.email}`, 15, 70);
         doc.text(`Country: ${user.country}`, 15, 80);
         
-        // Add request details
         doc.setFont('helvetica', 'bold');
         doc.text('Request Details:', 15, 100);
         doc.setFont('helvetica', 'normal');
         doc.text(`Type: ${formData.requestType}`, 15, 110);
         doc.text(`Category: ${formData.category}`, 15, 120);
-        doc.text(`Sub-category: ${formData.subCategory}`, 15, 130);
         
-        // Add expense items table
         doc.setFont('helvetica', 'bold');
-        doc.text('Expense Items:', 15, 150);
+        doc.text('Expense Items:', 15, 140);
         
-        // Table headers and data
-        const headers = [['Description', 'Amount', 'Quantity', 'Subtotal']];
-        const data = formData.expenseItems.map(item => [
-            item.description,
-            item.amount.toFixed(2),
-            item.quantity,
-            (item.amount * item.quantity).toFixed(2)
-        ]);
+        const headers = [['Sub-category', 'Description', 'Amount', 'Quantity', 'Subtotal']];
+        const data = [];
+        formData.subCategories.forEach(subCat => {
+            if (subCat.items.length > 0) {
+                subCat.items.forEach((item, index) => {
+                    data.push([
+                        index === 0 ? subCat.name : '', 
+                        item.description,
+                        item.amount.toFixed(2),
+                        item.quantity,
+                        (item.amount * item.quantity).toFixed(2)
+                    ]);
+                });
+            }
+        });
         
-        // Generate table
         doc.autoTable({
-            startY: 155,
+            startY: 145,
             head: headers,
             body: data,
             theme: 'grid',
             headStyles: { fillColor: [66, 133, 244] }
         });
         
-        // Add totals
         const finalY = doc.previousAutoTable.finalY + 10;
         doc.text('Transaction Cost:', 130, finalY);
         doc.text(`${formData.transactionCost.toFixed(2)}`, 180, finalY, { align: 'right' });
@@ -881,42 +889,15 @@ function downloadReceipt(user, formData, totalAmount, totalRequest) {
         doc.text('Total Request:', 130, finalY + 20);
         doc.text(`${totalRequest.toFixed(2)}`, 180, finalY + 20, { align: 'right' });
         
-        // Add signature fields with "Submitted" status
-        doc.setFont('helvetica', 'bold');
-        doc.text('Approvals:', 15, finalY + 40);
-        
-        doc.setFont('helvetica', 'normal');
-        doc.text('Colleague Approval:', 15, finalY + 50);
-        doc.text('SUBMITTED', 15, finalY + 60);
-        doc.line(15, finalY + 65, 100, finalY + 65);
-        doc.text('Date:', 110, finalY + 50);
-        doc.text(`${dateString}`, 110, finalY + 60);
-        doc.line(110, finalY + 65, 180, finalY + 65);
-        
-        doc.text('Boss Approval:', 15, finalY + 80);
-        doc.text('SUBMITTED', 15, finalY + 90);
-        doc.line(15, finalY + 95, 100, finalY + 95);
-        doc.text('Date:', 110, finalY + 80);
-        doc.text(`${dateString}`, 110, finalY + 90);
-        doc.line(110, finalY + 95, 180, finalY + 95);
-        
-        // Add footer text first
+        // Footer text
         doc.setFontSize(8);
-        doc.text('Form generated by FHE Funds Management System', 105, 275, { align: 'center' });
-        doc.text('This Form is Electronically Generated-no Signature Required', 105, 280, { align: 'center' });
+        doc.text('Form generated by FHE Funds Management System.', 105, 285, { align: 'center' });
+        doc.text('This Form is Electronically Generated - No Signature Required.', 105, 290, { align: 'center' });
         
-        // Add bottom logo (different from top) BELOW the footer text
-        if (bottomLogoImg.complete && bottomLogoImg.naturalWidth !== 0) {
-            // Calculate aspect ratio for bottom logo
-            const bottomWidth = 35;
-            const bottomHeight = (bottomLogoImg.height / bottomLogoImg.width) * bottomWidth;
-            doc.addImage(bottomLogoImg, 'PNG', 85, 280, bottomWidth, bottomHeight);
-        }
-        
-        // Save the PDF
         doc.save(`fund_request_form_${Date.now()}.pdf`);
     }
 }
+
 </script>
 <!-- Footer -->
 <footer class="main-footer">
