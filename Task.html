@@ -21,16 +21,20 @@
 header {
   background: linear-gradient(90deg, #3e64ff, #5edfff);
   color: white;
-  padding: 30px;
+  height: 0; /* Fixed height */
   text-align: center;
   position: relative;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Ensures nothing bleeds outside */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
 }
-header img {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  width: 50px;
-}
+
+
+
 .container {
   padding: 20px;
   max-width: 1100px;
@@ -470,7 +474,6 @@ body {
   border: 2px solid #3e64ff;
   box-sizing: border-box;
 }
-
 .calendar-day span {
   position: absolute;
   top: 5px;
@@ -489,44 +492,18 @@ body {
   text-decoration: none; /* ← this removes underline */
   display: inline-block;
 }
-
-
-
   </style>
 </head>
 <body>
-
- 
-
-  </style>
-</head>
-<body>
-
   <section class="hero">
     <div class="text">
-      <h1>📅Task Management Tools <span>2025</span></h1>
-      <p>Manage your tasks efficiently in the most effective way.</p>
-      <ul>
-        <li>Efficient Task Assignment with Project Management Tools</li>
-        <li>Real-Time Progress Tracking</li>
-        <li>Adjust Task</li>
-
-      </ul>
-
-      <p style="opacity: 0.6;">The Fh260 | KelView | </p>
-      <p style="margin-top: 20px;">🕒 Last Updated: Today</p>
-    </div>
-    <div class="image">
-      <img src="https://cdn-icons-png.flaticon.com/512/4380/4380456.png" alt="Task Graphic" width="100%">
-    </div>
+      <h1>📅Task Management Tool </span></h1>
   </section>
-
   <section class="features">
     <div class="tool-card">
       
       <div class="tool-info">
         <h2>Task <span class="rating">100%</span></h2>
-        
         <ul>
           <li>✔️Tracking Title</li>
           <li>✔️Description</li>
@@ -536,12 +513,9 @@ body {
       </div>
      <a href="Task_task.html" class="visit-btn">Add Task »</a>
     </div>
-
     <div class="tool-card">
-     
       <div class="tool-info">
         <h2>Appointment <span class="rating">100%</span></h2>
-       
         <ul>
           <li>✔️Tracking Name/Place</li>
           <li>✔️Tracking Time</li>
@@ -615,9 +589,7 @@ const calendarDays = document.getElementById("calendarDays");
 const monthYear = document.getElementById("monthYear");
 const prevBtn = document.getElementById("prevMonth");
 const nextBtn = document.getElementById("nextMonth");
-
 let current = new Date();
-
 function renderCalendar(date) {
   const year = date.getFullYear();
   const month = date.getMonth();
@@ -632,10 +604,8 @@ function renderCalendar(date) {
     month: "long",
     year: "numeric",
   });
-
   // Clear previous days
   calendarDays.innerHTML = "";
-
   // Previous month's ending days
   for (let i = firstDayIndex; i > 0; i--) {
     const day = document.createElement("div");
@@ -643,7 +613,6 @@ function renderCalendar(date) {
     day.textContent = prevLastDate - i + 1;
     calendarDays.appendChild(day);
   }
-
   // Current month's days
   for (let i = 1; i <= lastDate; i++) {
     const day = document.createElement("div");
@@ -658,7 +627,6 @@ function renderCalendar(date) {
     day.textContent = i;
     calendarDays.appendChild(day);
   }
-
   // Fill next month's beginning days
   const totalDisplayed = firstDayIndex + lastDate;
   const fill = (7 - (totalDisplayed % 7)) % 7;
@@ -669,23 +637,18 @@ function renderCalendar(date) {
     calendarDays.appendChild(day);
   }
 }
-
 // Navigation
 prevBtn.addEventListener("click", () => {
   current.setMonth(current.getMonth() - 1);
   renderCalendar(current);
 });
-
 nextBtn.addEventListener("click", () => {
   current.setMonth(current.getMonth() + 1);
   renderCalendar(current);
 });
-
 // Initial load
 renderCalendar(current);
 </script>
-
-
     </div><!-- Footer Banner -->
 <div class="footer-banner">
   <img src="https://cdn.worldvectorlogo.com/logos/monday-1.svg" alt="Monday.com Logo" class="footer-logo">
@@ -695,8 +658,5 @@ renderCalendar(current);
   </div>
   <a href="home.html" class="visit-btn">Visit home page »</a>
 </div>
-
-
-
 </body>
 </html>

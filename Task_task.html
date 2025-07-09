@@ -123,9 +123,48 @@
           <option>High</option>
         </select>
 
+         <label>Reminder</label>
+        <select name="reminder" required>
+          <option value="">Select Reminder</option>
+          <option value="30min">30 Minutes</option>
+          <option value="1hr">1 Hour</option>
+          <option value="24hr">24 Hours</option>
+          <option value="3days">3 Days</option>
+          <option value="1week">1 Week</option>
+          <option value="1month">1 Month</option>
+          <option value="3months">3 Months</option>
+          <option value="6months">6 Months</option>
+          <option value="1year">1 Year</option>
+          <option value="3years">3 Years</option>
+        </select>
+
         <button type="submit">Add Task</button>
       </form>
     </div>
   </div>
+
+  <script>
+    document.getElementById("appointmentForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const form = this;
+
+      emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
+        name: form.name.value,
+        time: form.time.value,
+        reminder: form.reminder.value,
+        to_email: "kelvinekiganga999@gmail.com"
+      })
+      .then(function () {
+        alert("✅ Appointment successfully sent!");
+        window.location.href = "Task.html";
+      }, function (error) {
+        alert("❌ Failed to send appointment.");
+        console.error("EmailJS Error:", error);
+        window.location.href = "Task.html";
+      });
+    });
+  </script>
 </body>
 </html>
+
