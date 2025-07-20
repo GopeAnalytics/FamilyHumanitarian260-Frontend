@@ -1,170 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Task Form</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:title" content="Fh260-Africa" />
+    <meta
+      property="og:description"
+      content="Digitalising Fh260-Africa Operations"
+    />
+    <meta property="og:image" content="https://fh260.org/og-fhlogo.jpeg" />
+    <meta property="og:url" content="https://fh260.org" />
+    <title>Fh260 - Online Request</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <style>
+ 
+    </style>
+  </head>
+  <body>
+ 
+    
+    <footer>
+      <p>&copy; 2025 Fh260. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="sign.html">Sign In</a> | <a href="index.html">Back Page</a> |
+        <a href="admin.html">Admin</a>
+      </div>
+    </footer>
 
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f4f7fc;
-      color: #333;
-      padding: 40px 20px;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-    }
+    <script>
+      // Navigation functionality
+      const hamburger = document.getElementById('hamburger');
+      const navMenu = document.getElementById('nav-menu');
+      const closeNav = document.getElementById('close-nav');
 
-    .container {
-      width: 100%;
-      max-width: 600px;
-    }
-
-    .task-form {
-      background: #fff;
-      padding: 30px 25px;
-      border-radius: 12px;
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
-      border-left: 6px solid #3e64ff;
-    }
-
-    .task-form h2 {
-      margin-bottom: 20px;
-      color: #3e64ff;
-      font-size: 1.5rem;
-    }
-
-    .task-form form {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .task-form label {
-      margin-top: 10px;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-
-    .task-form input[type="text"],
-    .task-form input[type="date"],
-    .task-form textarea,
-    .task-form select {
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 1rem;
-      background: #fefefe;
-      transition: border-color 0.3s;
-    }
-
-    .task-form input:focus,
-    .task-form textarea:focus,
-    .task-form select:focus {
-      border-color: #3e64ff;
-      outline: none;
-    }
-
-    .task-form textarea {
-      resize: vertical;
-    }
-
-    .task-form button {
-      margin-top: 20px;
-      background: #3e64ff;
-      color: white;
-      padding: 14px;
-      font-size: 1rem;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    .task-form button:hover {
-      background: #3452cc;
-    }
-
-    @media (max-width: 600px) {
-      body {
-        padding: 20px 10px;
-      }
-
-      .task-form {
-        padding: 25px 15px;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="task-form">
-      <h2>➕ Add a New Task</h2>
-      <form>
-        <label>Task Title</label>
-        <input type="text" placeholder="Enter task name" required />
-
-        <label>Description</label>
-        <textarea rows="3" placeholder="What is this task about?" required></textarea>
-
-        <label>Due Date</label>
-        <input type="date" required />
-
-        <label>Priority</label>
-        <select>
-          <option>Low</option>
-          <option>Medium</option>
-          <option>High</option>
-        </select>
-
-         <label>Reminder</label>
-        <select name="reminder" required>
-          <option value="">Select Reminder</option>
-          <option value="30min">30 Minutes</option>
-          <option value="1hr">1 Hour</option>
-          <option value="24hr">24 Hours</option>
-          <option value="3days">3 Days</option>
-          <option value="1week">1 Week</option>
-          <option value="1month">1 Month</option>
-          <option value="3months">3 Months</option>
-          <option value="6months">6 Months</option>
-          <option value="1year">1 Year</option>
-          <option value="3years">3 Years</option>
-        </select>
-
-        <button type="submit">Add Task</button>
-      </form>
-    </div>
-  </div>
-
-  <script>
-    document.getElementById("appointmentForm").addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      const form = this;
-
-      emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
-        name: form.name.value,
-        time: form.time.value,
-        reminder: form.reminder.value,
-        to_email: "kelvinekiganga999@gmail.com"
-      })
-      .then(function () {
-        alert("✅ Appointment successfully sent!");
-        window.location.href = "Task.html";
-      }, function (error) {
-        alert("❌ Failed to send appointment.");
-        console.error("EmailJS Error:", error);
-        window.location.href = "Task.html";
+      hamburger.addEventListener('click', () => {
+        navMenu.classList.add('nav-active');
       });
-    });
-  </script>
-</body>
-</html>
 
+      closeNav.addEventListener('click', () => {
+        navMenu.classList.remove('nav-active');
+      });
+
+      // Profile dropdown functionality - Desktop
+      const userIcon = document.getElementById('userIcon');
+      const profileDropdown = document.getElementById('profileDropdown');
+
+      if (userIcon && profileDropdown) {
+        userIcon.addEventListener('click', (e) => {
+          e.stopPropagation();
+          profileDropdown.style.display = profileDropdown.style.display === 'block' ? 'none' : 'block';
+        });
+      }
+
+      // Profile dropdown functionality - Mobile
+      const userIconMobile = document.getElementById('userIconMobile');
+      const profileDropdownMobile = document.getElementById('profileDropdownMobile');
+
+      if (userIconMobile && profileDropdownMobile) {
+        userIconMobile.addEventListener('click', (e) => {
+          e.stopPropagation();
+          profileDropdownMobile.style.display = profileDropdownMobile.style.display === 'block' ? 'none' : 'block';
+        });
+      }

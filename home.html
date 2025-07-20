@@ -1,140 +1,263 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta property="og:title" content="Fh260-Africa" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:title" content="Fh260-Africa" />
     <meta
       property="og:description"
       content="Digitalising Fh260-Africa Operations"
     />
-    <meta property="og:image" content="https://fh260.org/og-fhlogo.jpeg" /> 
-    <meta property="og:url" content="https://fh260.org" /> 
-  <title>fh260 - Online Request</title>
-   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" /> 
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" /> 
-   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" /> 
-   <link rel="manifest" href="/site.webmanifest" /> 
-  <link rel="stylesheet" href="css/styles.css">
-</head>
-<body><body>
-  <header>
-      <h1>fh260</h1>
-      <p>This portal will help you Request, Upload and Reconcile funds being sent to you.</p>
-  </header>
-      <div class="top-nav">
-        <div class="log"></div>
-        <nav>
-          <a href="home.html">Home</a>
-          <a href="downloads.html">Downloads</a>
-          <a href="apply.html">Apply</a>
-          <a href="receipts.html">Receipts</a>  
-        </nav>
+    <meta property="og:image" content="https://fh260.org/og-fhlogo.jpeg" />
+    <meta property="og:url" content="https://fh260.org" />
+    <title>Fh260 - Online Request</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header class="top-nav">
+      <div class="logo">
+        <div
+          style="
+            width: 30px;
+            height: 30px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+          "
+        >
+          F
+        </div>
+        <h1>Fh260</h1>
       </div>
-  </div>
-  <!-- Hero Section -->
-  <section class="hero">
-    <h1>Fund Request Platform</h1>
-    <p> Apply for funds using the button below.</p>
-    <a href="apply.html" class="cta-btn">Request Funds</a>
-  </section>
-  <!-- Features Section -->
-  <section class="features">
-    <div class="feature">
-      <h3>Expense Account</h3>
-<p>This helps show you how much money flows on your account.</p>
-<div id="loadingSpinner" style="text-align:center; margin: 20px;">
-  <div class="spinner"></div>
-  <p>Loading your account summary...</p>
-</div>
 
-<div id="accountSummary" style="display: none;">
-  <div class="container">
-    <div class="feature">
-      <h3>Expenditure Amount</h3>
-      <p>This is the figure approved in the expenditure data.</p>
-      <div id="expenditureOutput" style="color: blue; font-weight: bold;"></div>
-    </div>
+      <!-- Desktop Navigation -->
+      <nav class="desktop-nav">
+        <a href="home.html" class="active">Home</a>
+        <a href="downloads.html">Downloads</a>
+        <a href="apply.html">Apply</a>
+        <a href="receipts.html">Receipts</a>
+      </nav>
 
-    <div class="feature">
-      <h3>Receipts Amount</h3>
-      <p>This is the figure reconciled in the receipts.</p>
-      <div id="receiptsOutput" style="color: blue; font-weight: bold;"></div>
-    </div>
-
-    <div class="feature">
-      <h3>Balance Amount</h3>
-      <p>Money left at hand.</p>
-      <div id="balanceOutput" style="color: blue; font-weight: bold;"></div>
-    </div>
-  </div>
-</div>
-      </body>
-      </html>
-    </div>         
-    <div class="feature forex-calculator">
-      <h3>Forex Calculator</h3>
-      <div class="calculator-container">
-        <div class="currency">
-          <img id="fromFlag" src="" alt="From Flag" width="40" />
-          <div class="form-group">
-            <label for="fromCurrency">From Currency:</label>
-            <select id="fromCurrency" class="form-control">
-              <option value="USD">USD - US Dollar</option>
-              <option value="EUR">EUR - Euro</option>
-              <option value="GBP">GBP - British Pound</option>
-              <option value="KES">KES - Kenyan Shilling</option>
-              <option value="UGX">UGX - Ugandan Shilling</option>
-              <option value="GHS">GHS - Ghanaian Cedi</option>
-              <option value="TZS">TZS - Tanzanian Shilling</option>
-              <option value="ZMW">ZMW - Zambian Kwacha</option>
-            </select>
-          </div>
+      <!-- Desktop User Profile (visible on desktop only) -->
+      <div class="user-profile">
+        <div class="user-icon" id="userIcon">
+          <i class="fas fa-user"></i>
         </div>
-    
-        <button id="swapButton" style="font-size: 24px; margin: 10px;">⇄</button>
-    
-        <div class="currency">
-          <img id="toFlag" src="" alt="To Flag" width="40" />
-          <div class="form-group">
-            <label for="toCurrency">To Currency:</label>
-            <select id="toCurrency" class="form-control">
-              <option value="USD">USD - US Dollar</option>
-              <option value="EUR">EUR - Euro</option>
-              <option value="GBP">GBP - British Pound</option>
-              <option value="KES">KES - Kenyan Shilling</option>
-              <option value="UGX">UGX - Ugandan Shilling</option>
-              <option value="GHS">GHS - Ghanaian Cedi</option>
-              <option value="TZS">TZS - Tanzanian Shilling</option>
-              <option value="ZMW">ZMW - Zambian Kwacha</option>
-            </select>
-          </div>
-        </div>
-    
-        <div class="currency-input" style="margin-top: 20px;">
-          <input type="number" id="amount" placeholder="Enter amount" style="padding: 10px; width: 80%; font-size: 16px; border-radius: 5px; border: 1px solid #ccc;" />
-        </div>
-    
-        <div class="forex-result" style="margin-top: 20px;">
-          <p><strong>Buy Rate:</strong> <span id="buyRate">-</span></p>
-          <p><strong>Sell Rate:</strong> <span id="sellRate">-</span></p>
-          <p id="result"><strong>Converted:</strong> -</p>
+        <div class="profile-dropdown" id="profileDropdown">
+          <a href="#" id="viewProfileBtn"
+            ><i class="fas fa-edit"></i> View/Edit Profile</a
+          >
+          <a href="#" id="logoutBtn"
+            ><i class="fas fa-sign-out-alt"></i> Logout</a
+          >
         </div>
       </div>
+
+      <!-- Mobile Controls Container (groups user profile and hamburger on mobile) -->
+      <div class="mobile-controls">
+        <div class="user-profile">
+          <div class="user-icon" id="userIconMobile">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="profile-dropdown" id="profileDropdownMobile">
+            <a href="#" id="viewProfileBtnMobile"
+              ><i class="fas fa-edit"></i> View/Edit Profile</a
+            >
+            <a href="#" id="logoutBtnMobile"
+              ><i class="fas fa-sign-out-alt"></i> Logout</a
+            >
+          </div>
+        </div>
+
+        <!-- Hamburger Menu Button -->
+        <div class="hamburger" id="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- Mobile Navigation Menu -->
+      <nav id="nav-menu">
+        <div class="close-nav" id="close-nav">
+          <i class="fas fa-times"></i>
+        </div>
+        <a href="home.html" class="active">Home</a>
+        <a href="downloads.html">Downloads</a>
+        <a href="apply.html">Apply</a>
+        <a href="receipts.html">Receipts</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <h2>Fund Request Platform</h2>
+        <p>
+          Apply for funds, track expenses, and manage account flows with ease.
+        </p>
+        <a href="apply.html" class="cta-btn"
+          >REQUEST FUNDS <span class="arrow">&rarr;</span></a
+        >
+      </section>
+
+      <section class="main-content">
+        <div class="summary-section">
+          <h3>Expense Account Summary</h3>
+          <p class="subtitle">Overview of your financial activities</p>
+          <div id="loadingSpinner" style="text-align: center; margin: 20px">
+            <div class="spinner"></div>
+            <p>Loading your account summary...</p>
+          </div>
+          <div id="accountSummary" style="display: none">
+            <div class="summary-card">
+              <div class="card-header">
+                <h4>Expenditure Amount</h4>
+                <i class="fas fa-dollar-sign icon-expenditure"></i>
+              </div>
+              <p id="expenditureOutput">Ksh. 0.00</p>
+              <span>Total spending this month</span>
+            </div>
+            <div class="summary-card">
+              <div class="card-header">
+                <h4>Receipts Amount</h4>
+                <i class="fas fa-receipt icon-receipts"></i>
+              </div>
+              <p id="receiptsOutput">Ksh. 0.00</p>
+              <span>Total receipts processed</span>
+            </div>
+            <div class="summary-card">
+              <div class="card-header">
+                <h4>Balance Amount</h4>
+                <i class="fas fa-wallet icon-balance"></i>
+              </div>
+              <p id="balanceOutput">Ksh. 0.00</p>
+              <span>Current account balance</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="forex-section">
+          <h3>Forex Calculator</h3>
+          <p class="subtitle">Real-time currency conversion rates</p>
+          <div class="forex-calculator">
+            <div class="currency-converter">
+              <div class="currency-group">
+                <label for="fromCurrency">From</label>
+                <select id="fromCurrency">
+                  <option value="USD">USD - US Dollar</option>
+                  <option value="EUR">EUR - Euro</option>
+                  <option value="GBP">GBP - British Pound</option>
+                  <option value="KES" selected>KES - Kenyan Shilling</option>
+                  <option value="UGX">UGX - Ugandan Shilling</option>
+                  <option value="GHS">GHS - Ghanaian Cedi</option>
+                  <option value="TZS">TZS - Tanzanian Shilling</option>
+                  <option value="ZMW">ZMW - Zambian Kwacha</option>
+                </select>
+              </div>
+              <button id="swapButton" title="Swap Currencies">&lrarr;</button>
+              <div class="currency-group">
+                <label for="toCurrency">To</label>
+                <select id="toCurrency">
+                  <option value="USD">USD - US Dollar</option>
+                  <option value="EUR">EUR - Euro</option>
+                  <option value="GBP">GBP - British Pound</option>
+                  <option value="KES" selected>KES - Kenyan Shilling</option>
+                  <option value="UGX">UGX - Ugandan Shilling</option>
+                  <option value="GHS">GHS - Ghanaian Cedi</option>
+                  <option value="TZS">TZS - Tanzanian Shilling</option>
+                  <option value="ZMW">ZMW - Zambian Kwacha</option>
+                </select>
+              </div>
+            </div>
+            <div class="amount-group">
+              <label for="amount">Amount</label>
+              <input type="number" id="amount" placeholder="Enter amount" />
+            </div>
+            <div class="rates">
+              <div class="rate">
+                <span><i class="fas fa-arrow-up icon-buy"></i> Buy Rate</span>
+                <strong id="buyRate">-</strong>
+              </div>
+              <div class="rate">
+                <span
+                  ><i class="fas fa-arrow-down icon-sell"></i> Sell Rate</span
+                >
+                <strong id="sellRate">-</strong>
+              </div>
+            </div>
+            <div class="converted-amount">
+              <p id="result">Converted Amount: -</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="profileModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" id="closeModal">&times;</span>
+        <h3>Edit Profile</h3>
+        <div class="profile-picture">
+          <img
+            id="profileImage"
+            src="https://via.placeholder.com/80"
+            alt="Profile"
+            class="initials-circle"
+          />
+          <input
+            type="file"
+            id="profileUpload"
+            style="display: none"
+            accept="image/*"
+          />
+          <button class="upload-btn" id="uploadBtn">
+            <i class="fas fa-upload"></i> Upload
+          </button>
+        </div>
+        <form id="profileForm">
+          <div class="form-group">
+            <label for="fullName">Full Name</label>
+            <input type="text" id="fullName" value="John Doe" />
+          </div>
+          <div class="form-group">
+            <label for="role">Role</label>
+            <input type="text" id="role" value="Finance Manager" />
+          </div>
+          <div class="form-group">
+            <label for="bio">Bio/Short Description</label>
+            <textarea id="bio">Experienced finance professional...</textarea>
+          </div>
+          <div class="form-group theme-switcher">
+            <label>Theme</label>
+            <i class="fas fa-sun" id="themeIcon"></i>
+          </div>
+          <div class="modal-buttons">
+            <button type="submit" class="save-btn">Save Changes</button>
+            <button type="button" class="cancel-btn" id="cancelBtn">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
-    
-    </div>
-    
-  </section>
- <!-- Footer -->
-<footer>
-  <p>&copy; 2025 Fh260. All rights reserved.</p>
-  <p>
-    <a href="sign.html">Sign In</a> | 
-    <a href="index.html">Back Page</a> | 
-    <a href="admin.html">Admin</a> 
-  </p>
-</footer>
-   <script src="js/script.js"></script>
-</body>
+    <footer>
+      <p>&copy; 2025 Fh260. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="sign.html">Sign In</a> | <a href="index.html">Back Page</a> |
+        <a href="admin.html">Admin</a>
+      </div>
+    </footer>
+
+    <script src="js/global-nav.js"></script>
+    <script src="js/script.js"></script>
+  </body>
 </html>

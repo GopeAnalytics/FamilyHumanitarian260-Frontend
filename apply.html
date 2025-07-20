@@ -11,7 +11,7 @@
   <meta property="og:image" content="https://fh260.org/og-fhlogo.jpeg" />
      <meta property="og:url" content="https://fh260.org" />
     <title>Fund Request Form</title>
-    <link rel="stylesheet" href="css/apply-styles.css" />
+    <link rel="stylesheet" href="./css/apply-styles.css" />
      <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" /> 
      <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" /> 
      <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" /> 
@@ -22,7 +22,7 @@
 <body>
     <header>
         <div class="logo">
-            <img src="assets/images/logo.png" alt="KCAU Logo">
+            <img src="logo.png" alt="KCAU Logo">
         </div>
     </header> 
     <div class="top-nav">
@@ -74,9 +74,9 @@
     <select id="category">
         <option value="" disabled selected>Select category</option>
         <option value="Fuel">Fuel</option>
-        <option value="Borehole Expenses">Borehole Expenses</option>
+        <option value="Borehole Supplies">Borehole Supplies</option>
         <option value="Construction">Construction</option>
-        <option value="Parts/Supplies">Parts/Supplies</option>
+        <option value="Paper Works">Paper works</option>
         <option value="Permits">Permits</option>
         <option value="Internet/Electricity">Internet/Electricity</option>
         <option value="Rent">Rent</option>
@@ -86,6 +86,7 @@
         <option value="Meals">Meals</option>
         <option value="Accommodations">Accommodations</option>
         <option value="Projects">Projects</option>
+         <option value="Training">Training</option>
         <option value="Vehicle Service">Vehicle Service</option>
         <option value="Other">Other</option>
     </select>
@@ -120,6 +121,7 @@
 <div id="reconcileContainer"></div>
 
 <script>
+  const API_BASE_URL = "https://fhserver.org.fh260.org";
 // Get the user's country from localStorage to determine currency
 function getUserCurrency() {
   const user = JSON.parse(localStorage.getItem('user')) || { country: 'Unknown' };
@@ -152,21 +154,22 @@ function createCurrencyFormatter() {
 
         const selectedCategory = this.value;
 
-        const subCategories = {
+    const subCategories = {
     "Fuel": ["Full Tank","Top up","One Month Full tank","Other"],
-    "Parts/Supplies": [ "Afri dev Pump parts ","Mark II Pump parts","Rods", "Centralizers", "Pipes","Rubber", "Casings", "Drill Bits", "Mud Pumps", "Water Hoses", "Filters", "Bearings", "Grease", "Other"],
-    "Borehole Expenses": ["Afri dev Pump","Mark II Pump", "Drilling Permits", "Surveying", "Pump Installation", "Water Testing", "Casing Pipes", "Grouting", "Other"],
-    "Construction": ["Cement", "Sand", "Gravel", "Bricks", "Iron Sheets", "Nails", "Timber", "Other"],
-    "Permits": [ "Other"],
+    "Paper Works": [ "Government","Government-eCitizen Kenya","Labor Charge(Service fee)", "Other"],
+    "Borehole Supplies": ["Afri dev Pump","Mark II Pump",  "Rods", "Pump Installation", "Plaques","Drill bits","Rivets", "Casing Pipes","Targid Glue", "Grouting","Centralizers", "Pipes","Rubber", "Riser Pipes (Afri Dev Pipes)","Galvanized Iron Pipes(GI)", "Mud Pumps", "Water Hoses", "Filters", "Bearings", "Grease","Labor Charge(Service fee)", "Other"],
+    "Construction": ["Cement", "Sand", "Gravel", "Bricks", "Iron Sheets", "Nails", "Timber","Labor Charge(Service fee)", "Other"],
+    "Permits": ["Geological Survey", "Borehole Permits", "Drilling Permits","Labor Charge(Service fee)", "Other"],
     "Internet/Electricity": ["Monthly Charge", "Other"],
-    "Rent": [ "Other"],
-    "Vehicle Repair": [ "Tires","Alternator", "Battery", "Oil Change", "Brake Pads", "Suspension", "Exhaust Pipe","GearBox","Speedometer","Oil filters","Rings","Air filters","Grease","Other"],
-    "Expeditions": [ "Other"],
-    "Transport": [ "Other"],
-    "Meals": ["Other"],
-    "Accommodations": [ "Other"],
-    "Projects": [ "Drilling Boreholes","Constructing Schools","Other"],
-    "Vehicle Service": [ "Body Repair","Body Paint", "Engine Change","Other"],
+    "Rent": [ "Monthly","Other"],
+    "Vehicle Repair": [ "Tires","Alternator", "Battery", "Oil Change", "Brake Pads", "Suspension", "Exhaust Pipe","GearBox","Speedometer","Oil filters","Rings","Air filters","Grease","Labor Charge(Service fee)","Other"],
+    "Expeditions": ["Car Hire","Labor Charge(Service fee)", "Other"],
+    "Transport": [ "Labor Charge(Service fee)","Other"],
+    "Meals": ["Lunch", "Dinner", "Snacks","Other"],
+    "Accommodations": [ "Hotel Rooms","Labor Charge(Service fee)", "Other"],
+    "Projects": [ "Drilling Hand Boreholes","Drilling Solar Boreholes","Constructing Schools","Labor Charge(Service fee)","Other"],
+     "Training": ["Sheldon's Visit","General Meeting ","Leadership Training","Transport","Other"],
+    "Vehicle Service": [ "Body Repair","Body Paint", "Labor Charge(Service fee)","Engine Change","Other"],
     "Other": [ "Other"]
 };
         // Always start with "None"
@@ -412,7 +415,7 @@ document.getElementById("photoButton").addEventListener("click", async function 
               const formData = new FormData();
               formData.append("attachment", blob, `photo_${Date.now()}.png`);
 
-              const response = await fetch("http://localhost:3000/api/upload", {
+              const response = await fetch("https://fhserver.org.fh260.org/api/upload", {
                 method: "POST",
                 headers: {
                   "Authorization": `Bearer ${localStorage.getItem("token")}`
@@ -517,7 +520,7 @@ document.getElementById("reconcileButton").addEventListener("click", function ()
       const formData = new FormData();
       formData.append("attachment", blob, `reconciliation_${Date.now()}.txt`);
 
-      const response = await fetch("http://localhost:3000/api/upload", {
+      const response = await fetch("https://fhserver.org.fh260.org/api/upload", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${localStorage.getItem("token")}`
@@ -749,7 +752,7 @@ async function sendAndDownloadReceipt() {
     
     // Send to backend
     try {
-        const response = await fetch('http://localhost:3000/api/requests', {
+        const response = await fetch('https://fhserver.org.fh260.org/api/requests', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -794,7 +797,7 @@ function downloadReceipt(user, formData, totalAmount, totalRequest) {
     const doc = new jsPDF();
     
     const backgroundLogo = new Image();
-    backgroundLogo.src = 'assets/images/receiptlogo.png'; // Path to your logo
+    backgroundLogo.src = '/receiptlogo.png'; // Path to your logo
 
     backgroundLogo.onload = () => {
         generatePdf();
@@ -907,6 +910,6 @@ function downloadReceipt(user, formData, totalAmount, totalRequest) {
     <a href="index.html">Back Page</a> | 
     <a href="admin.html">Admin</a>
 </p>
-<script src="js/auth-script.js"></script>
+<script src="auth-script.js"></script>
 </footer>
 </html>

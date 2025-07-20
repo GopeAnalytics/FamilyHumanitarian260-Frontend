@@ -1,662 +1,777 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Task Planner & Reminder</title>
-  <style>
-   html, body {
-  margin: 0;
-  padding: 0;
-  width: 100vw;
-  height: 100%;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: #f4f7fc;
-  color: #1a1a1a;
-  overflow-x: hidden;
-  text-align: center;
-}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Planner & Reminder</title>
+   <style>
+      :root {
+        --primary-color: #3e64ff;
+        --task-color: #28a745; /* Green for tasks */
+        --appointment-color: #ffc107; /* Yellow for appointments */
+        --danger-color: #dc3545;
+        --add-task-btn:#28a745
+        --add-appointment-btn:#ffc107
+      }
+       html, body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        width: 100%;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #f4f7fc;
+        color: #1a1a1a;
+        text-align: center;
+        box-sizing: border-box;
+      }
+      .container {
+        padding: 20px;
+        max-width: 1100px;
+        margin: auto;
+      }
 
-header {
-  background: linear-gradient(90deg, #3e64ff, #5edfff);
-  color: white;
-  height: 0; /* Fixed height */
-  text-align: center;
-  position: relative;
-  margin: 0;
-  padding: 0;
-  overflow: hidden; /* Ensures nothing bleeds outside */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-}
-
-
-
-.container {
-  padding: 20px;
-  max-width: 1100px;
-  margin: auto;
-}
-.task-form {
-  background: white;
+      .hero {
+  width: 100vw; /* Force it to span the full viewport width */
+  margin: 0;     /* Remove margin */
   padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  margin-bottom: 40px;
-  border-left: 6px solid #3e64ff;
-}
-.task-form h2 {
-  margin-top: 0;
-  color: #3e64ff;
-}
-.task-form input, .task-form textarea, .task-form select {
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-}
-.task-form button {
-  background: #3e64ff;
-  color: white;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  cursor: pointer;
-}
-.section-title {
-  font-size: 1.8rem;
-  color: #2c3e50;
-  margin-top: 50px;
-  margin-bottom: 20px;
-}
-.task-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 20px;
-}
-.task-card {
-  background: #ffffff;
-  border-left: 6px solid #00b894;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
-}
-.task-card h3 {
-  margin: 0 0 10px;
-  color: #2d3436;
-}
-.task-card p {
-  margin: 5px 0;
-  color: #636e72;
-}
-.task-card button {
-  margin-top: 15px;
-  background: #00b894;
-  color: white;
-  border: none;
-  padding: 12px 36px;
-  border-radius: 30px;
-  cursor: pointer;
-  font-size: 1rem;
-}
-.summary {
-  background: white;
-  padding: 30px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  margin-top: 50px;
-}
-.summary h2 {
-  color: #3e64ff;
-}
-.progress-bar {
-  background: #e0e0e0;
-  border-radius: 20px;
-  overflow: hidden;
-  margin-top: 10px;
-}
-.progress-bar-inner {
-  height: 20px;
-  background: #00b894;
-  width: 60%;
-}
-.featured-on {
-  display: flex;
-  justify-content: space-around;
-  margin: 30px 0;
-  filter: grayscale(1);
-  opacity: 0.6;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-.illustration {
-  text-align: center;
-  margin: 40px 0;
-}
-.illustration img {
-  max-width: 300px;
-}
-@media (max-width: 768px) {
-  header img {
-    display: none;
-  }
-}
-.hero {
-  background-color: #0c2340;
-  color: white;
-  padding: 60px 20px;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
-.hero .text {
-  max-width: 600px;
-}
-.hero h1 {
-  font-size: 2.5rem;
-}
-.hero h1 span {
-  border-bottom: 4px solid orange;
-}
-.hero ul {
-  margin-top: 20px;
-  padding-left: 20px;
-}
-.hero ul li {
-  margin-bottom: 10px;
-  list-style: none;
-  position: relative;
-  padding-left: 20px;
-}
-.hero ul li::before {
-  content: '→';
-  position: absolute;
-  left: 0;
-}
-.hero .image {
-  max-width: 400px;
-}
-.features {
-  background-color: #fff;
-  padding: 30px 20px;
-}
-.tool-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  padding: 20px;
-  margin: 20px 0;
-}
-.tool-card img {
-  max-width: 150px;
-  border-radius: 8px;
-}
-.tool-info {
-  flex-grow: 1;
-  margin-left: 20px;
-}
-.tool-info h2 {
-  margin: 0;
-  font-size: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.tool-info .rating {
-  background: #fff;
-  color: #f90;
-  border: 2px solid #f90;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  text-align: center;
-  line-height: 46px;
-  font-size: 1.2rem;
-  font-weight: bold;
-}
-.visit-btn {
-  background: linear-gradient(45deg, #ff7a00, #ff4f00);
-  border: none;
-  color: white;
-  padding: 12px 20px;
-  font-size: 1rem;
-  border-radius: 50px;
-  cursor: pointer;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
-}
-.trust {
-  background-color: #f4f4f4;
-  padding: 60px 20px;
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-}
-.trust .text {
-  max-width: 600px;
-}
-.trust h2 {
-  font-size: 2rem;
-}
-.trust p {
-  line-height: 1.6;
-  margin-top: 20px;
-}
-.trust .image {
-  max-width: 400px;
-}
-@media (max-width: 768px) {
-  .hero, .trust {
-    flex-direction: column;
-    align-items: center;
-  }
-  .hero .image, .trust .image {
-    margin-top: 30px;
-  }
-}
-.title {
-  font-size: 2em;
-  margin-bottom: 30px;
-  color: #1a1a1a;
-}
-.card-container {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-.card {
-  background: white;
-  border-radius: 10px;
-  padding: 20px;
-  width: 260px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  transition: transform 0.3s;
-}
-.card:hover {
-  transform: translateY(-5px);
-}
-.rank {
-  background: #e3f2fd;
-  font-weight: bold;
-  padding: 5px 10px;
-  border-radius: 5px;
-  margin-bottom: 10px;
-}
-.logo {
-  max-width: 140px;
-  margin: 10px auto;
-  display: block;
-}
-.visit-button {
-  display: inline-block;
-  background-color: #ff5c5c;
-  color: white;
-  text-decoration: none;
-  padding: 10px 20px;
-  margin: 10px 0;
-  border-radius: 6px;
-  font-weight: bold;
-}
-.details {
-  font-size: 14px;
-  color: #333;
-  text-align: left;
-  margin-top: 10px;
-}
-.highlight {
-  background-color: #e0fff6;
-  border: 2px solid #00c896;
-}
-.footer-banner {
-  width: 100vw;
-  margin: 0;
-  padding: 30px 80px;
   background: linear-gradient(90deg, #151a21 0%, #1f2b3d 100%);
   color: white;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 100px;
-  box-sizing: border-box;
+  gap: 0px;
+  border-radius: 0; /* Optional: set to 0 if you want squared edges */
   position: relative;
   left: 50%;
   right: 50%;
   transform: translateX(-50%);
+  top:0;
 }
-.footer-logo {
-  width: 100px;
-  height: auto;
-}
-.footer-text h2 {
-  margin: 0;
-  font-size: 1.4em;
-}
-.footer-text p {
-  margin: 5px 0 0;
-  font-size: 0.95em;
-  color: #d1d1d1;
-}
-.footer-button {
-  background-color: #ff6a00;
+      .hero .text {
+        max-width: 600px;
+        text-align: left;
+      }
+      .hero h1 {
+        font-size: 2.5rem;
+        margin: 0;
+      }
+
+      .features {
+        padding: 30px 0;
+      }
+      
+      .tool-info {
+        flex-grow: 1;
+        margin-left: 20px;
+      }
+      .tool-info h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .tool-info .rating {
+        background: #fff;
+        color: #f90;
+        border: 2px solid #f90;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        text-align: center;
+        line-height: 46px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        flex-shrink: 0;
+      }
+      .tool-info ul {
+        margin-top: 10px;
+        padding-left: 20px;
+        list-style: none;
+      }
+      .tool-info ul li {
+        padding-left: 5px;
+      }
+      .visit-btn{
+        background: linear-gradient(45deg, #ff7a00, #ff4f00);
+        border: none;
+        color: white;
+        padding: 12px 20px;
+        font-size: 1rem;
+        border-radius: 50px;
+        cursor: pointer;
+        text-decoration: none;
+        white-space: nowrap;
+      }
+      .add-btn {
+        background: linear-gradient(45deg, #ff7a00, #ff4f00);
+        border: none;
+        color: white;
+        padding: 12px 20px;
+        font-size: 1rem;
+        border-radius: 50px;
+        cursor: pointer;
+        text-decoration: none;
+        white-space: nowrap;
+        
+      }
+      .section-title {
+        font-size: 1.8rem;
+        color: #2c3e50;
+        margin-top: 50px;
+        margin-bottom: 20px;
+        text-align: left;
+      }
+
+      .task-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 20px;
+        text-align: left;
+      }
+      .task-card {
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+      }
+      .task-card.task {
+        border-left: 6px solid var(--task-color);
+      }
+      .task-card.appointment {
+        border-left: 6px solid var(--appointment-color);
+      }
+      .task-card h3 {
+        margin: 0 0 10px;
+        color: #2d3436;
+      }
+      .task-card p {
+        margin: 5px 0;
+        color: #636e72;
+      }
+      .card-actions {
+        margin-top: 15px;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .complete-btn {
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 30px;
+        cursor: pointer;
+        font-weight: bold;
+        flex-grow: 1;
+      }
+      .task .complete-btn {
+        background: var(--task-color);
+      }
+      .appointment .complete-btn {
+        background: var(--appointment-color);
+        color: #333;
+      }
+      .icon-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.2rem;
+        padding: 5px;
+        color: #888;
+      }
+
+      .summaries {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+        margin-top: 40px;
+      }
+      .summary {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        text-align: left;
+      }
+      .summary h2 {
+        color: var(--primary-color);
+      }
+      .progress-bar {
+        background: #e0e0e0;
+        border-radius: 20px;
+        overflow: hidden;
+        margin-top: 10px;
+      }
+      .progress-bar-inner {
+        height: 20px;
+        transition: width 0.5s ease-in-out;
+      }
+      #taskProgressBar {
+        background: var(--task-color);
+      }
+      #appointmentProgressBar {
+        background: var(--appointment-color);
+      }
+      .event {
+        padding: 3px 6px;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        color: white;
+        text-align: left;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        cursor: pointer;
+      }
+      .event.task {
+        background-color: var(--task-color);
+      }
+      .event.appointment {
+        background-color: var(--appointment-color);
+        color: #333;
+      }
+
+     .footer-banner {
+  width: 100vw; /* Force it to span the full viewport width */
+  margin: 0;     /* Remove margin */
+  padding: 30px;
+  background: linear-gradient(90deg, #151a21 0%, #1f2b3d 100%);
   color: white;
-  text-decoration: none;
-  padding: 12px 30px;
-  border-radius: 25px;
-  font-weight: bold;
-  transition: background 0.3s;
-}
-.footer-button:hover {
-  background-color: #e65c00;
-}
-@media (max-width: 768px) {
-  .footer-banner {
-    flex-direction: column;
-    text-align: center;
-    gap: 20px;
-  }
-}
-body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: #f7f9fc;
-}
-
-.calendar-app {
   display: flex;
-  min-height: 100vh;
-}
-
-/* Sidebar */
-.sidebar {
-  width: 240px;
-  background: #fff;
-  border-right: 1px solid #ddd;
-  padding: 20px;
-}
-
-.sidebar h2 {
-  font-size: 1.2rem;
-  margin-bottom: 20px;
-}
-
-.calendar-list {
-  list-style: none;
-  padding: 0;
-}
-
-.calendar-list li {
-  margin: 10px 0;
-  font-size: 0.95rem;
-}
-
-.color-dot {
-  display: inline-block;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  margin-right: 8px;
-}
-
-.color-dot.work { background: #4285F4; }
-.color-dot.personal { background: #FBBC05; }
-.color-dot.meeting { background: #34A853; }
-
-/* Main calendar */
-.main-calendar {
-  flex: 1;
-  padding: 20px;
-}
-
-.calendar-toolbar {
-  display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
   align-items: center;
-  margin-bottom: 20px;
-}
-
-.calendar-toolbar h2 {
-  margin: 0;
-  font-size: 1.5rem;
-  color: #3e64ff;
-}
-
-.calendar-toolbar button {
-  background: #3e64ff;
-  border: none;
-  color: white;
-  padding: 8px 14px;
-  font-size: 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-/* Calendar grid */
-.calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 1px;
-  background: #ccc;
-}
-
-.day-name {
-  background: #f0f0f0;
-  padding: 10px;
-  font-weight: bold;
-  text-align: center;
-  font-size: 0.9rem;
-}
-
-#calendarDays {
-  display: contents;
-}
-
-.calendar-day {
-  min-height: 100px;
-  background: #fff;
-  padding: 5px;
+  justify-content: center;
+  gap: 20px;
+  border-radius: 0; /* Optional: set to 0 if you want squared edges */
   position: relative;
+  left: 50%;
+  right: 50%;
+  transform: translateX(-50%);
+   bottom: 0;
 }
 
-.calendar-day.other-month {
-  background: #f3f3f3;
-  color: #aaa;
-}
+      .footer-logo {
+        width: 100px;
+        height: auto;
+      }
+      .footer-text h2 {
+        margin: 0;
+        font-size: 1.4em;
+      }
+      .footer-text p {
+        margin: 5px 0 0;
+        font-size: 0.95em;
+        color: #d1d1d1;
+      }
 
-.calendar-day.today {
-  border: 2px solid #3e64ff;
-  box-sizing: border-box;
-}
-.calendar-day span {
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  font-size: 0.9rem;
-  font-weight: bold;
-}.visit-btn {
-  background: linear-gradient(45deg, #ff7a00, #ff4f00);
-  border: none;
-  color: white;
-  padding: 12px 20px;
-  font-size: 1rem;
-  border-radius: 50px;
-  cursor: pointer;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-  text-decoration: none; /* ← this removes underline */
-  display: inline-block;
-}
-  </style>
-</head>
-<body>
-  <section class="hero">
-    <div class="text">
-      <h1>📅Task Management Tool </span></h1>
-  </section>
-  <section class="features">
-    <div class="tool-card">
-      
-      <div class="tool-info">
-        <h2>Task <span class="rating">100%</span></h2>
-        <ul>
-          <li>✔️Tracking Title</li>
-          <li>✔️Description</li>
-          <li>✔️Tracking Date</li>
-          <li>✔️Tracking Priority</li>
-        </ul>
-      </div>
-     <a href="Task_task.html" class="visit-btn">Add Task »</a>
-    </div>
-    <div class="tool-card">
-      <div class="tool-info">
-        <h2>Appointment <span class="rating">100%</span></h2>
-        <ul>
-          <li>✔️Tracking Name/Place</li>
-          <li>✔️Tracking Time</li>
-        </ul>
-      </div>
-      <a href="Task_Appointment.html" class="visit-btn">Add Appointment »</a>
+      /* NEW MODAL STYLES */
+      .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+      }
+      .modal-content {
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        max-width: 500px;
+        width: 90%;
+        position: relative;
+      }
+      .modal-content h2 {
+        margin-top: 0;
+        color: var(--primary-color);
+      }
+      .modal-close {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        font-size: 1.5rem;
+        cursor: pointer;
+        border: none;
+        background: none;
+      }
+      .modal-form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+      .modal-form label {
+        font-weight: 600;
+        text-align: left;
+      }
+      .modal-form input,
+      .modal-form textarea,
+      .modal-form select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 1rem;
+      }
+      .modal-form button {
+        margin-top: 10px;
+        font-size: 1rem;
+      }
 
-    </div>
-  </section>
+      /* NEW NOTIFICATION STYLES */
+      .notification-bell {
+        position: absolute;
+        top: 25px;
+        right: 30px;
+        cursor: pointer;
+      }
+      .notification-bell .icon {
+        font-size: 28px;
+        color: white;
+      }
+      .notification-bell .badge {
+        position: absolute;
+        top: -5px;
+        right: -8px;
+        background-color: var(--danger-color);
+        color: white;
+        border-radius: 50%;
+        padding: 2px 7px;
+        font-size: 12px;
+        font-weight: bold;
+        display: none;
+      }
+      .notification-panel {
+        display: none;
+        position: absolute;
+        top: 50px;
+        right: 0;
+        width: 320px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        z-index: 100;
+        max-height: 400px;
+        overflow-y: auto;
+        color: #333;
+        text-align: left;
+      }
+      .notification-panel h4 {
+        padding: 12px 15px;
+        margin: 0;
+        border-bottom: 1px solid #eee;
+      }
+      .notification-panel ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .notification-panel li {
+        padding: 12px 15px;
+        border-bottom: 1px solid #eee;
+        font-size: 0.9rem;
+      }
+      .notification-panel li:last-child {
+        border-bottom: none;
+      }
 
-   <h2 class="section-title">📌 Pending Tasks</h2>
-    <div class="task-list">
-      <div class="task-card">
-        <h3>Submit Report</h3>
-        <p>Due: 2025-07-06</p>
-        <p>Priority: High</p>
-        <p>Description: Financial Statement</p>
-        <button>✅ Mark as Completed</button>
-      </div>
-      <div class="task-card">
-        <h3>Insurance</h3>
-        <p>Due: 2025-07-08</p>
-        <p>Priority: Medium</p>
-        <p>Description: Insurence to be paid</p>
-        <button>✅ Mark as Completed</button>
-      </div>
-    </div>
+      /* NEW TOAST STYLES */
+      .toast {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 12px 25px;
+        border-radius: 50px;
+        color: white;
+        font-weight: bold;
+        z-index: 2000;
+        opacity: 0;
+        transition: opacity 0.3s, bottom 0.3s;
+      }
+      .toast.show {
+        opacity: 1;
+        bottom: 40px;
+      }
+      .toast.success {
+        background-color: var(--task-color);
+      }
+      .toast.error {
+        background-color: var(--danger-color);
+      }
 
-    <div class="summary">
-      <h2>📊 Task Completion Summary</h2>
-      <p>Tasks completed in the past month: <strong>12</strong></p>
-      <p>Total tasks: <strong>20</strong></p>
-      <p>Completion Rate:</p>
-      <div class="progress-bar">
-        <div class="progress-bar-inner"></div>
-      </div>
-    </div>
-  
-    <h1>Task Management Calendar </h1>
-     
-  <div class="calendar-app">
-  <aside class="sidebar">
-    <h2>My Plans</h2>
-    <div class="mini-month"></div>
-    <ul class="calendar-list">
-      
-      <li><span class="color-dot personal"></span> Tasks</li>
-      <li><span class="color-dot meeting"></span> Appointments</li>
-    </ul>
-  </aside>
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <section class="hero">
+        <div class="text">
+          <h1>📅 Task Management Tool</h1>
+        </div>
+        <div class="notification-bell">
+          <span class="icon">🔔</span>
+          <span class="badge" id="notificationBadge"></span>
+          <div class="notification-panel" id="notificationPanel">
+            <h4>Upcoming Events (24h)</h4>
+            <ul id="notificationList"></ul>
+          </div>
+        </div>
+      </section>
 
-  <main class="main-calendar">
-    <div class="calendar-toolbar">
-      <button id="prevMonth">&larr;</button>
-      <h2 id="monthYear"></h2>
-      <button id="nextMonth">&rarr;</button>
-    </div>
-    <div class="calendar-grid">
-      <div class="day-name">Sun</div>
-      <div class="day-name">Mon</div>
-      <div class="day-name">Tue</div>
-      <div class="day-name">Wed</div>
-      <div class="day-name">Thu</div>
-      <div class="day-name">Fri</div>
-      <div class="day-name">Sat</div>
-      <div id="calendarDays"></div>
-    </div>
-  </main>
-</div><script>
-const calendarDays = document.getElementById("calendarDays");
-const monthYear = document.getElementById("monthYear");
-const prevBtn = document.getElementById("prevMonth");
-const nextBtn = document.getElementById("nextMonth");
-let current = new Date();
-function renderCalendar(date) {
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  const today = new Date();
-
-  const firstDayIndex = new Date(year, month, 1).getDay();
-  const lastDate = new Date(year, month + 1, 0).getDate();
-  const prevLastDate = new Date(year, month, 0).getDate();
-
-  // Update month/year title
-  monthYear.textContent = date.toLocaleString("default", {
-    month: "long",
-    year: "numeric",
-  });
-  // Clear previous days
-  calendarDays.innerHTML = "";
-  // Previous month's ending days
-  for (let i = firstDayIndex; i > 0; i--) {
-    const day = document.createElement("div");
-    day.classList.add("calendar-day", "other-month");
-    day.textContent = prevLastDate - i + 1;
-    calendarDays.appendChild(day);
-  }
-  // Current month's days
-  for (let i = 1; i <= lastDate; i++) {
-    const day = document.createElement("div");
-    day.classList.add("calendar-day");
-    if (
-      i === today.getDate() &&
-      month === today.getMonth() &&
-      year === today.getFullYear()
-    ) {
-      day.classList.add("today");
-    }
-    day.textContent = i;
-    calendarDays.appendChild(day);
-  }
-  // Fill next month's beginning days
-  const totalDisplayed = firstDayIndex + lastDate;
-  const fill = (7 - (totalDisplayed % 7)) % 7;
-  for (let i = 1; i <= fill; i++) {
-    const day = document.createElement("div");
-    day.classList.add("calendar-day", "other-month");
-    day.textContent = i;
-    calendarDays.appendChild(day);
-  }
-}
-// Navigation
-prevBtn.addEventListener("click", () => {
-  current.setMonth(current.getMonth() - 1);
-  renderCalendar(current);
-});
-nextBtn.addEventListener("click", () => {
-  current.setMonth(current.getMonth() + 1);
-  renderCalendar(current);
-});
-// Initial load
-renderCalendar(current);
-</script>
-    </div><!-- Footer Banner -->
-<div class="footer-banner">
-  <img src="https://cdn.worldvectorlogo.com/logos/monday-1.svg" alt="Monday.com Logo" class="footer-logo">
-  <div class="footer-text">
-    <h2>Record, Remember, and Do!</h2>
-    <p></p>
+    <section class="features task-appointment-section">
+  <div class="task-appointment-buttons">
+    <button class="add-btn task-btn" onclick="openModalForCreate('task')">
+      Add Task +
+    </button>
+    <button class="add-btn appointment-btn" onclick="openModalForCreate('appointment')">
+      Add Appointment +
+    </button>
   </div>
-  <a href="home.html" class="visit-btn">Visit home page »</a>
-</div>
-</body>
+</section>
+
+
+
+      <h2 class="section-title">📌 Pending Tasks</h2>
+      <div class="task-list" id="taskList"><p>Loading...</p></div>
+
+      <h2 class="section-title">🗓️ Pending Appointments</h2>
+      <div class="task-list" id="appointmentList"><p>Loading...</p></div>
+
+      <div class="summaries">
+        <div class="summary">
+          <h2>📊 Task Completion Summary</h2>
+          <p>
+            Completed: <strong id="completedTaskCount">0</strong> of
+            <strong id="totalTaskCount">0</strong>
+          </p>
+          <div class="progress-bar">
+            <div class="progress-bar-inner" id="taskProgressBar"></div>
+          </div>
+        </div>
+        <div class="summary">
+          <h2>📊 Appointment Completion Summary</h2>
+          <p>
+            Completed: <strong id="completedAppointmentCount">0</strong> of
+            <strong id="totalAppointmentCount">0</strong>
+          </p>
+          <div class="progress-bar">
+            <div class="progress-bar-inner" id="appointmentProgressBar"></div>
+          </div>
+        </div>
+      </div>
+</p>
+      <div class="footer-banner">
+        <img
+          src="https://cdn.worldvectorlogo.com/logos/monday-1.svg"
+          alt="Monday.com Logo"
+          class="footer-logo"
+        />
+        <div class="footer-text">
+          <h2>Record, Remember, and Do!</h2>
+        </div>
+        <a href="home.html" class="visit-btn">Visit home page »</a>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="formModal">
+      <div class="modal-content">
+        <button class="modal-close" onclick="closeModal()">×</button>
+        <h2 id="modalTitle"></h2>
+        <form id="modalForm" class="modal-form"></form>
+      </div>
+    </div>
+    <script>
+      const token = localStorage.getItem("token");
+      const API_BASE_URL = "https://fhserver.org.fh260.org"; // Base URL for all API calls
+
+      // --- UTILITY & HELPER FUNCTIONS ---
+      function showToast(message, type = "success") {
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.classList.add("show"), 10);
+        setTimeout(() => {
+          toast.classList.remove("show");
+          setTimeout(() => document.body.removeChild(toast), 300);
+        }, 3000);
+      }
+
+      async function apiRequest(endpoint, method = "GET", body = null) {
+        try {
+          const options = {
+            method,
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          };
+          if (body) options.body = JSON.stringify(body);
+          // Use the full base URL for the fetch request
+          const response = await fetch(
+            `${API_BASE_URL}/api${endpoint}`,
+            options
+          );
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "API request failed");
+          }
+          if (response.status === 204)
+            return { message: "Deleted successfully." };
+          return response.json();
+        } catch (error) {
+          showToast(error.message || "An unexpected error occurred.", "error");
+          return null;
+        }
+      }
+
+      // --- MODAL & FORM LOGIC ---
+      const modal = document.getElementById("formModal");
+      const modalTitle = document.getElementById("modalTitle");
+      const modalForm = document.getElementById("modalForm");
+      let currentEdit = { type: null, id: null };
+
+      function closeModal() {
+        modal.style.display = "none";
+      }
+
+      function getFormFields(type) {
+        const taskFields = `
+            <input type="hidden" name="id">
+            <label for="title">Title</label><input type="text" id="title" name="title" required>
+            <label for="description">Description</label><textarea id="description" name="description" rows="3"></textarea>
+            <label for="dueDate">Due Date</label><input type="date" id="dueDate" name="dueDate" required>
+            <label for="priority">Priority</label><select id="priority" name="priority"><option>Low</option><option>Medium</option><option>High</option></select>
+            <label for="reminder">Reminder</label><select id="reminder" name="reminder" required><option value="30min">30 Mins Before</option><option value="1hr">1 Hour Before</option><option value="24hr">24 Hours Before</option></select>
+            <button type="submit" class="add-btn">Save Task</button>`;
+        const appointmentFields = `
+            <input type="hidden" name="id">
+            <label for="name">Name/Place</label><input type="text" id="name" name="name" required>
+            <label for="time">Time</label><input type="datetime-local" id="time" name="time" required>
+            <label for="reminder">Reminder</label><select id="reminder" name="reminder" required><option value="30min">30 Mins Before</option><option value="1hr">1 Hour Before</option><option value="24hr">24 Hours Before</option></select>
+            <button type="submit" class="add-btn">Save Appointment</button>`;
+        return type === "task" ? taskFields : appointmentFields;
+      }
+
+      async function openModalForEdit(type, id) {
+        const data = await apiRequest(`/${type}s/${id}`);
+        if (!data) return;
+        currentEdit = { type, id };
+        modalTitle.textContent = `Edit ${
+          type.charAt(0).toUpperCase() + type.slice(1)
+        }`;
+        modalForm.innerHTML = getFormFields(type);
+        Object.keys(data).forEach((key) => {
+          const input = modalForm.querySelector(`[name="${key}"]`);
+          if (input) input.value = data[key];
+        });
+        modal.style.display = "flex";
+      }
+
+      function openModalForCreate(type) {
+        currentEdit = { type, id: null };
+        modalTitle.textContent = `Add New ${
+          type.charAt(0).toUpperCase() + type.slice(1)
+        }`;
+        modalForm.innerHTML = getFormFields(type);
+        modal.style.display = "flex";
+      }
+
+      modalForm.onsubmit = async (e) => {
+        e.preventDefault();
+        const formData = Object.fromEntries(new FormData(e.target).entries());
+        const { type, id } = currentEdit;
+
+        const endpoint = id ? `/${type}s/${id}` : `/${type}s`;
+        const method = id ? "PUT" : "POST";
+
+        const result = await apiRequest(endpoint, method, formData);
+        if (result) {
+          showToast(result.message);
+          closeModal();
+          refreshAllData();
+        }
+      };
+
+      // --- DATA RENDERING ---
+      function renderTasks(tasks) {
+        document.getElementById("taskList").innerHTML =
+          tasks && tasks.length
+            ? tasks
+                .map(
+                  (task) => `
+            <div class="task-card task">
+                <h3>${task.title}</h3>
+                <p><strong>Due:</strong> ${task.due_date}</p>
+                <p><strong>Priority:</strong> ${task.priority}</p>
+                <div class="card-actions">
+                    <button class="complete-btn" data-type="task" data-id="${task.id}">✓ Complete</button>
+                    <button class="icon-btn" onclick="openModalForEdit('task', ${task.id})">✏️</button>
+                    <button class="icon-btn" onclick="handleDelete('task', ${task.id})">🗑️</button>
+                </div>
+            </div>`
+                )
+                .join("")
+            : "<p>No pending tasks. Great job! ✨</p>";
+      }
+
+      function renderAppointments(appointments) {
+        document.getElementById("appointmentList").innerHTML =
+          appointments && appointments.length
+            ? appointments
+                .map(
+                  (app) => `
+            <div class="task-card appointment">
+                <h3>${app.name}</h3>
+                <p><strong>When:</strong> ${new Date(
+                  app.appointment_time
+                ).toLocaleString()}</p>
+                <div class="card-actions">
+                    <button class="complete-btn" data-type="appointment" data-id="${
+                      app.id
+                    }">✓ Complete</button>
+                    <button class="icon-btn" onclick="openModalForEdit('appointment', ${
+                      app.id
+                    })">✏️</button>
+                    <button class="icon-btn" onclick="handleDelete('appointment', ${
+                      app.id
+                    })">🗑️</button>
+                </div>
+            </div>`
+                )
+                .join("")
+            : "<p>No pending appointments.</p>";
+      }
+
+      function renderSummaries(taskSummary, appSummary) {
+        if (taskSummary) {
+          document.getElementById("completedTaskCount").textContent =
+            taskSummary.completed;
+          document.getElementById("totalTaskCount").textContent =
+            taskSummary.total;
+          document.getElementById(
+            "taskProgressBar"
+          ).style.width = `${taskSummary.completionRate}%`;
+        }
+        if (appSummary) {
+          document.getElementById("completedAppointmentCount").textContent =
+            appSummary.completed;
+          document.getElementById("totalAppointmentCount").textContent =
+            appSummary.total;
+          document.getElementById(
+            "appointmentProgressBar"
+          ).style.width = `${appSummary.completionRate}%`;
+        }
+      }
+
+     
+      // --- NOTIFICATION LOGIC ---
+      async function fetchAndShowNotifications() {
+        const events = await apiRequest("/notifications/upcoming");
+        const badge = document.getElementById("notificationBadge");
+        const list = document.getElementById("notificationList");
+        if (!events) return;
+        badge.style.display = events.length > 0 ? "block" : "none";
+        badge.textContent = events.length;
+        list.innerHTML = events.length
+          ? events
+              .map(
+                (event) =>
+                  `<li><strong>${
+                    event.title
+                  }</strong><br><small>Today at ${new Date(
+                    event.event_time
+                  ).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}</small></li>`
+              )
+              .join("")
+          : "<li>No upcoming events.</li>";
+      }
+
+      // --- EVENT HANDLERS ---
+      async function handleDelete(type, id) {
+        if (confirm(`Are you sure you want to delete this ${type}?`)) {
+          const result = await apiRequest(`/${type}s/${id}`, "DELETE");
+          if (result) {
+            showToast(result.message);
+            refreshAllData();
+          }
+        }
+      }
+
+      document.body.addEventListener("click", async (event) => {
+        if (event.target.matches(".complete-btn")) {
+          const button = event.target;
+          const result = await apiRequest(
+            `/${button.dataset.type}s/${button.dataset.id}/complete`,
+            "PUT"
+          );
+          if (result) {
+            showToast(result.message);
+            refreshAllData();
+          }
+        }
+      });
+
+      // --- INITIALIZATION ---
+      async function refreshAllData() {
+        const [tasks, appointments, taskSummary, appSummary, calEvents] =
+          await Promise.all([
+            apiRequest("/tasks/pending"),
+            apiRequest("/appointments/pending"),
+            apiRequest("/tasks/summary"),
+            apiRequest("/appointments/summary"),
+            apiRequest("/calendar-events"),
+          ]);
+        renderTasks(tasks);
+        renderAppointments(appointments);
+        renderSummaries(taskSummary, appSummary);
+        calendarEvents = calEvents || [];
+        renderCalendar(current, calendarEvents);
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        if (!token) {
+          document.body.innerHTML =
+            "<h1>Please log in to use the Task Manager.</h1>";
+          setTimeout(() => {
+            window.location.href = "sign.html";
+          }, 2000);
+          return;
+        }
+
+        refreshAllData();
+        fetchAndShowNotifications();
+        setInterval(fetchAndShowNotifications, 60000);
+
+        document.getElementById("prevMonth").addEventListener("click", () => {
+          current.setMonth(current.getMonth() - 1);
+          renderCalendar(current, calendarEvents);
+        });
+        document.getElementById("nextMonth").addEventListener("click", () => {
+          current.setMonth(current.getMonth() + 1);
+          renderCalendar(current, calendarEvents);
+        });
+
+        const notificationBell = document.querySelector(".notification-bell");
+        const notificationPanel = document.getElementById("notificationPanel");
+        notificationBell.addEventListener("click", (e) => {
+          e.stopPropagation();
+          notificationPanel.style.display =
+            notificationPanel.style.display === "block" ? "none" : "block";
+        });
+        window.addEventListener("click", () => {
+          if (notificationPanel.style.display === "block") {
+            notificationPanel.style.display = "none";
+          }
+        });
+      });
+    </script>
+  </body>
 </html>
