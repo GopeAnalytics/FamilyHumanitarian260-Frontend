@@ -1,3 +1,5 @@
+//Base URL initializtion
+const BASE_URL = "http://localhost:3000";
 // Utility function to show spinner
 function showSpinner(button) {
   const originalText = button.textContent;
@@ -61,7 +63,7 @@ document
     }
 
     try {
-      const response = await fetch("http://localhost:3000/api/request-signup", {
+      const response = await fetch(`${BASE_URL}/api/request-signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, country }),
@@ -155,7 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       try {
-        const res = await fetch("http://localhost:3000/api/login", {
+        const res = await fetch(`${BASE_URL}/api/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ credential, pin }),
@@ -203,14 +205,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function verifySignupCode(code) {
     try {
-      const response = await fetch(
-        "http://localhost:3000/api/validate-signup-code",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ code }),
-        }
-      );
+      const response = await fetch(`${BASE_URL}/api/validate-signup-code`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code }),
+      });
 
       return await response.json();
     } catch (error) {
@@ -237,14 +236,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       try {
-        const response = await fetch(
-          "http://localhost:3000/api/validate-signup-code",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ code }),
-          }
-        );
+        const response = await fetch(`${BASE_URL}/api/validate-signup-code`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ code }),
+        });
 
         const data = await response.json();
 
@@ -358,7 +354,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Submit registration
       try {
-        const res = await fetch("http://localhost:3000/api/register", {
+        const res = await fetch(`${BASE_URL}/api/register`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ code, name, email, pin, country }),
@@ -480,7 +476,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       try {
-        const res = await fetch("http://localhost:3000/api/request-pin-reset", {
+        const res = await fetch(`${BASE_URL}/api/request-pin-reset`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email }),

@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fh260 - Funds Transfer</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="./css/styles.css" />
+    <style>
+      /* General Styling */
+      :root {
+        --primary-color: #004080;
+        --primary-dark: #0d3d6e;
+        --accent-green: #28a745;
+        --accent-red: #dc3545;
+        --accent-blue: #007bff;
+        --light-bg: #f8f9fa;
+        --light-card-bg: #ffffff;
+        --light-text: #333;
+        --dark-bg: #121212;
+        --dark-card-bg: #1f1f1f;
+        --dark-text: #e0e0e0;
+      }
+
+      body {
+        font-family: "Arial", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: var(--light-bg);
+        color: var(--light-text);
+        transition: background-color 0.3s, color 0.3s;
+      }
+
+      body.dark-mode {
+        background-color: var(--dark-bg);
+        color: var(--dark-text);
+      }
+
+      h1,
+      h2,
+      h3,
+      h4 {
+        color: var(--primary-color);
+      }
+
+      body.dark-mode h1,
+      body.dark-mode h2,
+      body.dark-mode h3,
+      body.dark-mode h4 {
+        color: var(--accent-blue);
+      }
+
+      /* Header */
+      .top-nav {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        background-color: var(--light-card-bg);
+        padding: 10px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      body.dark-mode .top-nav {
+        background-color: var(--dark-card-bg);
+        border-bottom: 1px solid #333;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+      }
+
+      .logo-img {
+        height: 30px;
+        margin-right: 15px;
+      }
+
+      .logo h1 {
+        font-size: 24px;
+        margin: 0;
+      }
+
+      /* Desktop Navigation */
+      .desktop-nav {
+        display: flex;
+        gap: 30px;
+      }
+
+      .desktop-nav a {
+        text-decoration: none;
+        color: #555;
+        font-weight: bold;
+        padding-bottom: 5px;
+        border-bottom: 2px solid transparent;
+        transition: color 0.3s, border-bottom-color 0.3s;
+      }
+
+      body.dark-mode .desktop-nav a {
+        color: #bbb;
+      }
+
+      .desktop-nav a.active,
+      .desktop-nav a:hover {
+        color: var(--primary-color);
+        border-bottom-color: var(--primary-color);
+      }
+
+      body.dark-mode .desktop-nav a.active,
+      body.dark-mode .desktop-nav a:hover {
+        color: var(--accent-blue);
+        border-bottom-color: var(--accent-blue);
+      }
+
+      /* Mobile Controls Container */
+      .mobile-controls {
+        display: none;
+        align-items: center;
+        gap: 15px;
+      }
+
+      /* User Profile */
+      .user-profile {
+        position: relative;
+      }
+
+      .user-icon {
+        cursor: pointer;
+        background-color: var(--primary-color);
+        color: white;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .profile-dropdown {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 55px;
+        background-color: var(--light-card-bg);
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        z-index: 1010;
+        width: 200px;
+      }
+
+      body.dark-mode .profile-dropdown {
+        background-color: #2c2c2c;
+        border-color: #444;
+      }
+
+      .profile-dropdown a {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 12px 15px;
+        text-decoration: none;
+        color: var(--light-text);
+        font-size: 16px;
+      }
+
+      body.dark-mode .profile-dropdown a {
+        color: var(--dark-text);
+      }
+
+      .profile-dropdown a:hover {
+        background-color: #f5f5f5;
+      }
+
+      body.dark-mode .profile-dropdown a:hover {
+        background-color: #383838;
+      }
+
+      #logoutBtn,
+      #logoutBtnMobile {
+        color: var(--accent-red);
+        border-top: 1px solid #eee;
+      }
+
+      body.dark-mode #logoutBtn,
+      body.dark-mode #logoutBtnMobile {
+        border-top-color: #444;
+      }
+
+      /* Hamburger Menu Button */
+      .hamburger {
+        display: none;
+        flex-direction: column;
+        cursor: pointer;
+        padding: 5px;
+        z-index: 1003;
+      }
+
+      .hamburger span {
+        width: 25px;
+        height: 2px;
+        background-color: var(--light-text);
+        margin: 3px 0;
+        transition: 0.1s;
+      }
+
+      body.dark-mode .hamburger span {
+        background-color: var(--dark-text);
+      }
+
+      /* Mobile Navigation Menu */
+      #nav-menu {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 70%;
+        height: 100vh;
+        background-color: var(--light-card-bg);
+        box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+        z-index: 1002;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 40px;
+        transition: right 0.4s ease-in-out;
+      }
+
+      body.dark-mode #nav-menu {
+        background-color: var(--dark-card-bg);
+      }
+
+      /* Show menu when active */
+      #nav-menu.nav-active {
+        right: 0;
+      }
+
+      .close-nav {
+        position: absolute;
+        top: 20px;
+        left: 25px;
+        cursor: pointer;
+        font-size: 30px;
+        font-weight: bold;
+        color: var(--light-text);
+        z-index: 1004;
+      }
+
+      body.dark-mode .close-nav {
+        color: var(--dark-text);
+      }
+
+      #nav-menu a {
+        font-size: 20px;
+        padding: 15px 20px;
+        border-radius: 5px;
+        width: 80%;
+        text-align: center;
+        transition: background-color 0.3s, color 0.3s;
+        color: var(--light-text);
+        text-decoration: none;
+        border-bottom: none;
+      }
+
+      body.dark-mode #nav-menu a {
+        color: var(--dark-text);
+      }
+
+      #nav-menu a:hover {
+        background-color: var(--primary-color);
+        color: white !important;
+      }
+
+      body.dark-mode #nav-menu a:hover {
+        background-color: var(--accent-blue);
+      }
+
+      /* Footer */
+      footer {
+        background-color: var(--primary-color);
+        color: white;
+        text-align: center;
+        padding: 20px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .footer-links a {
+        color: white;
+        text-decoration: none;
+        margin: 0 10px;
+      }
+
+      .dark-mode footer {
+        background-color: #1e1e1e;
+        color: #e0e0e0;
+      }
+
+      .dark-mode footer a {
+        color: #e0e0e0;
+      }
+
+      .dark-mode footer a:hover {
+        color: #81d4fa;
+      }
+
+      /* Funds Transfer Specific Styles */
+      .transfer-container {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 0 20px;
+      }
+
+      .transfer-header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      .transfer-title {
+        font-size: 28px;
+        color: var(--primary-color);
+        margin-bottom: 10px;
+      }
+
+      body.dark-mode .transfer-title {
+        color: var(--accent-blue);
+      }
+
+      .transfer-subtitle {
+        color: #666;
+        font-size: 16px;
+      }
+
+      body.dark-mode .transfer-subtitle {
+        color: #aaa;
+      }
+
+      .section-container {
+        background-color: var(--light-card-bg);
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+        margin-bottom: 30px;
+      }
+
+      body.dark-mode .section-container {
+        background-color: var(--dark-card-bg);
+        border: 1px solid #333;
+      }
+
+      .section-title {
+        font-size: 20px;
+        margin-top: 0;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        color: var(--primary-color);
+      }
+
+      body.dark-mode .section-title {
+        color: var(--accent-blue);
+        border-bottom-color: #444;
+      }
+
+      /* Horizontal form layout */
+      .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-bottom: 15px;
+      }
+
+      .form-group {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      select,
+      textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 16px;
+      }
+
+      body.dark-mode input[type="text"],
+      body.dark-mode input[type="number"],
+      body.dark-mode select,
+      body.dark-mode textarea {
+        background-color: #383838;
+        border-color: #555;
+        color: var(--dark-text);
+      }
+
+      .required::after {
+        content: " *";
+        color: var(--accent-red);
+      }
+
+      .subcategory-details {
+        display: none;
+        background-color: rgba(0, 0, 0, 0.03);
+        padding: 15px;
+        border-radius: 6px;
+        margin-top: 15px;
+        margin-bottom: 20px;
+      }
+
+      body.dark-mode .subcategory-details {
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+
+      .subcategory-form-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+
+      .subcategory-form-group {
+        flex: 1;
+        min-width: 150px;
+      }
+
+      /* Enhanced Add Item Button */
+      .add-item-btn {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: background-color 0.3s, transform 0.2s;
+      }
+
+      .add-item-btn:hover {
+        background-color: #218838;
+        transform: translateY(-2px);
+      }
+
+      .add-item-btn:active {
+        transform: translateY(0);
+      }
+
+      /* Horizontal added items list */
+      .added-items-container {
+        display: none;
+        margin: 20px 0;
+      }
+
+      .added-items-title {
+        font-size: 18px;
+        margin-bottom: 15px;
+      }
+
+      .added-items-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+
+      .added-item-card {
+        background-color: rgba(0, 0, 0, 0.03);
+        border-radius: 8px;
+        padding: 15px;
+        position: relative;
+        min-width: 250px;
+        flex: 1;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      body.dark-mode .added-item-card {
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+
+      .added-item-subcategory {
+        font-weight: bold;
+        margin-bottom: 8px;
+        color: var(--primary-color);
+      }
+
+      body.dark-mode .added-item-subcategory {
+        color: var(--accent-blue);
+      }
+
+      .added-item-details {
+        margin-bottom: 5px;
+      }
+
+      .item-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .item-action-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        padding: 5px;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+      }
+
+      .edit-btn {
+        color: var(--accent-blue);
+      }
+
+      .edit-btn:hover {
+        background-color: rgba(0, 123, 255, 0.1);
+      }
+
+      .delete-btn {
+        color: var(--accent-red);
+      }
+
+      .delete-btn:hover {
+        background-color: rgba(220, 53, 69, 0.1);
+      }
+
+      /* Large Proceed to Summary button */
+      .proceed-button-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
+      }
+
+      .btn-proceed {
+        width: 75%;
+        padding: 15px;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      .btn-proceed:hover {
+        background-color: var(--primary-dark);
+      }
+
+      /* Summary section styles */
+      .summary-section {
+        display: none;
+      }
+
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .summary-card {
+        background-color: rgba(0, 0, 0, 0.03);
+        border-radius: 6px;
+        padding: 15px;
+      }
+
+      body.dark-mode .summary-card {
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+
+      .summary-card-title {
+        font-size: 18px;
+        margin-top: 0;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #ddd;
+      }
+
+      body.dark-mode .summary-card-title {
+        border-bottom-color: #444;
+      }
+
+      .summary-item {
+        margin-bottom: 10px;
+      }
+
+      .summary-label {
+        font-weight: bold;
+        margin-bottom: 3px;
+      }
+
+      .summary-value {
+        font-size: 16px;
+      }
+
+      /* Summary action buttons at bottom */
+      .summary-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #ddd;
+      }
+
+      body.dark-mode .summary-actions {
+        border-top-color: #444;
+      }
+
+      .btn {
+        padding: 12px 25px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      .btn-primary {
+        background-color: var(--primary-color);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background-color: var(--primary-dark);
+      }
+
+      .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background-color: #5a6268;
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+      }
+
+      .modal-content {
+        background-color: var(--light-card-bg);
+        margin: 10% auto;
+        padding: 20px;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      body.dark-mode .modal-content {
+        background-color: var(--dark-card-bg);
+      }
+
+      .close-btn {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .close-btn:hover {
+        color: #000;
+      }
+
+      body.dark-mode .close-btn:hover {
+        color: #fff;
+      }
+
+      .profile-picture {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      .initials-circle {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 10px;
+      }
+
+      .upload-btn {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .modal-buttons {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 20px;
+      }
+
+      .save-btn {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .cancel-btn {
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      /* Mobile Responsiveness */
+      @media screen and (max-width: 768px) {
+        /* Show mobile controls container */
+        .mobile-controls {
+          display: flex;
+        }
+
+        /* Show hamburger button on mobile */
+        .hamburger {
+          display: flex;
+        }
+
+        /* Hide desktop navigation on mobile */
+        .desktop-nav {
+          display: none;
+        }
+
+        /* Hide desktop user profile, show only mobile version */
+        .top-nav > .user-profile:not(.mobile-controls .user-profile) {
+          display: none;
+        }
+
+        /* Adjust mobile profile dropdown position */
+        .mobile-controls .profile-dropdown {
+          right: 50px;
+        }
+
+        .transfer-container {
+          padding: 0 15px;
+        }
+
+        .section-container {
+          padding: 15px;
+        }
+
+        .form-row {
+          flex-direction: column;
+          gap: 15px;
+        }
+
+        .form-group {
+          min-width: 100%;
+        }
+
+        .added-items-grid {
+          flex-direction: column;
+        }
+
+        .added-item-card {
+          min-width: 100%;
+        }
+
+        .btn-proceed {
+          width: 100%;
+        }
+
+        .summary-actions {
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        .btn {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="top-nav">
+      <div class="logo">
+        <img src="logoR.png" alt="Fh260 Logo" class="logo-img" />
+        <h1>Fh260</h1>
+      </div>
+
+      <!-- Desktop Navigation -->
+      <nav class="desktop-nav">
+        <a href="home.html">Home</a>
+        <a href="apply.html">Apply</a>
+        <a href="downloads.html">Downloads</a>
+        <a href="receipts.html">Receipts</a>
+        <a href="Task.html">Reminder</a>
+        <a href="transfer.html" class="active">Transfer</a>
+      </nav>
+
+      <!-- Desktop User Profile (visible on desktop only) -->
+      <div class="user-profile">
+        <div class="user-icon" id="userIcon">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="profile-dropdown" id="profileDropdown">
+          <a href="#" id="viewProfileBtn"
+            ><i class="fas fa-edit"></i> View/Edit Profile</a
+          >
+          <a href="#" id="logoutBtn"
+            ><i class="fas fa-sign-out-alt"></i> Logout</a
+          >
+        </div>
+      </div>
+
+      <!-- Mobile Controls Container (groups user profile and hamburger on mobile) -->
+      <div class="mobile-controls">
+        <div class="user-profile">
+          <div class="user-icon" id="userIconMobile">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="profile-dropdown" id="profileDropdownMobile">
+            <a href="#" id="viewProfileBtnMobile"
+              ><i class="fas fa-edit"></i> View/Edit Profile</a
+            >
+            <a href="#" id="logoutBtnMobile"
+              ><i class="fas fa-sign-out-alt"></i> Logout</a
+            >
+          </div>
+        </div>
+
+        <!-- Hamburger Menu Button -->
+        <div class="hamburger" id="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- Mobile Navigation Menu -->
+      <nav id="nav-menu">
+        <div class="close-nav" id="close-nav">
+          <i class="fas fa-times"></i>
+        </div>
+        <a href="home.html">Home</a>
+        <a href="apply.html">Apply</a>
+        <a href="downloads.html">Downloads</a>
+        <a href="receipts.html">Receipts</a>
+        <a href="Task.html">Reminder</a>
+        <a href="transfer.html" class="active">Transfer</a>
+      </nav>
+    </header>
+
+    <div class="transfer-container">
+      <div class="transfer-header">
+        <h1 class="transfer-title">Fund Transfer</h1>
+        <p class="transfer-subtitle">
+          Transfer funds from current balance to a new expense .
+        </p>
+      </div>
+
+      <!-- From Section Container -->
+      <div class="section-container">
+        <h2 class="section-title">From Section</h2>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="receiptNumber" class="required">Receipt Number</label>
+            <select id="receiptNumber" required>
+              <option value="">Select receipt number</option>
+              <option value="RCPT001">RCPT001</option>
+              <option value="RCPT002">RCPT002</option>
+              <option value="RCPT003">RCPT003</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="transferAmount" class="required">Transfer Amount</label>
+            <input
+              type="number"
+              id="transferAmount"
+              placeholder="Enter amount"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="outstandingAmount" class="required"
+              >Outstanding Amount</label
+            >
+            <input
+              type="number"
+              id="outstandingAmount"
+              placeholder="Enter outstanding amount"
+              required
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- To Section Container -->
+      <div class="section-container">
+        <h2 class="section-title">To Section</h2>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="category" class="required">Category</label>
+            <select id="category" required>
+              <option value="">Select category</option>
+              <option value="Fuel">Fuel</option>
+              <option value="Borehole Supplies">Borehole Supplies</option>
+              <option value="Construction">Construction</option>
+              <option value="Paper Works">Paper works</option>
+              <option value="Office">Office</option>
+              <option value="Permits">Permits</option>
+              <option value="Internet/Electricity">Internet/Electricity</option>
+              <option value="Rent">Rent</option>
+              <option value="Vehicle Repair">Vehicle Repair</option>
+              <option value="Expeditions">Expeditions</option>
+              <option value="Transport">Transport</option>
+              <option value="Meals">Meals</option>
+              <option value="Accommodations">Accommodations</option>
+              <option value="Projects">Projects</option>
+              <option value="Training">Training</option>
+              <option value="Vehicle Service">Vehicle Service</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="subcategory">Subcategory</label>
+            <select id="subcategory" disabled>
+              <option value="">Select subcategory</option>
+              <!-- Options will be populated based on category selection -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Subcategory Details (shown when a subcategory is selected) -->
+        <div id="subcategoryDetails" class="subcategory-details">
+          <h4>Add Item Details for: <span id="selectedSubcategory"></span></h4>
+
+          <div class="subcategory-form-row">
+            <div class="subcategory-form-group">
+              <label for="itemDescription">Description</label>
+              <input
+                type="text"
+                id="itemDescription"
+                placeholder="Enter description"
+              />
+            </div>
+
+            <div class="subcategory-form-group">
+              <label for="itemAmount">Amount</label>
+              <input type="number" id="itemAmount" placeholder="Enter amount" />
+            </div>
+
+            <div class="subcategory-form-group">
+              <label for="itemQuantity">Quantity</label>
+              <input
+                type="number"
+                id="itemQuantity"
+                placeholder="Enter quantity"
+                value="1"
+                min="1"
+              />
+            </div>
+
+            <div
+              class="subcategory-form-group"
+              style="display: flex; align-items: flex-end"
+            >
+              <button id="addItemBtn" class="add-item-btn">
+                <i class="fas fa-plus-circle"></i> Add Item
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Added Items Grid -->
+        <div id="addedItemsContainer" class="added-items-container">
+          <h4 class="added-items-title">Added Items</h4>
+          <div id="addedItemsGrid" class="added-items-grid">
+            <!-- Items will be added here dynamically -->
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="transactionCost">Transaction Cost (Optional)</label>
+            <input
+              type="number"
+              id="transactionCost"
+              placeholder="Enter transaction cost (default: 0)"
+              value="0"
+              min="0"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Large Proceed to Summary Button -->
+      <div class="proceed-button-container">
+        <button id="proceedToSummaryBtn" class="btn-proceed">
+          Proceed to Summary
+        </button>
+      </div>
+
+      <!-- Summary Section (initially hidden) -->
+      <div id="summarySection" class="section-container summary-section">
+        <h2 class="section-title">Fund Transfer Summary</h2>
+
+        <div class="summary-grid">
+          <!-- From Section Summary -->
+          <div class="summary-card">
+            <h3 class="summary-card-title">From Section</h3>
+
+            <div class="summary-item">
+              <div class="summary-label">Receipt Number</div>
+              <div class="summary-value" id="summaryReceiptNumber">-</div>
+            </div>
+
+            <div class="summary-item">
+              <div class="summary-label">Transfer Amount</div>
+              <div class="summary-value" id="summaryTransferAmount">$0.00</div>
+            </div>
+
+            <div class="summary-item">
+              <div class="summary-label">Outstanding Amount</div>
+              <div class="summary-value" id="summaryOutstandingAmount">
+                $0.00
+              </div>
+            </div>
+          </div>
+
+          <!-- To Section Summary -->
+          <div class="summary-card">
+            <h3 class="summary-card-title">To Section</h3>
+
+            <div class="summary-item">
+              <div class="summary-label">Category</div>
+              <div class="summary-value" id="summaryCategory">-</div>
+            </div>
+
+            <div class="summary-item">
+              <div class="summary-label">Transaction Cost</div>
+              <div class="summary-value" id="summaryTransactionCost">$0.00</div>
+            </div>
+
+            <div class="summary-item">
+              <div class="summary-label">Total Amount</div>
+              <div class="summary-value" id="summaryTotalAmount">$0.00</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subcategories Summary -->
+        <div class="summary-card">
+          <h3 class="summary-card-title">Subcategories</h3>
+          <div id="summarySubcategories">
+            <!-- Subcategory items will be added here dynamically -->
+          </div>
+        </div>
+
+        <!-- Action Buttons for Summary (at the bottom) -->
+        <div class="summary-actions">
+          <button id="backFromSummaryBtn" class="btn btn-secondary">
+            Back to Edit
+          </button>
+          <button id="submitTransferBtn" class="btn btn-primary">
+            Submit Transfer
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="profileModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" id="closeModal">&times;</span>
+        <h3>Edit Profile</h3>
+        <div class="profile-picture">
+          <img
+            id="profileImage"
+            src="https://via.placeholder.com/80"
+            alt="Profile"
+            class="initials-circle"
+          />
+          <input
+            type="file"
+            id="profileUpload"
+            style="display: none"
+            accept="image/*"
+          />
+          <button class="upload-btn" id="uploadBtn">
+            <i class="fas fa-upload"></i> Upload
+          </button>
+        </div>
+        <form id="profileForm">
+          <div class="form-group">
+            <label for="fullName">Full Name</label>
+            <input type="text" id="fullName" readonly />
+          </div>
+          <div class="form-group">
+            <label for="role">Role</label>
+            <input type="text" id="role" placeholder="Enter your role" />
+          </div>
+          <div class="form-group">
+            <label for="bio">Bio/Short Description</label>
+            <textarea
+              id="bio"
+              placeholder="Tell us about yourself..."
+            ></textarea>
+          </div>
+          <div class="form-group theme-switcher">
+            <label>Theme</label>
+            <i class="fas fa-sun" id="themeIcon"></i>
+          </div>
+          <div class="modal-buttons">
+            <button type="submit" class="save-btn">Save Changes</button>
+            <button type="button" class="cancel-btn" id="cancelBtn">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <footer>
+      <p>&copy; 2025 Fh260. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="sign.html">Sign In</a> | <a href="index.html">Back Page</a> |
+        <a href="admin.html">Admin</a>
+      </div>
+    </footer>
+    <script>
+      const BASE_URL = "http://localhost:3000";
+    </script>
+    <script src="js/global-nav.js"></script>
+    <script src="js/profile-handler.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Navigation functionality
+        const userIcon = document.getElementById("userIcon");
+        const userIconMobile = document.getElementById("userIconMobile");
+        const profileDropdown = document.getElementById("profileDropdown");
+        const profileDropdownMobile = document.getElementById(
+          "profileDropdownMobile"
+        );
+        const hamburger = document.getElementById("hamburger");
+        const navMenu = document.getElementById("nav-menu");
+        const closeNav = document.getElementById("close-nav");
+
+        if (hamburger && navMenu) {
+          hamburger.addEventListener("click", function () {
+            navMenu.classList.add("nav-active");
+          });
+        }
+
+        if (closeNav && navMenu) {
+          closeNav.addEventListener("click", function () {
+            navMenu.classList.remove("nav-active");
+          });
+        }
+
+        // Funds Transfer functionality
+        const categorySelect = document.getElementById("category");
+        const subcategorySelect = document.getElementById("subcategory");
+        const subcategoryDetails =
+          document.getElementById("subcategoryDetails");
+        const selectedSubcategorySpan = document.getElementById(
+          "selectedSubcategory"
+        );
+        const addItemBtn = document.getElementById("addItemBtn");
+        const addedItemsContainer = document.getElementById(
+          "addedItemsContainer"
+        );
+        const addedItemsGrid = document.getElementById("addedItemsGrid");
+        const proceedToSummaryBtn = document.getElementById(
+          "proceedToSummaryBtn"
+        );
+        const summarySection = document.getElementById("summarySection");
+        const backFromSummaryBtn =
+          document.getElementById("backFromSummaryBtn");
+        const submitTransferBtn = document.getElementById("submitTransferBtn");
+
+        // Define subcategories for each category
+        const subcategories = {
+          Fuel: ["Full Tank", "Top up", "One Month Full tank", "Other"],
+          "Paper Works": [
+            "Government",
+            "Government-eCitizen Kenya",
+            "Labor Charge(Service fee)",
+            "Other",
+          ],
+          Office: [
+            "Printer",
+            "Rim Papers",
+            "Pen",
+            "Tona",
+            "Catridge",
+            "Ink",
+            "Stamp",
+            "Other",
+          ],
+          "Borehole Supplies": [
+            "Afri dev Pump",
+            "Mark II Pump",
+            "Rods",
+            "Pump Installation",
+            "Plaques",
+            "Drill bits",
+            "Rivets",
+            "Casing Pipes",
+            "Targid Glue",
+            "Grouting",
+            "Centralizers",
+            "Pipes",
+            "Rubber",
+            "Riser Pipes (Afri Dev Pipes)",
+            "Galvanized Iron Pipes(GI)",
+            "Mud Pumps",
+            "Water Hoses",
+            "Filters",
+            "Bearings",
+            "Grease",
+            "Labor Charge(Service fee)",
+            "Other",
+          ],
+          Construction: [
+            "Cement",
+            "Sand",
+            "Gravel",
+            "Bricks",
+            "Iron Sheets",
+            "Nails",
+            "Timber",
+            "Labor Charge(Service fee)",
+            "Other",
+          ],
+          Permits: [
+            "Geological Survey",
+            "Borehole Permits",
+            "Drilling Permits",
+            "Labor Charge(Service fee)",
+            "Other",
+          ],
+          "Internet/Electricity": ["Monthly Charge", "Other"],
+          Rent: ["Monthly", "Other"],
+          "Vehicle Repair": [
+            "Tires",
+            "Alternator",
+            "Battery",
+            "Oil Change",
+            "Brake Pads",
+            "Suspension",
+            "Exhaust Pipe",
+            "GearBox",
+            "Speedometer",
+            "Oil filters",
+            "Rings",
+            "Air filters",
+            "Grease",
+            "Labor Charge(Service fee)",
+            "Other",
+          ],
+          Expeditions: ["Car Hire", "Labor Charge(Service fee)", "Other"],
+          Transport: ["Labor Charge(Service fee)", "Other"],
+          Meals: ["Lunch", "Dinner", "Snacks", "Other"],
+          Accommodations: ["Hotel Rooms", "Labor Charge(Service fee)", "Other"],
+          Projects: [
+            "Drilling Hand Boreholes",
+            "Drilling Solar Boreholes",
+            "Constructing Schools",
+            "Labor Charge(Service fee)",
+            "Other",
+          ],
+          Training: [
+            "Sheldon's Visit",
+            "General Meeting ",
+            "Leadership Training",
+            "Transport",
+            "Other",
+          ],
+          "Vehicle Service": [
+            "Body Repair",
+            "Body Paint",
+            "Labor Charge(Service fee)",
+            "Engine Change",
+            "Insurance",
+            "Other",
+          ],
+          Other: ["Other"],
+        };
+
+        // Store added items
+        let addedItems = [];
+
+        // Update subcategory options based on selected category
+        categorySelect.addEventListener("change", function () {
+          const selectedCategory = this.value;
+
+          if (selectedCategory) {
+            // Enable subcategory select
+            subcategorySelect.disabled = false;
+
+            // Clear existing options
+            subcategorySelect.innerHTML =
+              '<option value="">Select subcategory</option>';
+
+            // Add new options based on selected category
+            subcategories[selectedCategory].forEach(function (subcat) {
+              const option = document.createElement("option");
+              option.value = subcat.toLowerCase().replace(/\s+/g, "-");
+              option.textContent = subcat;
+              subcategorySelect.appendChild(option);
+            });
+          } else {
+            // Disable subcategory select if no category selected
+            subcategorySelect.disabled = true;
+            subcategorySelect.innerHTML =
+              '<option value="">Select subcategory</option>';
+            subcategoryDetails.style.display = "none";
+          }
+        });
+
+        // Show subcategory details when a subcategory is selected
+        subcategorySelect.addEventListener("change", function () {
+          const selectedSubcategory = this.options[this.selectedIndex].text;
+
+          if (this.value) {
+            selectedSubcategorySpan.textContent = selectedSubcategory;
+            subcategoryDetails.style.display = "block";
+          } else {
+            subcategoryDetails.style.display = "none";
+          }
+        });
+
+        // Add item to the list
+        addItemBtn.addEventListener("click", function () {
+          const subcategory =
+            subcategorySelect.options[subcategorySelect.selectedIndex].text;
+          const description = document.getElementById("itemDescription").value;
+          const amount = parseFloat(
+            document.getElementById("itemAmount").value
+          );
+          const quantity = parseInt(
+            document.getElementById("itemQuantity").value
+          );
+
+          if (!description || isNaN(amount) || isNaN(quantity)) {
+            alert("Please fill in all item details correctly.");
+            return;
+          }
+
+          const subtotal = amount * quantity;
+
+          // Add item to the array
+          addedItems.push({
+            subcategory,
+            description,
+            amount,
+            quantity,
+            subtotal,
+          });
+
+          // Update the grid
+          updateAddedItemsGrid();
+
+          // Show the added items container if it's hidden
+          addedItemsContainer.style.display = "block";
+
+          // Clear the form
+          document.getElementById("itemDescription").value = "";
+          document.getElementById("itemAmount").value = "";
+          document.getElementById("itemQuantity").value = "1";
+        });
+
+        // Update the added items grid
+        function updateAddedItemsGrid() {
+          // Clear the grid
+          addedItemsGrid.innerHTML = "";
+
+          // Add each item to the grid
+          addedItems.forEach(function (item, index) {
+            const itemCard = document.createElement("div");
+            itemCard.classList.add("added-item-card");
+
+            itemCard.innerHTML = `
+                        <div class="added-item-subcategory">${
+                          item.subcategory
+                        }</div>
+                        <div class="added-item-details">${
+                          item.description
+                        }</div>
+                        <div class="added-item-details">${
+                          item.quantity
+                        } × $${item.amount.toFixed(2)}</div>
+                        <div class="added-item-details"><strong>Subtotal: $${item.subtotal.toFixed(
+                          2
+                        )}</strong></div>
+                        <div class="item-actions">
+                            <button class="item-action-btn edit-btn" data-index="${index}">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="item-action-btn delete-btn" data-index="${index}">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    `;
+
+            addedItemsGrid.appendChild(itemCard);
+          });
+
+          // Add event listeners to edit buttons
+          document.querySelectorAll(".edit-btn").forEach((btn) => {
+            btn.addEventListener("click", function () {
+              const index = parseInt(this.getAttribute("data-index"));
+              const item = addedItems[index];
+
+              // Fill the form with item data for editing
+              document.getElementById("itemDescription").value =
+                item.description;
+              document.getElementById("itemAmount").value = item.amount;
+              document.getElementById("itemQuantity").value = item.quantity;
+
+              // Remove the item from the list
+              addedItems.splice(index, 1);
+              updateAddedItemsGrid();
+
+              // Show the subcategory details if hidden
+              subcategoryDetails.style.display = "block";
+            });
+          });
+
+          // Add event listeners to delete buttons
+          document.querySelectorAll(".delete-btn").forEach((btn) => {
+            btn.addEventListener("click", function () {
+              const index = parseInt(this.getAttribute("data-index"));
+              addedItems.splice(index, 1);
+              updateAddedItemsGrid();
+
+              // Hide the added items container if no items left
+              if (addedItems.length === 0) {
+                addedItemsContainer.style.display = "none";
+              }
+            });
+          });
+        }
+
+        // Proceed to summary
+        proceedToSummaryBtn.addEventListener("click", function () {
+          // Validate form
+          const receiptNumber = document.getElementById("receiptNumber").value;
+          const transferAmount = parseFloat(
+            document.getElementById("transferAmount").value
+          );
+          const outstandingAmount = parseFloat(
+            document.getElementById("outstandingAmount").value
+          );
+          const category = document.getElementById("category").value;
+          const transactionCost =
+            parseFloat(document.getElementById("transactionCost").value) || 0;
+
+          if (
+            !receiptNumber ||
+            isNaN(transferAmount) ||
+            isNaN(outstandingAmount) ||
+            !category ||
+            addedItems.length === 0
+          ) {
+            alert(
+              "Please complete all required fields and add at least one item."
+            );
+            return;
+          }
+
+          // Calculate total amount
+          const itemsTotal = addedItems.reduce(
+            (total, item) => total + item.subtotal,
+            0
+          );
+          const totalAmount = itemsTotal + transactionCost;
+
+          // Update summary section
+          document.getElementById("summaryReceiptNumber").textContent =
+            receiptNumber;
+          document.getElementById(
+            "summaryTransferAmount"
+          ).textContent = `$${transferAmount.toFixed(2)}`;
+          document.getElementById(
+            "summaryOutstandingAmount"
+          ).textContent = `$${outstandingAmount.toFixed(2)}`;
+
+          document.getElementById("summaryCategory").textContent =
+            categorySelect.options[categorySelect.selectedIndex].text;
+
+          // Update subcategories in summary
+          const summarySubcategories = document.getElementById(
+            "summarySubcategories"
+          );
+          summarySubcategories.innerHTML = "";
+
+          addedItems.forEach(function (item) {
+            const itemDiv = document.createElement("div");
+            itemDiv.classList.add("summary-item");
+            itemDiv.style.padding = "10px";
+            itemDiv.style.marginBottom = "10px";
+            itemDiv.style.borderBottom = "1px solid #eee";
+
+            if (document.body.classList.contains("dark-mode")) {
+              itemDiv.style.borderBottomColor = "#444";
+            }
+
+            itemDiv.innerHTML = `
+                        <div class="summary-label">${item.subcategory}</div>
+                        <div class="summary-value">${item.description}</div>
+                        <div class="summary-value">${
+                          item.quantity
+                        } × $${item.amount.toFixed(
+              2
+            )} = $${item.subtotal.toFixed(2)}</div>
+                    `;
+
+            summarySubcategories.appendChild(itemDiv);
+          });
+
+          document.getElementById(
+            "summaryTransactionCost"
+          ).textContent = `$${transactionCost.toFixed(2)}`;
+          document.getElementById(
+            "summaryTotalAmount"
+          ).textContent = `$${totalAmount.toFixed(2)}`;
+
+          // Show summary section and hide form section
+          document
+            .querySelectorAll(".section-container:not(.summary-section)")
+            .forEach((el) => {
+              el.style.display = "none";
+            });
+          document.querySelector(".proceed-button-container").style.display =
+            "none";
+          summarySection.style.display = "block";
+        });
+
+        // Back to edit from summary
+        backFromSummaryBtn.addEventListener("click", function () {
+          summarySection.style.display = "none";
+          document
+            .querySelectorAll(".section-container:not(.summary-section)")
+            .forEach((el) => {
+              el.style.display = "block";
+            });
+          document.querySelector(".proceed-button-container").style.display =
+            "flex";
+        });
+
+        // Submit transfer
+        submitTransferBtn.addEventListener("click", function () {
+          alert("Transfer submitted successfully!");
+          // Here you would typically send the data to your server
+
+          // Reset form
+          document.getElementById("receiptNumber").value = "";
+          document.getElementById("transferAmount").value = "";
+          document.getElementById("outstandingAmount").value = "";
+          document.getElementById("category").value = "";
+          document.getElementById("subcategory").disabled = true;
+          document.getElementById("subcategory").innerHTML =
+            '<option value="">Select subcategory</option>';
+          document.getElementById("subcategoryDetails").style.display = "none";
+          document.getElementById("transactionCost").value = "0";
+          addedItems = [];
+          addedItemsGrid.innerHTML = "";
+          addedItemsContainer.style.display = "none";
+
+          // Go back to form
+          summarySection.style.display = "none";
+          document
+            .querySelectorAll(".section-container:not(.summary-section)")
+            .forEach((el) => {
+              el.style.display = "block";
+            });
+          document.querySelector(".proceed-button-container").style.display =
+            "flex";
+        });
+      });
+    </script>
+  </body>
+</html>

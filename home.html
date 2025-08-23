@@ -15,36 +15,26 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
-    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="./css/styles.css" />
   </head>
   <body>
     <header class="top-nav">
       <div class="logo">
-        <div
-          style="
-            width: 30px;
-            height: 30px;
-            background: var(--primary-color);
-            border-radius: 50%;
-            margin-right: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-          "
-        >
-          F
-        </div>
+        <img
+          src="logoR.png"
+          alt="Fh260 Logo"
+          style="height: 30px; margin-right: 15px"
+        />
         <h1>Fh260</h1>
       </div>
 
       <!-- Desktop Navigation -->
       <nav class="desktop-nav">
         <a href="home.html" class="active">Home</a>
-        <a href="downloads.html">Downloads</a>
         <a href="apply.html">Apply</a>
+        <a href="downloads.html">Downloads</a>
         <a href="receipts.html">Receipts</a>
+        <a href="Task.html">Reminder</a>
       </nav>
 
       <!-- Desktop User Profile (visible on desktop only) -->
@@ -92,9 +82,10 @@
           <i class="fas fa-times"></i>
         </div>
         <a href="home.html" class="active">Home</a>
-        <a href="downloads.html">Downloads</a>
         <a href="apply.html">Apply</a>
+        <a href="downloads.html">Downloads</a>
         <a href="receipts.html">Receipts</a>
+        <a href="Task.html">Reminder</a>
       </nav>
     </header>
 
@@ -124,7 +115,7 @@
                 <i class="fas fa-dollar-sign icon-expenditure"></i>
               </div>
               <p id="expenditureOutput">Ksh. 0.00</p>
-              <span>Total spending this month</span>
+              <span>Total amount requested and approved</span>
             </div>
             <div class="summary-card">
               <div class="card-header">
@@ -132,7 +123,7 @@
                 <i class="fas fa-receipt icon-receipts"></i>
               </div>
               <p id="receiptsOutput">Ksh. 0.00</p>
-              <span>Total receipts processed</span>
+              <span>Total receipts amount processed</span>
             </div>
             <div class="summary-card">
               <div class="card-header">
@@ -140,7 +131,7 @@
                 <i class="fas fa-wallet icon-balance"></i>
               </div>
               <p id="balanceOutput">Ksh. 0.00</p>
-              <span>Current account balance</span>
+              <span>Total amount at hand</span>
             </div>
           </div>
         </div>
@@ -226,15 +217,18 @@
         <form id="profileForm">
           <div class="form-group">
             <label for="fullName">Full Name</label>
-            <input type="text" id="fullName" value="John Doe" />
+            <input type="text" id="fullName" readonly />
           </div>
           <div class="form-group">
             <label for="role">Role</label>
-            <input type="text" id="role" value="Finance Manager" />
+            <input type="text" id="role" placeholder="Enter your role" />
           </div>
           <div class="form-group">
             <label for="bio">Bio/Short Description</label>
-            <textarea id="bio">Experienced finance professional...</textarea>
+            <textarea
+              id="bio"
+              placeholder="Tell us about yourself..."
+            ></textarea>
           </div>
           <div class="form-group theme-switcher">
             <label>Theme</label>
@@ -259,5 +253,6 @@
 
     <script src="js/global-nav.js"></script>
     <script src="js/script.js"></script>
+    <script src="js/profile-handler.js"></script>
   </body>
 </html>

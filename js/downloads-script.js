@@ -1,3 +1,5 @@
+//Base URL initialization
+const BASE_URL = "http://localhost:3000";
 document.addEventListener("DOMContentLoaded", () => {
   const token = localStorage.getItem("token");
   if (!token) {
@@ -16,12 +18,9 @@ document.addEventListener("DOMContentLoaded", () => {
   durationSelect.addEventListener("change", filterReceipts);
 
   function fetchReceipts() {
-    fetch(
-      `https://fhserver.org.fh260.org/api/user/receipts?duration=${durationSelect.value}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    )
+    fetch(`${BASE_URL}/api/user/receipts?duration=${durationSelect.value}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
       .then((res) => res.json())
       .then((data) => renderReceipts(data.receipts))
       .catch((err) => {
@@ -88,7 +87,14 @@ document.addEventListener("DOMContentLoaded", () => {
       tbody.appendChild(row);
     });
   }
-
+  document.addEventListener("DOMContentLoaded", () => {
+    const savedTheme = localStorage.getItem("theme") || "light";
+    if (savedTheme === "dark") {
+      document.body.classList.add("dark-mode");
+    } else {
+      document.body.classList.remove("dark-mode");
+    }
+  });
   // Initialize by fetching receipts when the page loads
   fetchReceipts();
 });

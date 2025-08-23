@@ -15,6 +15,11 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="manifest" href="/site.webmanifest" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="./css/styles.css" />
     <style>
       /* General Styles */
       body {
@@ -27,40 +32,10 @@
         min-height: 100vh;
       }
 
-      header {
-        background: #007bff;
-        color: white;
-        padding: 20px;
-        text-align: center;
-      }
-
-      header h1 {
+      main h1 {
         margin: 0;
         font-size: 2.5rem;
-      }
-
-      header p {
-        margin: 5px 0 0;
-        font-size: 1rem;
-      }
-
-      nav {
-        background-color: #004080;
-        color: white;
-        text-align: right;
-        padding: 10px 0 10px 15px;
-      }
-
-      nav a {
-        color: white;
-        font-size: 1rem;
-        margin: 0 15px;
-        text-decoration: none;
-        font-weight: bold;
-      }
-
-      nav a:hover {
-        text-decoration: underline;
+        text-align: center;
       }
 
       main {
@@ -157,29 +132,38 @@
         height: 1cm;
       }
 
+      .submit-btn:disabled {
+        background: #ccc;
+        color: #666;
+        cursor: not-allowed;
+      }
+
       .reconcile-area {
         display: none;
         margin-top: 10px;
         width: 100%;
       }
 
-      footer {
-        background-color: #003366;
-        color: white;
-        text-align: center;
-        padding: 20px 10px;
-        margin-top: auto;
+      .receipt-input {
+        width: 100%;
+        padding: 8px;
+        margin-top: 10px;
+        border: 2px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
       }
 
-      footer a {
-        color: #ffcc00;
-        text-decoration: none;
-        font-weight: bold;
+      .receipt-input.error {
+        border-color: #ff0000;
       }
 
-      footer a:hover {
-        text-decoration: underline;
+      .error-message {
+        color: #ff0000;
+        font-size: 0.8rem;
+        margin: 5px 0;
+        display: block;
       }
+
       #name-dropdown {
         height: 1cm; /* Set the height to 2 cm */
         font-size: 16px; /* Adjust the font size */
@@ -198,6 +182,114 @@
         margin-left: 10px;
       }
 
+      /* Dark Mode Styles */
+      .dark-mode {
+        background-color: #121212;
+        color: #e0e0e0;
+      }
+
+      .dark-mode main {
+        background-color: #121212;
+      }
+
+      .dark-mode h1 {
+        color: #4fc3f7;
+      }
+
+      .dark-mode .container {
+        background-color: #1e1e1e;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      .dark-mode .container h3 {
+        color: #4fc3f7;
+      }
+
+      .dark-mode .container p {
+        color: #e0e0e0;
+      }
+
+      .dark-mode .clear-btn {
+        background-color: #d32f2f;
+        color: white;
+      }
+
+      .dark-mode .photo-btn {
+        background-color: #1565c0;
+        color: white;
+      }
+
+      .dark-mode .upload-btn {
+        background-color: #2e7d32;
+        color: white;
+      }
+
+      .dark-mode .reconcile-btn {
+        background-color: #ef6c00;
+        color: white;
+      }
+
+      .dark-mode .submit-btn {
+        background-color: #ffd600;
+        color: #121212;
+      }
+
+      .dark-mode .submit-btn:disabled {
+        background-color: #555;
+        color: #999;
+      }
+
+      .dark-mode .receipt-input,
+      .dark-mode .reconcile-area {
+        background-color: #2d2d2d;
+        color: #e0e0e0;
+        border-color: #444;
+      }
+
+      .dark-mode .receipt-input.error {
+        border-color: #ff4444;
+      }
+
+      .dark-mode .file-display {
+        color: #81c784 !important;
+      }
+
+      .dark-mode footer {
+        background-color: #1e1e1e;
+        color: #e0e0e0;
+      }
+
+      .dark-mode footer a {
+        color: #e0e0e0;
+      }
+
+      .dark-mode footer a:hover {
+        color: #81d4fa;
+      }
+
+      /* Modal dark mode */
+      .dark-mode .modal-content {
+        background-color: #2d2d2d;
+        color: #e0e0e0;
+      }
+
+      .dark-mode .profile-dropdown {
+        background-color: #2d2d2d;
+        border-color: #444;
+      }
+
+      .dark-mode .profile-dropdown a {
+        color: #e0e0e0;
+      }
+
+      .dark-mode .profile-dropdown a:hover {
+        background-color: #3d3d3d;
+      }
+
+      /* Loading spinner in dark mode */
+      .dark-mode .loading-spinner {
+        border-left-color: #e0e0e0;
+      }
       @keyframes spin {
         to {
           transform: rotate(360deg);
@@ -206,19 +298,81 @@
     </style>
   </head>
   <body>
-    <header>
-      <h1>Receipt Portal</h1>
-      <p>Select your name and view your balances and transactions.</p>
+    <header class="top-nav">
+      <div class="logo">
+        <img
+          src="logoR.png"
+          alt="Fh260 Logo"
+          style="height: 30px; margin-right: 15px"
+        />
+        <h1>Fh260</h1>
+      </div>
+
+      <!-- Desktop Navigation -->
+      <nav class="desktop-nav">
+        <a href="home.html">Home</a>
+        <a href="apply.html">Apply</a>
+        <a href="downloads.html">Downloads</a>
+        <a href="receipts.html" class="active">Receipts</a>
+        <a href="Task.html">Reminder</a>
+      </nav>
+
+      <!-- Desktop User Profile (visible on desktop only) -->
+      <div class="user-profile">
+        <div class="user-icon" id="userIcon">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="profile-dropdown" id="profileDropdown">
+          <a href="#" id="viewProfileBtn"
+            ><i class="fas fa-edit"></i> View/Edit Profile</a
+          >
+          <a href="#" id="logoutBtn"
+            ><i class="fas fa-sign-out-alt"></i> Logout</a
+          >
+        </div>
+      </div>
+
+      <!-- Mobile Controls Container (groups user profile and hamburger on mobile) -->
+      <div class="mobile-controls">
+        <div class="user-profile">
+          <div class="user-icon" id="userIconMobile">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="profile-dropdown" id="profileDropdownMobile">
+            <a href="#" id="viewProfileBtnMobile"
+              ><i class="fas fa-edit"></i> View/Edit Profile</a
+            >
+            <a href="#" id="logoutBtnMobile"
+              ><i class="fas fa-sign-out-alt"></i> Logout</a
+            >
+          </div>
+        </div>
+
+        <!-- Hamburger Menu Button -->
+        <div class="hamburger" id="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- Mobile Navigation Menu -->
+      <nav id="nav-menu">
+        <div class="close-nav" id="close-nav">
+          <i class="fas fa-times"></i>
+        </div>
+        <a href="home.html">Home</a>
+        <a href="apply.html">Apply</a>
+        <a href="downloads.html">Downloads</a>
+        <a href="receipts.html" class="active">Receipts</a>
+        <a href="Task.html">Reminder</a>
+      </nav>
     </header>
-    <nav>
-      <a href="home.html">Home</a>
-      <a href="downloads.html">Downloads</a>
-      <a href="apply.html">Apply</a>
-    </nav>
     <main>
+      <h1>Receipt Portal</h1>
       <p>
-        These are the expenses on your name that await receipts. Please click on
-        each to upload.
+        These are the expenses on your name/your colleague's name that await
+        receipts. Please click on each to upload.
       </p>
       <section id="user-switch-section">
         <label for="user-selector">Clear Receipts For:</label>
@@ -229,14 +383,69 @@
         <!-- Data containers will be dynamically added here -->
       </section>
     </main>
+
+    <div id="profileModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" id="closeModal">&times;</span>
+        <h3>Edit Profile</h3>
+        <div class="profile-picture">
+          <img
+            id="profileImage"
+            src="https://via.placeholder.com/80"
+            alt="Profile"
+            class="initials-circle"
+          />
+          <input
+            type="file"
+            id="profileUpload"
+            style="display: none"
+            accept="image/*"
+          />
+          <button class="upload-btn" id="uploadBtn">
+            <i class="fas fa-upload"></i> Upload
+          </button>
+        </div>
+        <form id="profileForm">
+          <div class="form-group">
+            <label for="fullName">Full Name</label>
+            <input type="text" id="fullName" readonly />
+          </div>
+          <div class="form-group">
+            <label for="role">Role</label>
+            <input type="text" id="role" placeholder="Enter your role" />
+          </div>
+          <div class="form-group">
+            <label for="bio">Bio/Short Description</label>
+            <textarea
+              id="bio"
+              placeholder="Tell us about yourself..."
+            ></textarea>
+          </div>
+          <div class="form-group theme-switcher">
+            <label>Theme</label>
+            <i class="fas fa-sun" id="themeIcon"></i>
+          </div>
+          <div class="modal-buttons">
+            <button type="submit" class="save-btn">Save Changes</button>
+            <button type="button" class="cancel-btn" id="cancelBtn">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
     <footer>
       <p>&copy; 2025 Fh260. All rights reserved.</p>
-      <p>
+      <div class="footer-links">
         <a href="sign.html">Sign In</a> | <a href="index.html">Back Page</a> |
         <a href="admin.html">Admin</a>
-      </p>
+      </div>
     </footer>
+    <script src="js/global-nav.js"></script>
+    <script src="js/profile-handler.js"></script>
     <script>
+      //Base URL
+      const BASE_URL = "http://localhost:3000";
       function formatCurrency(amount, currencyCode) {
         // Default to USD if no currency code is provided
         const code = currencyCode || "USD";
@@ -249,10 +458,60 @@
         }).format(parseFloat(amount));
       }
 
+      // Validation function to check if form is complete
+      function validateForm(
+        receiptInput,
+        uploadedFile,
+        reconcileArea,
+        remainingBalance
+      ) {
+        const errors = [];
+        const amount = parseFloat(receiptInput.value);
+
+        // Check if amount is entered
+        if (!receiptInput.value.trim() || isNaN(amount) || amount <= 0) {
+          errors.push("Please enter a valid amount to clear");
+        }
+
+        // Check if amount exceeds remaining balance
+        if (amount > remainingBalance) {
+          errors.push(
+            `Amount cannot exceed remaining balance of ${formatCurrency(
+              remainingBalance,
+              "USD"
+            )}`
+          );
+        }
+
+        // Check if either file is uploaded or reconcile note is provided
+        if (!uploadedFile && !reconcileArea.value.trim()) {
+          errors.push(
+            "Please upload a receipt/photo or provide reconciliation notes"
+          );
+        }
+
+        return errors;
+      }
+
+      // Function to display validation errors
+      function displayErrors(container, errors) {
+        // Remove existing error messages
+        const existingErrors = container.querySelectorAll(".error-message");
+        existingErrors.forEach((error) => error.remove());
+
+        // Add new error messages
+        errors.forEach((error) => {
+          const errorElement = document.createElement("div");
+          errorElement.className = "error-message";
+          errorElement.textContent = error;
+          container.appendChild(errorElement);
+        });
+      }
+
       async function fetchReceiptsFor(userId) {
         const token = localStorage.getItem("token");
         const res = await fetch(
-          `http://localhost:3000/api/receipts/pending?userId=${userId}`,
+          `${BASE_URL}/api/receipts/pending?userId=${userId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -266,6 +525,7 @@
           const container = document.createElement("div");
           container.className = "container";
           const balanceColor = receipt.balance > 0 ? "red" : "green";
+          const remainingBalance = parseFloat(receipt.balance);
 
           // Format amounts using the currency code
           const formattedAmount = formatCurrency(
@@ -290,10 +550,15 @@
           <button class="upload-btn">Upload File</button>
           <button class="reconcile-btn">Write Reconcile</button>
         </div>
-        <input type="number" class="receipt-input" placeholder="Enter receipt amount" style="display: none;" />
+        <input type="number" class="receipt-input" placeholder="Enter amount to clear (max: ${
+          receipt.balance
+        })" 
+               style="display: none;" step="0.01" min="0.01" max="${
+                 receipt.balance
+               }" />
         <textarea class="reconcile-area" rows="4" style="display: none;" placeholder="Reconciliation notes (optional)"></textarea>
         <p class="file-display" style="display: none;"></p>
-        <button class="submit-btn" style="display: none;">Submit to Clear</button>
+        <button class="submit-btn" style="display: none;" disabled>Submit to Clear</button>
       `;
 
           const clearBtn = container.querySelector(".clear-btn");
@@ -306,6 +571,31 @@
           const submitBtn = container.querySelector(".submit-btn");
           const fileDisplay = container.querySelector(".file-display");
 
+          let uploadedFile = null;
+
+          // Function to validate and enable/disable submit button
+          function validateAndToggleSubmit() {
+            const errors = validateForm(
+              receiptInput,
+              uploadedFile,
+              reconcileArea,
+              remainingBalance
+            );
+
+            if (errors.length === 0) {
+              submitBtn.disabled = false;
+              receiptInput.classList.remove("error");
+              // Remove error messages
+              const existingErrors =
+                container.querySelectorAll(".error-message");
+              existingErrors.forEach((error) => error.remove());
+            } else {
+              submitBtn.disabled = true;
+              receiptInput.classList.add("error");
+              displayErrors(container, errors);
+            }
+          }
+
           clearBtn.addEventListener("click", () => {
             clearBtn.style.display = "none";
             extraButtons.style.display = "flex";
@@ -313,12 +603,15 @@
             submitBtn.style.display = "block";
           });
 
-          let uploadedFile = null;
+          // Add real-time validation on input change
+          receiptInput.addEventListener("input", validateAndToggleSubmit);
+          reconcileArea.addEventListener("input", validateAndToggleSubmit);
 
           function handleFileUpload(file) {
             uploadedFile = file;
             fileDisplay.style.display = "block";
             fileDisplay.textContent = `Selected: ${file.name}`;
+            validateAndToggleSubmit(); // Re-validate when file is uploaded
           }
 
           photoBtn.addEventListener("click", () => {
@@ -353,18 +646,28 @@
 
           reconcileBtn.addEventListener("click", () => {
             reconcileArea.style.display = "block";
+            validateAndToggleSubmit(); // Re-validate when reconcile area is shown
           });
+
           submitBtn.addEventListener("click", async () => {
             const amount = parseFloat(receiptInput.value);
-            if (!uploadedFile && !reconcileArea.value.trim()) {
-              return alert(
-                "Please upload a file/photo or enter a reconcile note."
-              );
+
+            // Final validation before submission
+            const errors = validateForm(
+              receiptInput,
+              uploadedFile,
+              reconcileArea,
+              remainingBalance
+            );
+            if (errors.length > 0) {
+              displayErrors(container, errors);
+              return;
             }
 
             const spinner = document.createElement("span");
             spinner.className = "loading-spinner";
             submitBtn.appendChild(spinner);
+            submitBtn.disabled = true;
 
             let driveLink = null;
             let fileType = null;
@@ -375,14 +678,11 @@
               if (uploadedFile) {
                 const formData = new FormData();
                 formData.append("attachment", uploadedFile);
-                const uploadRes = await fetch(
-                  "http://localhost:3000/api/upload",
-                  {
-                    method: "POST",
-                    headers: { Authorization: `Bearer ${token}` },
-                    body: formData,
-                  }
-                );
+                const uploadRes = await fetch(`${BASE_URL}/api/upload`, {
+                  method: "POST",
+                  headers: { Authorization: `Bearer ${token}` },
+                  body: formData,
+                });
                 const uploadData = await uploadRes.json();
                 driveLink = uploadData.driveLink;
                 fileType = "receipt";
@@ -399,14 +699,11 @@
 
                 const formData = new FormData();
                 formData.append("attachment", file);
-                const uploadRes = await fetch(
-                  "http://localhost:3000/api/upload",
-                  {
-                    method: "POST",
-                    headers: { Authorization: `Bearer ${token}` },
-                    body: formData,
-                  }
-                );
+                const uploadRes = await fetch(`${BASE_URL}/api/upload`, {
+                  method: "POST",
+                  headers: { Authorization: `Bearer ${token}` },
+                  body: formData,
+                });
                 const uploadData = await uploadRes.json();
                 driveLink = uploadData.driveLink;
                 fileType = "reconcile";
@@ -414,31 +711,30 @@
               }
 
               // Send clearance request
-              const clearRes = await fetch(
-                "http://localhost:3000/api/receipts/clear",
-                {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                  },
-                  body: JSON.stringify({
-                    reference: receipt.reference,
-                    amount,
-                    driveLink,
-                    fileType,
-                    fileName,
-                  }),
-                }
-              );
+              const clearRes = await fetch(`${BASE_URL}/api/receipts/clear`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  reference: receipt.reference,
+                  amount,
+                  driveLink,
+                  fileType,
+                  fileName,
+                }),
+              });
 
               const result = await clearRes.json();
               alert(result.message);
             } catch (error) {
               console.error("Clearance error:", error);
-              alert("Clearance failed.");
+              alert("Clearance failed: " + error.message);
             } finally {
-              submitBtn.removeChild(spinner);
+              if (submitBtn.contains(spinner)) {
+                submitBtn.removeChild(spinner);
+              }
               fetchReceiptsFor(userId); // Refresh list
             }
           });
@@ -453,12 +749,9 @@
         const selector = document.getElementById("user-selector");
 
         // Fetch users from same country
-        const res = await fetch(
-          "http://localhost:3000/api/users/same-country",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
+        const res = await fetch(`${BASE_URL}/api/users/same-country`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         const users = await res.json();
 
         // Populate dropdown
@@ -628,6 +921,14 @@
           });
         });
       }
+      document.addEventListener("DOMContentLoaded", () => {
+        const savedTheme = localStorage.getItem("theme") || "light";
+        if (savedTheme === "dark") {
+          document.body.classList.add("dark-mode");
+        } else {
+          document.body.classList.remove("dark-mode");
+        }
+      });
     </script>
   </body>
 </html>

@@ -569,14 +569,23 @@ footer {
   align-items: center;
   flex-wrap: wrap;
 }
-body.dark-mode footer {
-  background-color: var(--dark-card-bg);
-  border-top: 1px solid #333;
-}
+
 .footer-links a {
   color: white;
   text-decoration: none;
   margin: 0 10px;
+}
+.dark-mode footer {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+}
+
+.dark-mode footer a {
+  color: #e0e0e0;
+}
+
+.dark-mode footer a:hover {
+  color: #81d4fa;
 }
 
 /* Spinner */

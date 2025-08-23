@@ -12,23 +12,254 @@
     <meta property="og:url" content="https://fh260.org" />
     <title>Reset PIN</title>
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    <link rel="stylesheet" href="css/sign-styles.css" />
+    <link rel="stylesheet" href="./css/ign-styles.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        color: #333;
+        padding-top: 70px; /* Add padding to body to account for fixed header */
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      /* Header Styles */
+      header {
+        background-color: #003366;
+        color: #003366;
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        height: 70px;
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .logo-container h1 {
+        font-size: 1.8rem;
+        color: white;
+        margin: 0;
+      }
+
+      .logo-container img {
+        height: 40px;
+      }
+
+      .theme-toggle {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        font-size: 1.2rem;
+        color: white;
+        transition: all 0.3s ease;
+      }
+
+      /* Main Content Styles */
+      main.auth-container {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+
+      .form-box {
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 500px;
+        margin: 20px 0;
+      }
+
+      .form-box h2 {
+        text-align: center;
+        color: #003366;
+        margin-bottom: 20px;
+      }
+
+      .form-box label {
+        font-weight: bold;
+        color: #003366;
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      .form-box input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 1rem;
+        margin-bottom: 15px;
+      }
+
+      .form-box button {
+        width: 100%;
+        padding: 12px;
+        background-color: #004080;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .form-box button:hover {
+        background-color: #005db3;
+      }
+
+      .hint-message {
+        font-size: 0.9rem;
+        color: #666;
+        margin-top: -10px;
+        margin-bottom: 15px;
+      }
+
+      .message {
+        text-align: center;
+        margin-top: 15px;
+        font-size: 0.9rem;
+      }
+
+      /* Footer Styles */
+      .main-footer {
+        background-color: #003366;
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .main-footer p {
+        margin: 0;
+      }
+
+      .footer-links {
+        display: flex;
+        gap: 15px;
+      }
+
+      .main-footer a {
+        color: white;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .main-footer a:hover {
+        color: #81d4fa;
+      }
+
+      /* Dark Mode Styles */
+      .dark-mode {
+        background-color: #121212;
+        color: #e0e0e0;
+      }
+
+      .dark-mode header {
+        background-color: #1e1e1e;
+        color: #e0e0e0;
+        border-bottom: 1px solid #333;
+      }
+
+      .dark-mode .logo-container h1 {
+        color: #e0e0e0;
+      }
+
+      .dark-mode .theme-toggle {
+        color: #e0e0e0;
+      }
+
+      .dark-mode main.auth-container {
+        background-color: #121212;
+      }
+
+      .dark-mode .form-box {
+        background-color: #1e1e1e;
+        border: 1px solid #333;
+      }
+
+      .dark-mode .form-box h2,
+      .dark-mode .form-box label {
+        color: #e0e0e0;
+      }
+
+      .dark-mode .form-box input {
+        background-color: #2d2d2d;
+        color: #e0e0e0;
+        border-color: #444;
+      }
+
+      .dark-mode .hint-message {
+        color: #aaa;
+      }
+
+      .dark-mode .main-footer {
+        background-color: #1e1e1e;
+        border-top: 1px solid #333;
+      }
+
+      @media (max-width: 768px) {
+        .logo-container h1 {
+          font-size: 1.4rem;
+        }
+
+        .main-footer {
+          flex-direction: column;
+          gap: 10px;
+          text-align: center;
+        }
+
+        .footer-links {
+          justify-content: center;
+        }
+      }
+    </style>
   </head>
   <body>
-    <header class="main-header">
-      <a href="#" class="logo">
-        <img src="assets/images/logo.png" alt="FH260 Logo" />
-      </a>
-      <nav class="main-nav">
-        <ul>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="sign.html">Sign In</a></li>
-          <li><a href="about.html">About</a></li>
-        </ul>
-      </nav>
+    <header>
+      <div class="logo-container">
+        <img src="logoR.png" alt="FH260 Logo" />
+        <h1>Family Humanitarian 260</h1>
+      </div>
+      <button class="theme-toggle" id="themeToggle">
+        <i class="fas fa-sun"></i>
+      </button>
     </header>
 
     <main class="auth-container">
@@ -68,6 +299,34 @@
         <a href="index.html">Back Page</a>
       </p>
     </footer>
+
+    <script>
+      // Theme toggle functionality
+      const themeToggle = document.getElementById("themeToggle");
+      const body = document.body;
+
+      // Check for saved theme preference
+      const savedTheme = localStorage.getItem("theme") || "light";
+      if (savedTheme === "dark") {
+        body.classList.add("dark-mode");
+        themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+      } else {
+        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+      }
+
+      // Theme toggle click handler
+      themeToggle.addEventListener("click", () => {
+        body.classList.toggle("dark-mode");
+
+        if (body.classList.contains("dark-mode")) {
+          localStorage.setItem("theme", "dark");
+          themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+        } else {
+          localStorage.setItem("theme", "light");
+          themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+      });
+    </script>
     <script src="js/reset-pin.js"></script>
   </body>
 </html>

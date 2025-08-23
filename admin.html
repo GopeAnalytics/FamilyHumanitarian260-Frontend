@@ -129,8 +129,8 @@
         width: 100%;
         background-color: red;
         color: white;
-        padding: 0.75rem 1rem;
-        font-size: 1rem;
+        padding: 0.75rem 1rem; /* better touch area */
+        font-size: 1rem; /* readable font size */
         margin-top: 1rem;
         border: none;
         border-radius: 0.5rem;
@@ -154,9 +154,10 @@
       }
 
       .details .btns button {
-        flex: 1;
+        flex: 1; /* Equal width buttons */
       }
 
+      /* Enhanced spinner */
       .spinner-overlay {
         position: fixed;
         top: 0;
@@ -233,6 +234,7 @@
         border-bottom: 2px solid #f0f0f0;
       }
 
+      /* Improved table styles with horizontal scrolling for mobile */
       .table-container {
         width: 100%;
         overflow-x: auto;
@@ -252,7 +254,7 @@
       .receipt-row {
         display: grid;
         width: 100%;
-        min-width: 800px;
+        min-width: 800px; /* Ensures content isn't crushed on small screens */
       }
 
       .table-header,
@@ -384,7 +386,7 @@
         .table-row,
         .receipt-header,
         .receipt-row {
-          min-width: 800px;
+          min-width: 800px; /* Ensures tables scroll horizontally on mobile */
         }
 
         button {
@@ -441,7 +443,7 @@
   <body>
     <header>
       <div class="logo">
-        <img src="logo.png" alt="KCAU Logo" />
+        <img src="./assets/images/logo.png" alt="KCAU Logo" />
       </div>
     </header>
 

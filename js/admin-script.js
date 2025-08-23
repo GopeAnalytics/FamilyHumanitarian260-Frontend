@@ -1,4 +1,5 @@
-// Updated admin-script.js with fixed functions and improved error handling
+//Base URL initialization
+const BASE_URL = "http://localhost:3000";
 
 document.addEventListener("DOMContentLoaded", () => {
   // Make the approve and reject functions globally available
@@ -33,7 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const receiptsSection = document.getElementById("receiptsSection");
 
   // Load initial countries and users
-  fetch("http://localhost:3000/api/admin/filters", {
+  fetch(`${BASE_URL}/api/admin/filters`, {
     headers: { Authorization: `Bearer ${token}` },
   })
     .then((res) => {
@@ -72,7 +73,7 @@ document.addEventListener("DOMContentLoaded", () => {
       user: userSelect.value,
     });
 
-    fetch(`http://localhost:3000/api/admin/receipts?${params.toString()}`, {
+    fetch(`${BASE_URL}/api/admin/receipts?${params.toString()}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => {
@@ -165,12 +166,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (countrySelect.value === "All") {
         populateSelect(userSelect, ["All"]);
       } else {
-        fetch(
-          `http://localhost:3000/api/admin/users?country=${countrySelect.value}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        )
+        fetch(`${BASE_URL}/api/admin/users?country=${countrySelect.value}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
           .then((res) => {
             if (!res.ok) {
               throw new Error(`HTTP error! Status: ${res.status}`);
@@ -200,7 +198,7 @@ document.addEventListener("DOMContentLoaded", () => {
   fetchReceipts();
 
   function loadPendingRequests() {
-    fetch("http://localhost:3000/api/admin/pending-requests", {
+    fetch(`${BASE_URL}/api/admin/pending-requests`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => {
@@ -255,7 +253,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       showLoadingSpinner(true);
       const response = await fetch(
-        `http://localhost:3000/api/admin/approve-request/${requestId}`,
+        `${BASE_URL}/api/admin/approve-request/${requestId}`,
         {
           method: "POST",
           headers: {
@@ -292,7 +290,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       showLoadingSpinner(true);
       const response = await fetch(
-        `http://localhost:3000/api/admin/reject-request/${requestId}`,
+        `${BASE_URL}/api/admin/reject-request/${requestId}`,
         {
           method: "POST",
           headers: {

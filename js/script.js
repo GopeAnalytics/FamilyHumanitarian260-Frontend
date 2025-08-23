@@ -1,3 +1,5 @@
+//BASE URL initilization
+const BASE_URL = "http://localhost:3000";
 document.addEventListener("DOMContentLoaded", () => {
   // --- Initial Setup & Token Check ---
   const token = localStorage.getItem("token");
@@ -31,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // --- Fetch User Account Summary ---
-  fetch("http://localhost:3000/api/user-summary", {
+  fetch(`${BASE_URL}/api/user-summary`, {
     headers: { Authorization: `Bearer ${token}` },
   })
     .then((res) => (res.ok ? res.json() : Promise.reject(res)))
@@ -123,174 +125,10 @@ document.addEventListener("DOMContentLoaded", () => {
     updateRates();
   });
 
-  // --- Profile Dropdown & Modal ---
-  const userIcon = document.getElementById("userIcon");
-  const profileDropdown = document.getElementById("profileDropdown");
-  const profileModal = document.getElementById("profileModal");
-  const viewProfileBtn = document.getElementById("viewProfileBtn");
-  const closeModal = document.getElementById("closeModal");
-  const cancelBtn = document.getElementById("cancelBtn");
-  const logoutBtn = document.getElementById("logoutBtn");
-
-  // Desktop profile functionality
-  if (userIcon && profileDropdown) {
-    userIcon.addEventListener("click", (e) => {
-      e.stopPropagation();
-      profileDropdown.style.display =
-        profileDropdown.style.display === "block" ? "none" : "block";
-    });
-  }
-
-  if (viewProfileBtn) {
-    viewProfileBtn.addEventListener("click", () => {
-      profileModal.style.display = "block";
-      if (profileDropdown) profileDropdown.style.display = "none";
-    });
-  }
-
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-      localStorage.removeItem("token");
-      localStorage.removeItem("userProfile");
-      localStorage.removeItem("theme");
-      alert("You have been logged out.");
-      window.location.href = "sign.html";
-    });
-  }
-
-  // Mobile profile dropdown functionality
-  const userIconMobile = document.getElementById("userIconMobile");
-  const profileDropdownMobile = document.getElementById(
-    "profileDropdownMobile"
-  );
-
-  if (userIconMobile && profileDropdownMobile) {
-    userIconMobile.addEventListener("click", (e) => {
-      e.stopPropagation();
-      profileDropdownMobile.style.display =
-        profileDropdownMobile.style.display === "block" ? "none" : "block";
-    });
-
-    // Mobile profile dropdown buttons
-    const viewProfileBtnMobile = document.getElementById(
-      "viewProfileBtnMobile"
-    );
-    const logoutBtnMobile = document.getElementById("logoutBtnMobile");
-
-    // View/Edit Profile button for mobile
-    if (viewProfileBtnMobile) {
-      viewProfileBtnMobile.addEventListener("click", (e) => {
-        e.preventDefault();
-        if (profileModal) {
-          profileModal.style.display = "block";
-          profileDropdownMobile.style.display = "none";
-        }
-      });
-    }
-
-    // Logout button for mobile
-    if (logoutBtnMobile) {
-      logoutBtnMobile.addEventListener("click", (e) => {
-        e.preventDefault();
-        localStorage.removeItem("token");
-        localStorage.removeItem("userProfile");
-        localStorage.removeItem("theme");
-        alert("You have been logged out.");
-        window.location.href = "sign.html";
-      });
-    }
-  }
-
-  // Close dropdowns when clicking outside
-  document.addEventListener("click", (e) => {
-    if (
-      profileDropdown &&
-      userIcon &&
-      !userIcon.contains(e.target) &&
-      !profileDropdown.contains(e.target)
-    ) {
-      profileDropdown.style.display = "none";
-    }
-    if (
-      profileDropdownMobile &&
-      userIconMobile &&
-      !userIconMobile.contains(e.target) &&
-      !profileDropdownMobile.contains(e.target)
-    ) {
-      profileDropdownMobile.style.display = "none";
-    }
-  });
-
-  // Modal close functionality
-  if (closeModal && cancelBtn && profileModal) {
-    [closeModal, cancelBtn].forEach((btn) =>
-      btn.addEventListener("click", () => (profileModal.style.display = "none"))
-    );
-  }
-
-  // --- Profile Form & Picture Upload ---
-  const profileForm = document.getElementById("profileForm");
-  const uploadBtn = document.getElementById("uploadBtn");
-  const profileUploadInput = document.getElementById("profileUpload");
-  const profileImage = document.getElementById("profileImage");
-
-  if (uploadBtn && profileUploadInput) {
-    uploadBtn.addEventListener("click", () => profileUploadInput.click());
-  }
-
-  if (profileUploadInput && profileImage) {
-    profileUploadInput.addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => (profileImage.src = event.target.result);
-        reader.readAsDataURL(file);
-      }
-    });
-  }
-
-  if (profileForm) {
-    profileForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const profileData = {
-        fullName: document.getElementById("fullName").value,
-        role: document.getElementById("role").value,
-        bio: document.getElementById("bio").value,
-        imageSrc: profileImage ? profileImage.src : "",
-      };
-      localStorage.setItem("userProfile", JSON.stringify(profileData));
-      alert("Profile saved successfully!");
-      if (profileModal) profileModal.style.display = "none";
-    });
-  }
-
-  // --- Theme Switcher & Persistence ---
-  const themeIcon = document.getElementById("themeIcon");
-  const body = document.body;
-
-  function applyTheme(theme) {
-    if (theme === "dark") {
-      body.classList.add("dark-mode");
-      if (themeIcon) themeIcon.classList.replace("fa-sun", "fa-moon");
-    } else {
-      body.classList.remove("dark-mode");
-      if (themeIcon) themeIcon.classList.replace("fa-moon", "fa-sun");
-    }
-  }
-
-  if (themeIcon) {
-    themeIcon.addEventListener("click", () => {
-      const newTheme = body.classList.contains("dark-mode") ? "light" : "dark";
-      localStorage.setItem("theme", newTheme);
-      applyTheme(newTheme);
-    });
-  }
-
   // --- Initial Load Functions ---
   function loadInitialData() {
     // Load saved theme
     const savedTheme = localStorage.getItem("theme") || "light";
-    applyTheme(savedTheme);
 
     // Load saved profile
     const savedProfile = JSON.parse(localStorage.getItem("userProfile"));

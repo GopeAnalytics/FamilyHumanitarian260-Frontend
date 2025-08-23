@@ -12,7 +12,10 @@
     <meta property="og:url" content="https://fh260.org" />
     <title>fh260</title>
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="manifest" href="/site.webmanifest" />
@@ -27,6 +30,7 @@
       body {
         font-family: Arial, sans-serif;
         color: #333;
+        padding-top: 70px; /* Add padding to body to account for fixed header */
       }
 
       a {
@@ -36,23 +40,54 @@
 
       header {
         background-color: #003366;
-        color: white;
-        padding: 20px;
-        text-align: center;
-        position: relative;
-        z-index: 2;
+        color: #003366;
+        padding: 10px 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between; /* Space between logo and toggle */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        position: fixed; /* Make header fixed */
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000; /* Ensure header stays above other content */
+        height: 70px; /* Fixed height */
       }
 
-      header .logo img {
+      .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .logo-container h1 {
+        font-size: 1.8rem;
+        color: white;
+        margin: 0;
+      }
+
+      .logo-container img {
         height: 40px;
+      }
+
+      .theme-toggle {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 10px;
+        font-size: 1.2rem;
+        color: white;
+        transition: all 0.3s ease;
       }
 
       .hero-mandate-wrapper {
         position: relative;
         color: white;
         overflow: hidden;
+        margin-top: -70px; /* Offset the fixed header */
       }
 
+      /* Rest of your existing styles remain the same */
       .background-video {
         position: absolute;
         top: 0;
@@ -164,41 +199,108 @@
         }
       }
 
+      .main-footer p {
+        margin: 10px 0;
+      }
+
+      /* Dark Mode Styles */
+      .dark-mode {
+        background-color: #121212;
+        color: #e0e0e0;
+      }
+
+      .dark-mode header {
+        background-color: #1e1e1e;
+        color: #e0e0e0;
+        border-bottom: 1px solid #333;
+      }
+
+      .dark-mode .logo-container h1 {
+        color: #e0e0e0;
+      }
+
+      .dark-mode .theme-toggle {
+        color: #e0e0e0;
+      }
+
+      .dark-mode .hero-mandate-wrapper {
+        background-color: #121212;
+      }
+
+      .dark-mode .calculator-box {
+        background-color: rgba(30, 30, 30, 0.8);
+      }
+
+      .dark-mode .carousel-item {
+        background-color: rgba(30, 30, 30, 0.9);
+      }
+
+      .dark-mode .main-footer {
+        background-color: #1e1e1e;
+        border-top: 1px solid #333;
+      }
+
+      /* Updated Footer Styles */
       .main-footer {
         background-color: #003366;
         color: white;
-        text-align: center;
-        padding: 20px 10px;
-        font-size: 0.9rem;
-      }
-
-      .main-footer a {
-        color: #ffcc00;
-        text-decoration: none;
-        font-weight: bold;
-        margin: 0 5px;
-      }
-
-      .main-footer a:hover {
-        text-decoration: underline;
-        color: #ffd700;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
       }
 
       .main-footer p {
-        margin: 10px 0;
+        margin: 0;
+      }
+
+      .footer-links {
+        display: flex;
+        gap: 15px;
+      }
+
+      .main-footer a {
+        color: white;
+        text-decoration: none;
+        transition: color 0.3s ease;
+      }
+
+      .main-footer a:hover {
+        color: #81d4fa;
+        text-decoration: none;
+      }
+
+      @media (max-width: 768px) {
+        .logo-container h1 {
+          font-size: 1.4rem;
+        }
+
+        .main-footer {
+          flex-direction: column;
+          gap: 10px;
+          text-align: center;
+        }
+
+        .footer-links {
+          justify-content: center;
+        }
       }
     </style>
   </head>
   <body>
     <header>
-      <div class="logo">
-        <img src="assets/images/logo.png" alt="KCAU Logo" />
+      <div class="logo-container">
+        <img src="logoR.png" alt="FH260 Logo" />
+        <h1>Family Humanitarian 260</h1>
       </div>
+      <button class="theme-toggle" id="themeToggle">
+        <i class="fas fa-sun"></i>
+      </button>
     </header>
-
     <div class="hero-mandate-wrapper">
       <video class="background-video" autoplay muted loop playsinline>
-        <source src="assets/videos/transaction2.mp4" type="video/mp4" />
+        <source src="transaction2.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
       <div class="video-overlay"></div>
@@ -297,13 +399,38 @@
       }
 
       init();
+      // Theme toggle functionality
+      const themeToggle = document.getElementById("themeToggle");
+      const body = document.body;
+
+      // Check for saved theme preference
+      const savedTheme = localStorage.getItem("theme") || "light";
+      if (savedTheme === "dark") {
+        body.classList.add("dark-mode");
+        themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+      } else {
+        themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+      }
+
+      // Theme toggle click handler
+      themeToggle.addEventListener("click", () => {
+        body.classList.toggle("dark-mode");
+
+        if (body.classList.contains("dark-mode")) {
+          localStorage.setItem("theme", "dark");
+          themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+        } else {
+          localStorage.setItem("theme", "light");
+          themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+      });
     </script>
 
     <footer class="main-footer">
       <p>&copy; 2025 Fh260. All rights reserved.</p>
       <p>
         <a href="sign.html">Sign In</a> | <a href="home.html">Home</a> |
-        <a href="Task.html">Reminders</a>
+        <a href="apply.html">Apply</a>
       </p>
     </footer>
   </body>

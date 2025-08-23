@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta property="og:title" content="Fh260-Africa" />
+    <meta
+      property="og:description"
+      content="Digitalising Fh260-Africa Operations"
+    />
+    <meta property="og:image" content="https://fh260.org/og-fhlogo.jpeg" />
+    <meta property="og:url" content="https://fh260.org" />
+    <title>Admin Dashboard</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <style>
+      /* Admin-specific styles that won't conflict with home page styles */
+      .admin-container {
+        all: initial;
+        font-family: Arial, sans-serif;
+        box-sizing: border-box;
+        background-color: #f4f4f4;
+        min-height: 100vh;
+      }
+
+      .admin-container * {
+        box-sizing: border-box;
+      }
+
+      /* Admin page title bar */
+      .admin-title-bar {
+        background-color: white;
+        color: #003366;
+        padding: 15px 20px;
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        border-bottom: 2px solid white;
+      }
+
+      /* Admin dashboard styles */
+      .admin-dashboard {
+        padding: 20px;
+        margin: 20px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .admin-section {
+        padding: 20px;
+        margin: 20px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .admin-dashboard h2,
+      .admin-section h2 {
+        color: #003366;
+        margin-top: 0;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #f0f0f0;
+        font-size: 24px;
+        font-family: Arial, sans-serif;
+      }
+
+      .table-container {
+        width: 100%;
+        overflow-x: auto;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        border: 1px solid #e0e0e0;
+      }
+
+      .requests-table,
+      .admin-dashboard {
+        width: 100%;
+      }
+
+      .table-header,
+      .table-row,
+      .receipt-header,
+      .receipt-row {
+        display: grid;
+        width: 100%;
+        min-width: 800px;
+      }
+
+      .table-header,
+      .receipt-header {
+        font-weight: bold;
+        background-color: #f2f2f2;
+        border-bottom: 2px solid #ddd;
+        padding: 12px 15px;
+      }
+
+      .table-header {
+        grid-template-columns:
+          minmax(150px, 1fr) minmax(200px, 1.5fr) minmax(120px, 1fr)
+          minmax(150px, 1fr) minmax(180px, 1fr);
+      }
+
+      .receipt-header,
+      .receipt-row {
+        grid-template-columns: repeat(6, minmax(120px, 1fr));
+      }
+
+      .table-row {
+        grid-template-columns:
+          minmax(150px, 1fr) minmax(200px, 1.5fr) minmax(120px, 1fr)
+          minmax(150px, 1fr) minmax(180px, 1fr);
+        padding: 12px 15px;
+        border-bottom: 1px solid #e0e0e0;
+        align-items: center;
+      }
+
+      .table-header > div,
+      .table-row > div {
+        padding: 8px;
+      }
+
+      .table-row:hover,
+      .receipt-row:hover {
+        background-color: #f8f9fa;
+      }
+
+      .receipt-row {
+        padding: 12px 15px;
+        border-bottom: 1px solid #e0e0e0;
+        align-items: center;
+      }
+
+      .receipt-header > div,
+      .receipt-row > div {
+        padding: 8px;
+        text-align: center;
+      }
+
+      .no-results,
+      .no-requests {
+        padding: 20px;
+        text-align: center;
+        color: #666;
+        font-style: italic;
+      }
+
+      /* Admin buttons */
+      .admin-button {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 14px;
+      }
+
+      .actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+      }
+
+      .approve-btn {
+        background-color: #4caf50;
+        color: white;
+        padding: 8px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 14px;
+      }
+
+      .reject-btn {
+        background-color: #f44336;
+        color: white;
+        padding: 8px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 14px;
+      }
+
+      .approve-btn:hover {
+        background-color: #45a049;
+      }
+
+      .reject-btn:hover {
+        background-color: #d32f2f;
+      }
+
+      /* Filter controls */
+      .filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 20px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        border: 1px solid #e0e0e0;
+      }
+
+      .filters select {
+        padding: 8px 12px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        background-color: white;
+        min-width: 150px;
+        font-size: 14px;
+      }
+
+      /* Admin input fields */
+      .admin-container input[type="text"],
+      .admin-container input[type="password"] {
+        width: 100%;
+        padding: 0.75rem;
+        margin: 0.5rem 0;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+
+      /* Spinner overlay for admin */
+      .spinner-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+
+      .admin-spinner {
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(255, 255, 255, 0.3);
+        border-top: 5px solid #4caf50;
+        border-radius: 50%;
+        animation: admin-spin 1s linear infinite;
+      }
+
+      @keyframes admin-spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Notification styles for admin */
+      .admin-notification {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 15px 25px;
+        border-radius: 5px;
+        color: white;
+        font-weight: bold;
+        z-index: 1000;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.3s, transform 0.3s;
+        max-width: 80%;
+      }
+
+      .admin-notification.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .admin-notification.success {
+        background-color: #4caf50;
+      }
+
+      .admin-notification.error {
+        background-color: #f44336;
+      }
+
+      /* Responsive adjustments for admin content */
+      @media (max-width: 768px) {
+        .admin-dashboard,
+        .admin-section {
+          margin: 10px;
+          padding: 15px;
+        }
+
+        .table-header,
+        .table-row,
+        .receipt-header,
+        .receipt-row {
+          min-width: 800px;
+        }
+
+        .actions {
+          flex-direction: column;
+          gap: 5px;
+        }
+
+        .filters {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .filters select {
+          width: 100%;
+        }
+
+        .admin-title-bar {
+          padding: 10px 15px;
+          font-size: 16px;
+        }
+      }
+      /* Dark Mode Styles */
+      .dark-mode {
+        background-color: #121212;
+        color: #e0e0e0;
+      }
+
+      .dark-mode .admin-container {
+        background-color: #121212;
+      }
+
+      .dark-mode .admin-title-bar {
+        background-color: #1e1e1e;
+        color: #4fc3f7;
+        border-bottom-color: #333;
+      }
+
+      .dark-mode .admin-dashboard,
+      .dark-mode .admin-section {
+        background-color: #1e1e1e;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .dark-mode .admin-dashboard h2,
+      .dark-mode .admin-section h2 {
+        color: #4fc3f7;
+        border-bottom-color: #333;
+      }
+
+      .dark-mode .table-container {
+        border-color: #333;
+      }
+
+      .dark-mode .table-header,
+      .dark-mode .receipt-header {
+        background-color: #2d2d2d;
+        color: #e0e0e0;
+        border-bottom-color: #444;
+      }
+
+      .dark-mode .table-row,
+      .dark-mode .receipt-row {
+        border-bottom-color: #333;
+      }
+
+      .dark-mode .table-row:hover,
+      .dark-mode .receipt-row:hover {
+        background-color: #2d2d2d;
+      }
+
+      .dark-mode .no-results,
+      .dark-mode .no-requests {
+        color: #aaa;
+      }
+
+      .dark-mode .filters {
+        background-color: #2d2d2d;
+        border-color: #333;
+      }
+
+      .dark-mode select {
+        background-color: #333;
+        color: #e0e0e0;
+        border-color: #444;
+      }
+
+      .dark-mode .approve-btn {
+        background-color: #388e3c;
+      }
+
+      .dark-mode .approve-btn:hover {
+        background-color: #2e7d32;
+      }
+
+      .dark-mode .reject-btn {
+        background-color: #d32f2f;
+      }
+
+      .dark-mode .reject-btn:hover {
+        background-color: #c62828;
+      }
+
+      .dark-mode .admin-spinner {
+        border-color: rgba(255, 255, 255, 0.3);
+        border-top-color: #4fc3f7;
+      }
+
+      .dark-mode .admin-notification.success {
+        background-color: #388e3c;
+      }
+
+      .dark-mode .admin-notification.error {
+        background-color: #d32f2f;
+      }
+
+      /* Modal dark mode */
+      .dark-mode .modal-content {
+        background-color: #2d2d2d;
+        color: #e0e0e0;
+      }
+
+      .dark-mode .profile-dropdown {
+        background-color: #2d2d2d;
+        border-color: #444;
+      }
+
+      .dark-mode .profile-dropdown a {
+        color: #e0e0e0;
+      }
+
+      .dark-mode .profile-dropdown a:hover {
+        background-color: #3d3d3d;
+      }
+      /* Ensure admin content doesn't conflict with nav */
+      @media screen and (max-width: 768px) {
+        .admin-container {
+          padding-top: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Use the same header structure as home page -->
+    <header class="top-nav">
+      <div class="logo">
+        <img
+          src="logoR.png"
+          alt="Fh260 Logo"
+          style="height: 30px; margin-right: 15px"
+        />
+        <h1>Fh260</h1>
+      </div>
+
+      <!-- Desktop Navigation -->
+      <nav class="desktop-nav">
+        <a href="home.html">Home</a>
+        <a href="apply.html">Apply</a>
+        <a href="downloads.html">Downloads</a>
+        <a href="receipts.html">Receipts</a>
+        <a href="Task.html">Reminder</a>
+        <a href="admin.html" class="active">Admin</a>
+      </nav>
+
+      <!-- Desktop User Profile (visible on desktop only) -->
+      <div class="user-profile">
+        <div class="user-icon" id="userIcon">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="profile-dropdown" id="profileDropdown">
+          <a href="#" id="viewProfileBtn"
+            ><i class="fas fa-edit"></i> View/Edit Profile</a
+          >
+          <a href="#" id="logoutBtn"
+            ><i class="fas fa-sign-out-alt"></i> Logout</a
+          >
+        </div>
+      </div>
+
+      <!-- Mobile Controls Container (groups user profile and hamburger on mobile) -->
+      <div class="mobile-controls">
+        <div class="user-profile">
+          <div class="user-icon" id="userIconMobile">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="profile-dropdown" id="profileDropdownMobile">
+            <a href="#" id="viewProfileBtnMobile"
+              ><i class="fas fa-edit"></i> View/Edit Profile</a
+            >
+            <a href="#" id="logoutBtnMobile"
+              ><i class="fas fa-sign-out-alt"></i> Logout</a
+            >
+          </div>
+        </div>
+
+        <!-- Hamburger Menu Button -->
+        <div class="hamburger" id="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- Mobile Navigation Menu -->
+      <nav id="nav-menu">
+        <div class="close-nav" id="close-nav">
+          <i class="fas fa-times"></i>
+        </div>
+        <a href="home.html">Home</a>
+        <a href="apply.html">Apply</a>
+        <a href="downloads.html">Downloads</a>
+        <a href="receipts.html">Receipts</a>
+        <a href="Task.html">Reminder</a>
+        <a href="admin.html" class="active">Admin</a>
+      </nav>
+    </header>
+
+    <!-- Admin page title bar -->
+    <div class="admin-title-bar">
+      <div>Admin Panel Dashboard</div>
+    </div>
+
+    <!-- Admin content wrapped in admin-container to isolate styles -->
+    <div class="admin-container">
+      <div class="admin-dashboard">
+        <h2>Admin Receipts Dashboard</h2>
+
+        <div class="filters">
+          <select id="receiptTypeFilter">
+            <option value="Uploaded">Uploaded</option>
+            <option value="Pending">Pending</option>
+          </select>
+
+          <select id="countryFilter">
+            <option value="All">All</option>
+          </select>
+
+          <select id="userFilter">
+            <option value="All">All</option>
+          </select>
+        </div>
+
+        <div class="table-container">
+          <!-- Column Titles -->
+          <div class="receipt-header">
+            <div>Receipt Reference Number</div>
+            <div>Date</div>
+            <div>Total Amount</div>
+            <div>Balance</div>
+            <div>Applicant</div>
+            <div>Receipt Link</div>
+          </div>
+
+          <div id="receiptsSection" class="receipts-section">
+            <!-- Receipts will render here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending Signup Requests section -->
+      <div class="admin-section">
+        <h2>Pending Signup Requests</h2>
+        <div class="table-container">
+          <div class="requests-table">
+            <div class="table-header">
+              <div>Name</div>
+              <div>Email</div>
+              <div>Country</div>
+              <div>Request Date</div>
+              <div>Actions</div>
+            </div>
+            <div id="requests-list" class="table-body">
+              <!-- Requests will be loaded here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Modal (same as home page) -->
+    <div id="profileModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" id="closeModal">&times;</span>
+        <h3>Edit Profile</h3>
+        <div class="profile-picture">
+          <img
+            id="profileImage"
+            src="https://via.placeholder.com/80"
+            alt="Profile"
+            class="initials-circle"
+          />
+          <input
+            type="file"
+            id="profileUpload"
+            style="display: none"
+            accept="image/*"
+          />
+          <button class="upload-btn" id="uploadBtn">
+            <i class="fas fa-upload"></i> Upload
+          </button>
+        </div>
+        <form id="profileForm">
+          <div class="form-group">
+            <label for="fullName">Full Name</label>
+            <input type="text" id="fullName" readonly />
+          </div>
+          <div class="form-group">
+            <label for="role">Role</label>
+            <input type="text" id="role" placeholder="Enter your role" />
+          </div>
+          <div class="form-group">
+            <label for="bio">Bio/Short Description</label>
+            <textarea
+              id="bio"
+              placeholder="Tell us about yourself..."
+            ></textarea>
+          </div>
+          <div class="form-group theme-switcher">
+            <label>Theme</label>
+            <i class="fas fa-sun" id="themeIcon"></i>
+          </div>
+          <div class="modal-buttons">
+            <button type="submit" class="save-btn">Save Changes</button>
+            <button type="button" class="cancel-btn" id="cancelBtn">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2025 Fh260. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="sign.html">Sign In</a> | <a href="index.html">Back Page</a> |
+        <a href="home.html">Home</a>
+      </div>
+    </footer>
+    <script src="js/global-nav.js"></script>
+    <script src="js/profile-handler.js"></script>
+    <script src="js/admin-script.js"></script>
+  </body>
+</html>

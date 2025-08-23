@@ -1,3 +1,5 @@
+//Base Url initialization
+const BASE_URL = "http://localhost:3000";
 document.addEventListener("DOMContentLoaded", () => {
   const params = new URLSearchParams(window.location.search);
   const token = params.get("token");
@@ -89,14 +91,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const res = await fetch(
-        "https://fhserver.org.fh260.org/api/complete-pin-reset",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ token, email, newPin }),
-        }
-      );
+      const res = await fetch(`${BASE_URL}/api/complete-pin-reset`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, email, newPin }),
+      });
 
       const data = await res.json();
 

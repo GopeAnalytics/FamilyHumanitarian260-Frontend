@@ -18,6 +18,11 @@
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="manifest" href="/site.webmanifest" />
+    <link rel="stylesheet" href="./css/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
 
     <style>
       /* Global reset and viewport control */
@@ -42,54 +47,6 @@
         color: #333;
         display: flex;
         flex-direction: column;
-      }
-
-      /* Header styles */
-      header {
-        background-color: #003366;
-        color: white;
-        padding: 12px 15px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-      }
-
-      header .logo img {
-        height: 36px;
-      }
-
-      /* Top navigation */
-      .top-nav {
-        background-color: #737a81;
-        color: white;
-        padding: 8px 15px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        width: 100%;
-      }
-
-      .top-nav nav {
-        display: flex;
-        gap: 15px;
-        flex-wrap: wrap;
-        justify-content: flex-end;
-        width: 100%;
-      }
-
-      .top-nav nav a {
-        text-decoration: none;
-        color: white;
-        font-weight: bold;
-        transition: all 0.3s ease;
-        font-size: 14px;
-        padding: 5px;
-      }
-
-      .top-nav nav a:hover {
-        color: #ffcc00;
       }
 
       /* Page content */
@@ -366,54 +323,203 @@
           margin-left: 8px;
         }
 
-        .top-nav nav a {
-          font-size: 13px;
-        }
-
         h1 {
           font-size: 1.2rem;
           margin: 8px 0;
         }
       }
+      /* Dark Mode Styles */
+      .dark-mode {
+        background-color: #121212;
+        color: #e0e0e0;
+      }
 
-      /* Footer styles */
-      .main-footer {
-        background-color: #003366;
+      .dark-mode .content-container {
+        background-color: #121212;
+      }
+
+      .dark-mode h1 {
+        color: #4fc3f7;
+      }
+
+      .dark-mode .filter-container {
+        background-color: #1e1e1e;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .dark-mode .filter-container label {
+        color: #4fc3f7;
+      }
+
+      .dark-mode select {
+        background-color: #2d2d2d;
+        color: #e0e0e0;
+        border-color: #444;
+      }
+
+      .dark-mode .table-responsive {
+        background-color: #1e1e1e;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      }
+
+      .dark-mode .table-responsive::after {
+        background: linear-gradient(
+          90deg,
+          rgba(30, 30, 30, 0) 0%,
+          rgba(30, 30, 30, 0.9) 100%
+        );
+      }
+
+      .dark-mode #receiptsTable th {
+        background-color: #0d47a1;
         color: white;
-        text-align: center;
-        padding: 15px 10px;
-        font-size: 0.8rem;
-        width: 100%;
       }
 
-      .main-footer a {
-        color: #ffcc00;
-        text-decoration: none;
-        font-weight: bold;
-        margin: 0 5px;
+      .dark-mode #receiptsTable td {
+        border-bottom: 1px solid #333;
+        color: #e0e0e0;
       }
 
-      .main-footer p {
-        margin: 5px 0;
+      .dark-mode #receiptsTable tr:hover {
+        background-color: rgba(79, 195, 247, 0.1);
+      }
+
+      .dark-mode #receiptsTable tr:nth-child(even) {
+        background-color: #252525;
+      }
+
+      .dark-mode #receiptsTable a {
+        color: #4fc3f7;
+        background: rgba(79, 195, 247, 0.1);
+      }
+
+      .dark-mode #receiptsTable a:hover {
+        background: rgba(79, 195, 247, 0.2);
+      }
+
+      /* Mobile specific dark mode styles */
+      @media (max-width: 768px) {
+        .dark-mode #receiptsTable th:nth-child(1) {
+          color: #4fc3f7 !important;
+          background: #252525;
+          box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .dark-mode #receiptsTable td:nth-child(1) {
+          background: #252525;
+          box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+        }
+      }
+
+      .dark-mode .swipe-indicator {
+        background: #0d47a1;
+        color: white;
+      }
+
+      .dark-mode footer {
+        background-color: #1e1e1e;
+        color: #e0e0e0;
+      }
+
+      .dark-mode footer a {
+        color: #e0e0e0;
+      }
+
+      .dark-mode footer a:hover {
+        color: #81d4fa;
+      }
+
+      /* Modal dark mode */
+      .dark-mode .modal-content {
+        background-color: #2d2d2d;
+        color: #e0e0e0;
+      }
+
+      .dark-mode .profile-dropdown {
+        background-color: #2d2d2d;
+        border-color: #444;
+      }
+
+      .dark-mode .profile-dropdown a {
+        color: #e0e0e0;
+      }
+
+      .dark-mode .profile-dropdown a:hover {
+        background-color: #3d3d3d;
       }
     </style>
   </head>
   <body>
-    <!-- Header -->
-    <header>
+    <header class="top-nav">
       <div class="logo">
-        <img src="assets/images/logo.png" alt="FH260 Logo" />
+        <img
+          src="logoR.png"
+          alt="Fh260 Logo"
+          style="height: 30px; margin-right: 15px"
+        />
+        <h1>Fh260</h1>
       </div>
-    </header>
 
-    <!-- Navigation Bar -->
-    <div class="top-nav">
-      <nav>
+      <!-- Desktop Navigation -->
+      <nav class="desktop-nav">
         <a href="home.html">Home</a>
         <a href="apply.html">Apply</a>
+        <a href="downloads.html" class="active">Downloads</a>
         <a href="receipts.html">Receipts</a>
+        <a href="Task.html">Reminder</a>
       </nav>
-    </div>
+
+      <!-- Desktop User Profile (visible on desktop only) -->
+      <div class="user-profile">
+        <div class="user-icon" id="userIcon">
+          <i class="fas fa-user"></i>
+        </div>
+        <div class="profile-dropdown" id="profileDropdown">
+          <a href="#" id="viewProfileBtn"
+            ><i class="fas fa-edit"></i> View/Edit Profile</a
+          >
+          <a href="#" id="logoutBtn"
+            ><i class="fas fa-sign-out-alt"></i> Logout</a
+          >
+        </div>
+      </div>
+
+      <!-- Mobile Controls Container (groups user profile and hamburger on mobile) -->
+      <div class="mobile-controls">
+        <div class="user-profile">
+          <div class="user-icon" id="userIconMobile">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="profile-dropdown" id="profileDropdownMobile">
+            <a href="#" id="viewProfileBtnMobile"
+              ><i class="fas fa-edit"></i> View/Edit Profile</a
+            >
+            <a href="#" id="logoutBtnMobile"
+              ><i class="fas fa-sign-out-alt"></i> Logout</a
+            >
+          </div>
+        </div>
+
+        <!-- Hamburger Menu Button -->
+        <div class="hamburger" id="hamburger">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- Mobile Navigation Menu -->
+      <nav id="nav-menu">
+        <div class="close-nav" id="close-nav">
+          <i class="fas fa-times"></i>
+        </div>
+        <a href="home.html">Home</a>
+        <a href="apply.html">Apply</a>
+        <a href="downloads.html" class="active">Downloads</a>
+        <a href="receipts.html">Receipts</a>
+        <a href="Task.html">Reminder</a>
+      </nav>
+    </header>
 
     <!-- Main Content -->
     <div class="content-container">
@@ -458,17 +564,68 @@
         </div>
       </div>
     </div>
-
+    <div id="profileModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" id="closeModal">&times;</span>
+        <h3>Edit Profile</h3>
+        <div class="profile-picture">
+          <img
+            id="profileImage"
+            src="https://via.placeholder.com/80"
+            alt="Profile"
+            class="initials-circle"
+          />
+          <input
+            type="file"
+            id="profileUpload"
+            style="display: none"
+            accept="image/*"
+          />
+          <button class="upload-btn" id="uploadBtn">
+            <i class="fas fa-upload"></i> Upload
+          </button>
+        </div>
+        <form id="profileForm">
+          <div class="form-group">
+            <label for="fullName">Full Name</label>
+            <input type="text" id="fullName" readonly />
+          </div>
+          <div class="form-group">
+            <label for="role">Role</label>
+            <input type="text" id="role" placeholder="Enter your role" />
+          </div>
+          <div class="form-group">
+            <label for="bio">Bio/Short Description</label>
+            <textarea
+              id="bio"
+              placeholder="Tell us about yourself..."
+            ></textarea>
+          </div>
+          <div class="form-group theme-switcher">
+            <label>Theme</label>
+            <i class="fas fa-sun" id="themeIcon"></i>
+          </div>
+          <div class="modal-buttons">
+            <button type="submit" class="save-btn">Save Changes</button>
+            <button type="button" class="cancel-btn" id="cancelBtn">
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
     <!-- Footer -->
-    <footer class="main-footer">
+    <footer>
       <p>&copy; 2025 Fh260. All rights reserved.</p>
-      <p>
-        <a href="home.html">Home</a> | <a href="index.html">Back Page</a> |
-        <a href="sign.html">Sign In</a>
-      </p>
+      <div class="footer-links">
+        <a href="sign.html">Sign In</a> | <a href="index.html">Back Page</a> |
+        <a href="admin.html">Admin</a>
+      </div>
     </footer>
 
     <!-- Script -->
     <script src="js/downloads-script.js"></script>
+    <script src="js/global-nav.js"></script>
+    <script src="js/profile-handler.js"></script>
   </body>
 </html>
