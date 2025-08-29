@@ -1,0 +1,83 @@
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import inch
+from reportlab.lib import colors
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+
+def generate_crb_advice_pdf(filename="CRB_Advice_Report.pdf"):
+    doc = SimpleDocTemplate(filename, pagesize=A4,
+                            rightMargin=40, leftMargin=40,
+                            topMargin=60, bottomMargin=40)
+    
+    styles = getSampleStyleSheet()
+    story = []
+
+    # Custom Styles
+    title_style = styles["Title"]
+    subtitle_style = styles["Heading2"]
+    body_style = styles["BodyText"]
+    body_bold = ParagraphStyle('BodyBold', parent=body_style, fontName='Helvetica-Bold')
+
+    # Title
+    story.append(Paragraph("📄 CRB Report Advice Summary", title_style))
+    story.append(Spacer(1, 12))
+
+    # Summary Section
+    story.append(Paragraph("🔍 <b>Summary of Key Details</b>", subtitle_style))
+    summary_items = [
+        "<b>Metro-Score:</b> 763 (Good score – low credit risk)",
+        "<b>Score Trend:</b> Stable",
+        "<b>PPI:</b> M1 (Excellent payment discipline)",
+        "<b>Total Accounts:</b> 23",
+        "<b>Non-performing:</b> 0 | <b>Past Default:</b> 1 (Now Cleared)",
+        "<b>Total Outstanding Balance:</b> KES 2,474.58"
+    ]
+    for item in summary_items:
+        story.append(Paragraph(item, body_style))
+    story.append(Spacer(1, 12))
+
+    # Positive Notes
+    story.append(Paragraph("✅ <b>What You're Doing Well</b>", subtitle_style))
+    positives = [
+        "Excellent repayment discipline on most loans.",
+        "No current defaults or overdue accounts.",
+        "Closed most short-term loans responsibly.",
+        "No CRB inquiries or bounced cheques.",
+    ]
+    for point in positives:
+        story.append(Paragraph(f"• {point}", body_style))
+    story.append(Spacer(1, 12))
+
+    # Attention Section
+    story.append(Paragraph("⚠️ <b>What Needs Attention</b>", subtitle_style))
+    cautions = [
+        "One past default with KCB loan (858 days late) – now cleared.",
+        "One active balance with KCB: KES 2,474.58 – monitor or clear."
+    ]
+    for point in cautions:
+        story.append(Paragraph(f"• {point}", body_style))
+    story.append(Spacer(1, 12))
+
+    # Recommendations
+    story.append(Paragraph("📌 <b>Recommendations</b>", subtitle_style))
+    recommendations = [
+        "Clear or settle the KCB balance.",
+        "Maintain your M1 status – keep paying on time.",
+        "Dial *433# to request a Certificate of Clearance.",
+        "Monitor your CRB report every few months."
+    ]
+    for point in recommendations:
+        story.append(Paragraph(f"• {point}", body_style))
+    story.append(Spacer(1, 12))
+
+    # Lending Advice
+    story.append(Paragraph("📈 <b>If You're Planning to Borrow</b>", subtitle_style))
+    story.append(Paragraph("You are in a strong position for loan approval. "
+                           "Maintain discipline and prepare to explain past default if needed.", body_style))
+
+    doc.build(story)
+    print(f"PDF '{filename}' has been created.")
+
+# Run the function
+generate_crb_advice_pdf()

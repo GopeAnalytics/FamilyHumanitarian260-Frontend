@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Task Planner & Reminder</title>
+  <style>
+   html, body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100%;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f4f7fc;
+  color: #1a1a1a;
+  overflow-x: hidden;
+  text-align: center;
+}
+
+header {
+  background: linear-gradient(90deg, #3e64ff, #5edfff);
+  color: white;
+  height: 0; /* Fixed height */
+  text-align: center;
+  position: relative;
+  margin: 0;
+  padding: 0;
+  overflow: hidden; /* Ensures nothing bleeds outside */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+
+
+.container {
+  padding: 20px;
+  max-width: 1100px;
+  margin: auto;
+}
+.task-form {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  margin-bottom: 40px;
+  border-left: 6px solid #3e64ff;
+}
+.task-form h2 {
+  margin-top: 0;
+  color: #3e64ff;
+}
+.task-form input, .task-form textarea, .task-form select {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+.task-form button {
+  background: #3e64ff;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.section-title {
+  font-size: 1.8rem;
+  color: #2c3e50;
+  margin-top: 50px;
+  margin-bottom: 20px;
+}
+.task-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 20px;
+}
+.task-card {
+  background: #ffffff;
+  border-left: 6px solid #00b894;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+}
+.task-card h3 {
+  margin: 0 0 10px;
+  color: #2d3436;
+}
+.task-card p {
+  margin: 5px 0;
+  color: #636e72;
+}
+.task-card button {
+  margin-top: 15px;
+  background: #00b894;
+  color: white;
+  border: none;
+  padding: 12px 36px;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+.summary {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  margin-top: 50px;
+}
+.summary h2 {
+  color: #3e64ff;
+}
+.progress-bar {
+  background: #e0e0e0;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+.progress-bar-inner {
+  height: 20px;
+  background: #00b894;
+  width: 60%;
+}
+.featured-on {
+  display: flex;
+  justify-content: space-around;
+  margin: 30px 0;
+  filter: grayscale(1);
+  opacity: 0.6;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.illustration {
+  text-align: center;
+  margin: 40px 0;
+}
+.illustration img {
+  max-width: 300px;
+}
+@media (max-width: 768px) {
+  header img {
+    display: none;
+  }
+}
+.hero {
+  background-color: #0c2340;
+  color: white;
+  padding: 60px 20px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.hero .text {
+  max-width: 600px;
+}
+.hero h1 {
+  font-size: 2.5rem;
+}
+.hero h1 span {
+  border-bottom: 4px solid orange;
+}
+.hero ul {
+  margin-top: 20px;
+  padding-left: 20px;
+}
+.hero ul li {
+  margin-bottom: 10px;
+  list-style: none;
+  position: relative;
+  padding-left: 20px;
+}
+.hero ul li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+}
+.hero .image {
+  max-width: 400px;
+}
+.features {
+  background-color: #fff;
+  padding: 30px 20px;
+}
+.tool-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+}
+.tool-card img {
+  max-width: 150px;
+  border-radius: 8px;
+}
+.tool-info {
+  flex-grow: 1;
+  margin-left: 20px;
+}
+.tool-info h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.tool-info .rating {
+  background: #fff;
+  color: #f90;
+  border: 2px solid #f90;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  line-height: 46px;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+.visit-btn {
+  background: linear-gradient(45deg, #ff7a00, #ff4f00);
+  border: none;
+  color: white;
+  padding: 12px 20px;
+  font-size: 1rem;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+}
+.trust {
+  background-color: #f4f4f4;
+  padding: 60px 20px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.trust .text {
+  max-width: 600px;
+}
+.trust h2 {
+  font-size: 2rem;
+}
+.trust p {
+  line-height: 1.6;
+  margin-top: 20px;
+}
+.trust .image {
+  max-width: 400px;
+}
+@media (max-width: 768px) {
+  .hero, .trust {
+    flex-direction: column;
+    align-items: center;
+  }
+  .hero .image, .trust .image {
+    margin-top: 30px;
+  }
+}
+.title {
+  font-size: 2em;
+  margin-bottom: 30px;
+  color: #1a1a1a;
+}
+.card-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.card {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  width: 260px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.3s;
+}
+.card:hover {
+  transform: translateY(-5px);
+}
+.rank {
+  background: #e3f2fd;
+  font-weight: bold;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+.logo {
+  max-width: 140px;
+  margin: 10px auto;
+  display: block;
+}
+.visit-button {
+  display: inline-block;
+  background-color: #ff5c5c;
+  color: white;
+  text-decoration: none;
+  padding: 10px 20px;
+  margin: 10px 0;
+  border-radius: 6px;
+  font-weight: bold;
+}
+.details {
+  font-size: 14px;
+  color: #333;
+  text-align: left;
+  margin-top: 10px;
+}
+.highlight {
+  background-color: #e0fff6;
+  border: 2px solid #00c896;
+}
+.footer-banner {
+  width: 100vw;
+  margin: 0;
+  padding: 30px 80px;
+  background: linear-gradient(90deg, #151a21 0%, #1f2b3d 100%);
+  color: white;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 100px;
+  box-sizing: border-box;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  transform: translateX(-50%);
+}
+.footer-logo {
+  width: 100px;
+  height: auto;
+}
+.footer-text h2 {
+  margin: 0;
+  font-size: 1.4em;
+}
+.footer-text p {
+  margin: 5px 0 0;
+  font-size: 0.95em;
+  color: #d1d1d1;
+}
+.footer-button {
+  background-color: #ff6a00;
+  color: white;
+  text-decoration: none;
+  padding: 12px 30px;
+  border-radius: 25px;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+.footer-button:hover {
+  background-color: #e65c00;
+}
+@media (max-width: 768px) {
+  .footer-banner {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+}
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #f7f9fc;
+}
+
+.calendar-app {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 240px;
+  background: #fff;
+  border-right: 1px solid #ddd;
+  padding: 20px;
+}
+
+.sidebar h2 {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+
+.calendar-list {
+  list-style: none;
+  padding: 0;
+}
+
+.calendar-list li {
+  margin: 10px 0;
+  font-size: 0.95rem;
+}
+
+.color-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.color-dot.work { background: #4285F4; }
+.color-dot.personal { background: #FBBC05; }
+.color-dot.meeting { background: #34A853; }
+
+/* Main calendar */
+.main-calendar {
+  flex: 1;
+  padding: 20px;
+}
+
+.calendar-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.calendar-toolbar h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #3e64ff;
+}
+
+.calendar-toolbar button {
+  background: #3e64ff;
+  border: none;
+  color: white;
+  padding: 8px 14px;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Calendar grid */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  background: #ccc;
+}
+
+.day-name {
+  background: #f0f0f0;
+  padding: 10px;
+  font-weight: bold;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+#calendarDays {
+  display: contents;
+}
+
+.calendar-day {
+  min-height: 100px;
+  background: #fff;
+  padding: 5px;
+  position: relative;
+}
+
+.calendar-day.other-month {
+  background: #f3f3f3;
+  color: #aaa;
+}
+
+.calendar-day.today {
+  border: 2px solid #3e64ff;
+  box-sizing: border-box;
+}
+.calendar-day span {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  font-size: 0.9rem;
+  font-weight: bold;
+}.visit-btn {
+  background: linear-gradient(45deg, #ff7a00, #ff4f00);
+  border: none;
+  color: white;
+  padding: 12px 20px;
+  font-size: 1rem;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+  text-decoration: none; /* ← this removes underline */
+  display: inline-block;
+}
+  </style>
+</head>
+<body>
+  <section class="hero">
+    <div class="text">
+      <h1>📅Task Management Tool </span></h1>
+  </section>
+  <section class="features">
+    <div class="tool-card">
+      
+      <div class="tool-info">
+        <h2>Task <span class="rating">100%</span></h2>
+        <ul>
+          <li>✔️Tracking Title</li>
+          <li>✔️Description</li>
+          <li>✔️Tracking Date</li>
+          <li>✔️Tracking Priority</li>
+        </ul>
+      </div>
+     <a href="Task_task.html" class="visit-btn">Add Task »</a>
+    </div>
+    <div class="tool-card">
+      <div class="tool-info">
+        <h2>Appointment <span class="rating">100%</span></h2>
+        <ul>
+          <li>✔️Tracking Name/Place</li>
+          <li>✔️Tracking Time</li>
+        </ul>
+      </div>
+      <a href="Task_Appointment.html" class="visit-btn">Add Appointment »</a>
+
+    </div>
+  </section>
+
+   <h2 class="section-title">📌 Pending Tasks</h2>
+    <div class="task-list">
+      <div class="task-card">
+        <h3>Submit Report</h3>
+        <p>Due: 2025-07-06</p>
+        <p>Priority: High</p>
+        <p>Description: Financial Statement</p>
+        <button>✅ Mark as Completed</button>
+      </div>
+      <div class="task-card">
+        <h3>Insurance</h3>
+        <p>Due: 2025-07-08</p>
+        <p>Priority: Medium</p>
+        <p>Description: Insurence to be paid</p>
+        <button>✅ Mark as Completed</button>
+      </div>
+    </div>
+
+    <div class="summary">
+      <h2>📊 Task Completion Summary</h2>
+      <p>Tasks completed in the past month: <strong>12</strong></p>
+      <p>Total tasks: <strong>20</strong></p>
+      <p>Completion Rate:</p>
+      <div class="progress-bar">
+        <div class="progress-bar-inner"></div>
+      </div>
+    </div>
+  
+    <h1>Task Management Calendar </h1>
+     
+  <div class="calendar-app">
+  <aside class="sidebar">
+    <h2>My Plans</h2>
+    <div class="mini-month"></div>
+    <ul class="calendar-list">
+      
+      <li><span class="color-dot personal"></span> Tasks</li>
+      <li><span class="color-dot meeting"></span> Appointments</li>
+    </ul>
+  </aside>
+
+  <main class="main-calendar">
+    <div class="calendar-toolbar">
+      <button id="prevMonth">&larr;</button>
+      <h2 id="monthYear"></h2>
+      <button id="nextMonth">&rarr;</button>
+    </div>
+    <div class="calendar-grid">
+      <div class="day-name">Sun</div>
+      <div class="day-name">Mon</div>
+      <div class="day-name">Tue</div>
+      <div class="day-name">Wed</div>
+      <div class="day-name">Thu</div>
+      <div class="day-name">Fri</div>
+      <div class="day-name">Sat</div>
+      <div id="calendarDays"></div>
+    </div>
+  </main>
+</div><script>
+const calendarDays = document.getElementById("calendarDays");
+const monthYear = document.getElementById("monthYear");
+const prevBtn = document.getElementById("prevMonth");
+const nextBtn = document.getElementById("nextMonth");
+let current = new Date();
+function renderCalendar(date) {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const today = new Date();
+
+  const firstDayIndex = new Date(year, month, 1).getDay();
+  const lastDate = new Date(year, month + 1, 0).getDate();
+  const prevLastDate = new Date(year, month, 0).getDate();
+
+  // Update month/year title
+  monthYear.textContent = date.toLocaleString("default", {
+    month: "long",
+    year: "numeric",
+  });
+  // Clear previous days
+  calendarDays.innerHTML = "";
+  // Previous month's ending days
+  for (let i = firstDayIndex; i > 0; i--) {
+    const day = document.createElement("div");
+    day.classList.add("calendar-day", "other-month");
+    day.textContent = prevLastDate - i + 1;
+    calendarDays.appendChild(day);
+  }
+  // Current month's days
+  for (let i = 1; i <= lastDate; i++) {
+    const day = document.createElement("div");
+    day.classList.add("calendar-day");
+    if (
+      i === today.getDate() &&
+      month === today.getMonth() &&
+      year === today.getFullYear()
+    ) {
+      day.classList.add("today");
+    }
+    day.textContent = i;
+    calendarDays.appendChild(day);
+  }
+  // Fill next month's beginning days
+  const totalDisplayed = firstDayIndex + lastDate;
+  const fill = (7 - (totalDisplayed % 7)) % 7;
+  for (let i = 1; i <= fill; i++) {
+    const day = document.createElement("div");
+    day.classList.add("calendar-day", "other-month");
+    day.textContent = i;
+    calendarDays.appendChild(day);
+  }
+}
+// Navigation
+prevBtn.addEventListener("click", () => {
+  current.setMonth(current.getMonth() - 1);
+  renderCalendar(current);
+});
+nextBtn.addEventListener("click", () => {
+  current.setMonth(current.getMonth() + 1);
+  renderCalendar(current);
+});
+// Initial load
+renderCalendar(current);
+</script>
+    </div><!-- Footer Banner -->
+<div class="footer-banner">
+  <img src="https://cdn.worldvectorlogo.com/logos/monday-1.svg" alt="Monday.com Logo" class="footer-logo">
+  <div class="footer-text">
+    <h2>Record, Remember, and Do!</h2>
+    <p></p>
+  </div>
+  <a href="home.html" class="visit-btn">Visit home page »</a>
+</div>
+</body>
+</html>

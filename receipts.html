@@ -142,6 +142,16 @@
         background: orange;
         color: white;
       }
+      .receipt-input {
+    width: 100%;
+    height: 50px;
+    padding: 10px 15px;
+    font-size: 18px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
 
       .submit-btn {
         background: yellow;
@@ -252,7 +262,7 @@
       async function fetchReceiptsFor(userId) {
         const token = localStorage.getItem("token");
         const res = await fetch(
-          `http://localhost:3000/api/receipts/pending?userId=${userId}`,
+          `https://fhserver.org.fh260.org/api/receipts/pending?userId=${userId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -289,7 +299,7 @@
           <button class="photo-btn">Take Photo</button>
           <button class="upload-btn">Upload File</button>
           <button class="reconcile-btn">Write Reconcile</button>
-        </div>
+        </div> <p> <p> <p>
         <input type="number" class="receipt-input" placeholder="Enter receipt amount" style="display: none;" />
         <textarea class="reconcile-area" rows="4" style="display: none;" placeholder="Reconciliation notes (optional)"></textarea>
         <p class="file-display" style="display: none;"></p>
@@ -376,7 +386,7 @@
                 const formData = new FormData();
                 formData.append("attachment", uploadedFile);
                 const uploadRes = await fetch(
-                  "http://localhost:3000/api/upload",
+                  "https://fhserver.org.fh260.org/api/upload",
                   {
                     method: "POST",
                     headers: { Authorization: `Bearer ${token}` },
@@ -400,7 +410,7 @@
                 const formData = new FormData();
                 formData.append("attachment", file);
                 const uploadRes = await fetch(
-                  "http://localhost:3000/api/upload",
+                  "https://fhserver.org.fh260.org/api/upload",
                   {
                     method: "POST",
                     headers: { Authorization: `Bearer ${token}` },
@@ -415,7 +425,7 @@
 
               // Send clearance request
               const clearRes = await fetch(
-                "http://localhost:3000/api/receipts/clear",
+                "https://fhserver.org.fh260.org/api/receipts/clear",
                 {
                   method: "POST",
                   headers: {
@@ -454,7 +464,7 @@
 
         // Fetch users from same country
         const res = await fetch(
-          "http://localhost:3000/api/users/same-country",
+          "https://fhserver.org.fh260.org/api/users/same-country",
           {
             headers: { Authorization: `Bearer ${token}` },
           }
