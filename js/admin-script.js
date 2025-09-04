@@ -1,5 +1,5 @@
-//Base URL initialization
-const BASE_URL = "http://localhost:3000";
+// Base URL initialization
+const BASE_URL = "https://fhserver.org.fh260.org";
 
 document.addEventListener("DOMContentLoaded", () => {
   // Make the approve and reject functions globally available
@@ -33,6 +33,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const userSelect = document.getElementById("userFilter");
   const receiptsSection = document.getElementById("receiptsSection");
 
+  const transferStatusSelect = document.getElementById("transferStatusFilter");
+  const transferCountrySelect = document.getElementById(
+    "transferCountryFilter"
+  );
+  const transferUserSelect = document.getElementById("transferUserFilter");
+  const transfersSection = document.getElementById("transfersSection");
+
   // Load initial countries and users
   fetch(`${BASE_URL}/api/admin/filters`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -46,6 +53,8 @@ document.addEventListener("DOMContentLoaded", () => {
     .then((data) => {
       populateSelect(countrySelect, ["All", ...data.countries]);
       populateSelect(userSelect, ["All"]); // Initially all users
+      populateSelect(transferCountrySelect, ["All", ...data.countries]);
+      populateSelect(transferUserSelect, ["All"]); // Initially all users
     })
     .catch((error) => {
       console.error("Error loading filters:", error);
@@ -65,15 +74,50 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function fetchReceipts() {
-    if (!receiptTypeSelect || !countrySelect || !userSelect) return;
+    return new Promise((resolve, reject) => {
+      if (!receiptTypeSelect || !countrySelect || !userSelect) {
+        reject("Missing filter elements");
+        return;
+      }
+
+      const params = new URLSearchParams({
+        receiptType: receiptTypeSelect.value,
+        country: countrySelect.value,
+        user: userSelect.value,
+      });
+
+      fetch(`${BASE_URL}/api/admin/receipts?${params.toString()}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error(`HTTP error! Status: ${res.status}`);
+          }
+          return res.json();
+        })
+        .then((data) => {
+          renderReceipts(data.receipts);
+          resolve(data.receipts);
+        })
+        .catch((error) => {
+          console.error("Error fetching receipts:", error);
+          showNotification("Error loading receipts", "error");
+          reject(error);
+        });
+    });
+  }
+
+  function fetchTransfers() {
+    if (!transferStatusSelect || !transferCountrySelect || !transferUserSelect)
+      return;
 
     const params = new URLSearchParams({
-      receiptType: receiptTypeSelect.value,
-      country: countrySelect.value,
-      user: userSelect.value,
+      status: transferStatusSelect.value,
+      country: transferCountrySelect.value,
+      user: transferUserSelect.value,
     });
 
-    fetch(`${BASE_URL}/api/admin/receipts?${params.toString()}`, {
+    fetch(`${BASE_URL}/api/admin/transfers?${params.toString()}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => {
@@ -83,11 +127,11 @@ document.addEventListener("DOMContentLoaded", () => {
         return res.json();
       })
       .then((data) => {
-        renderReceipts(data.receipts);
+        renderTransfers(data.transfers);
       })
       .catch((error) => {
-        console.error("Error fetching receipts:", error);
-        showNotification("Error loading receipts", "error");
+        console.error("Error fetching transfers:", error);
+        showNotification("Error loading transfers", "error");
       });
   }
 
@@ -122,6 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
     receipts.forEach((receipt) => {
       const row = document.createElement("div");
       row.className = "receipt-row";
+      row.id = `receipt-${receipt.reference}`;
 
       // Format the amounts with the correct currency
       const totalAmountFormatted = formatCurrency(
@@ -134,25 +179,140 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       row.innerHTML = `
-        <div>${receipt.reference || "N/A"}</div>
-        <div>${new Date(receipt.submission_time).toLocaleDateString()}</div>
-        <div>${totalAmountFormatted}</div>
-        <div style="color: ${receipt.balance_amount == 0 ? "green" : "red"};">
-          ${balanceAmountFormatted}
-        </div>
-        <div>${receipt.name || "Unknown"}</div>
-        <div>
-          ${
-            receipt.drive_link
-              ? `<a href="${convertToViewLink(
+              <div>${receipt.reference || "N/A"}</div>
+              <div>${new Date(
+                receipt.submission_time
+              ).toLocaleDateString()}</div>
+              <div>${totalAmountFormatted}</div>
+              <div style="color: ${
+                receipt.balance_amount == 0 ? "green" : "red"
+              };">
+                ${balanceAmountFormatted}
+              </div>
+              <div>${receipt.category_name || "N/A"}</div>
+              <div>${receipt.name || "Unknown"}</div>
+              <div>
+                ${
                   receipt.drive_link
-                )}" target="_blank">View Receipt</a>`
-              : "-"
-          }
-        </div>
-      `;
+                    ? `<a href="${convertToViewLink(
+                        receipt.drive_link
+                      )}" target="_blank">View Receipt</a>`
+                    : "-"
+                }
+              </div>
+            `;
 
       receiptsSection.appendChild(row);
+    });
+  }
+
+  function renderTransfers(transfers) {
+    if (!transfersSection) return;
+
+    transfersSection.innerHTML = "";
+
+    if (!transfers || transfers.length === 0) {
+      transfersSection.innerHTML =
+        "<div class='no-results'>No transfers found</div>";
+      return;
+    }
+
+    transfers.forEach((transfer) => {
+      const row = document.createElement("div");
+      row.className = "transfer-row";
+
+      // Format the amounts with the correct currency
+      const receiptAmountFormatted = formatCurrency(
+        transfer.receipt_amount,
+        transfer.currency_code
+      );
+      const transferAmountFormatted = formatCurrency(
+        transfer.transfer_amount,
+        transfer.currency_code
+      );
+
+      row.innerHTML = `
+              <div>${transfer.transfer_reference || "N/A"}</div>
+              <div>
+                <a href="#receipt-${
+                  transfer.receipt_reference
+                }" class="receipt-link" data-ref="${
+        transfer.receipt_reference
+      }">
+                  ${transfer.receipt_reference || "N/A"}
+                </a>
+              </div>
+              <div>${receiptAmountFormatted}</div>
+              <div>${transfer.transfer_category || "N/A"}</div>
+              <div>${transferAmountFormatted}</div>
+              <div>${new Date(
+                transfer.transfer_date
+              ).toLocaleDateString()}</div>
+              <div>${transfer.applicant || "Unknown"}</div>
+              <div>
+                ${
+                  transfer.receipt_link
+                    ? `<a href="${convertToViewLink(
+                        transfer.receipt_link
+                      )}" target="_blank">View Receipt</a>`
+                    : "-"
+                }
+              </div>
+            `;
+
+      transfersSection.appendChild(row);
+    });
+
+    // Add event listeners to receipt links
+    document.querySelectorAll(".receipt-link").forEach((link) => {
+      link.addEventListener("click", function (e) {
+        e.preventDefault();
+        const ref = this.getAttribute("data-ref");
+
+        // Add loading state
+        document.body.classList.add("loading");
+
+        // Switch to "All" filter to ensure the receipt is visible
+        receiptTypeSelect.value = "All";
+
+        // Clear country and user filters
+        countrySelect.value = "All";
+        userSelect.value = "All";
+
+        // Fetch all receipts and then highlight
+        fetchReceipts()
+          .then(() => {
+            // Wait a bit for the DOM to update
+            setTimeout(() => {
+              const receiptRow = document.getElementById(`receipt-${ref}`);
+
+              if (receiptRow) {
+                // Highlight the receipt row
+                receiptRow.classList.add("highlighted");
+
+                // Scroll to the receipt
+                receiptRow.scrollIntoView({
+                  behavior: "smooth",
+                  block: "center",
+                });
+
+                // Remove highlight after 3 seconds
+                setTimeout(() => {
+                  receiptRow.classList.remove("highlighted");
+                }, 3000);
+              } else {
+                showNotification("Receipt not found", "error");
+              }
+
+              // Remove loading state
+              document.body.classList.remove("loading");
+            }, 100);
+          })
+          .catch((error) => {
+            console.error("Error fetching receipts:", error);
+            document.body.classList.remove("loading");
+          });
+      });
     });
   }
 
@@ -194,8 +354,50 @@ document.addEventListener("DOMContentLoaded", () => {
     userSelect.addEventListener("change", fetchReceipts);
   }
 
-  // Initial fetch
+  // Set up event listeners for transfer filters
+  if (transferStatusSelect) {
+    transferStatusSelect.addEventListener("change", fetchTransfers);
+  }
+
+  if (transferCountrySelect) {
+    transferCountrySelect.addEventListener("change", () => {
+      if (transferCountrySelect.value === "All") {
+        populateSelect(transferUserSelect, ["All"]);
+      } else {
+        fetch(
+          `${BASE_URL}/api/admin/users?country=${transferCountrySelect.value}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        )
+          .then((res) => {
+            if (!res.ok) {
+              throw new Error(`HTTP error! Status: ${res.status}`);
+            }
+            return res.json();
+          })
+          .then((data) => {
+            populateSelect(transferUserSelect, ["All", ...data.users]);
+          })
+          .catch((error) => {
+            console.error("Error loading users:", error);
+            showNotification(
+              "Error loading users for selected country",
+              "error"
+            );
+          });
+      }
+      fetchTransfers();
+    });
+  }
+
+  if (transferUserSelect) {
+    transferUserSelect.addEventListener("change", fetchTransfers);
+  }
+
+  // Initial fetches
   fetchReceipts();
+  fetchTransfers();
 
   function loadPendingRequests() {
     fetch(`${BASE_URL}/api/admin/pending-requests`, {
@@ -220,17 +422,23 @@ document.addEventListener("DOMContentLoaded", () => {
         container.innerHTML = requests
           .map(
             (req) => `
-            <div class="table-row">
-              <div>${req.name || "N/A"}</div>
-              <div>${req.email || "N/A"}</div>
-              <div>${req.country || "N/A"}</div>
-              <div>${new Date(req.requested_at).toLocaleDateString()}</div>
-              <div class="actions">
-                <button class="approve-btn" data-id="${req.id}">Approve</button>
-                <button class="reject-btn" data-id="${req.id}">Reject</button>
-              </div>
-            </div>
-          `
+                  <div class="table-row">
+                    <div>${req.name || "N/A"}</div>
+                    <div>${req.email || "N/A"}</div>
+                    <div>${req.country || "N/A"}</div>
+                    <div>${new Date(
+                      req.requested_at
+                    ).toLocaleDateString()}</div>
+                    <div class="actions">
+                      <button class="approve-btn" data-id="${
+                        req.id
+                      }">Approve</button>
+                      <button class="reject-btn" data-id="${
+                        req.id
+                      }">Reject</button>
+                    </div>
+                  </div>
+                `
           )
           .join("");
 

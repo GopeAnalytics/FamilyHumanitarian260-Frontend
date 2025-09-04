@@ -43,11 +43,13 @@
         padding: 20px;
       }
 
-      #results-section {
+      #results-section,
+      #transfers-section {
         display: flex;
         flex-wrap: wrap;
         gap: 20px;
         justify-content: center;
+        margin-bottom: 30px;
       }
 
       .container {
@@ -165,11 +167,11 @@
       }
 
       #name-dropdown {
-        height: 1cm; /* Set the height to 2 cm */
-        font-size: 16px; /* Adjust the font size */
-        padding: 5px; /* Add some padding for better appearance */
-        border: 2px solid #333; /* Optional border styling */
-        border-radius: 5px; /* Optional rounded corners */
+        height: 1cm;
+        font-size: 16px;
+        padding: 5px;
+        border: 2px solid #333;
+        border-radius: 5px;
       }
       .loading-spinner {
         border: 4px solid rgba(0, 0, 0, 0.1);
@@ -180,6 +182,16 @@
         animation: spin 1s linear infinite;
         display: inline-block;
         margin-left: 10px;
+      }
+
+      /* Section headers */
+      .section-header {
+        width: 100%;
+        text-align: center;
+        margin: 20px 0 10px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #007bff;
+        color: #007bff;
       }
 
       /* Dark Mode Styles */
@@ -265,6 +277,11 @@
 
       .dark-mode footer a:hover {
         color: #81d4fa;
+      }
+
+      .dark-mode .section-header {
+        color: #4fc3f7;
+        border-bottom-color: #4fc3f7;
       }
 
       /* Modal dark mode */
@@ -381,8 +398,14 @@
         <select id="user-selector"></select>
       </section>
 
+      <h2 class="section-header">Pending Receipts</h2>
       <section id="results-section">
-        <!-- Data containers will be dynamically added here -->
+        <!-- Receipt containers will be dynamically added here -->
+      </section>
+
+      <h2 class="section-header">Uncleared Transfers</h2>
+      <section id="transfers-section">
+        <!-- Transfer containers will be dynamically added here -->
       </section>
     </main>
 
@@ -446,13 +469,12 @@
     <script src="js/global-nav.js"></script>
     <script src="js/profile-handler.js"></script>
     <script>
-      //Base URL
+      // Base URL
       const BASE_URL = "http://localhost:3000";
-      function formatCurrency(amount, currencyCode) {
-        // Default to USD if no currency code is provided
-        const code = currencyCode || "USD";
 
-        // Create a formatter for the specific currency
+      // Format currency function
+      function formatCurrency(amount, currencyCode) {
+        const code = currencyCode || "USD";
         return new Intl.NumberFormat(undefined, {
           style: "currency",
           currency: code,
@@ -460,8 +482,8 @@
         }).format(parseFloat(amount));
       }
 
-      // Validation function to check if form is complete
-      function validateForm(
+      // Validation function for receipts
+      function validateReceiptForm(
         receiptInput,
         uploadedFile,
         reconcileArea,
@@ -470,12 +492,10 @@
         const errors = [];
         const amount = parseFloat(receiptInput.value);
 
-        // Check if amount is entered
         if (!receiptInput.value.trim() || isNaN(amount) || amount <= 0) {
           errors.push("Please enter a valid amount to clear");
         }
 
-        // Check if amount exceeds remaining balance
         if (amount > remainingBalance) {
           errors.push(
             `Amount cannot exceed remaining balance of ${formatCurrency(
@@ -485,7 +505,35 @@
           );
         }
 
-        // Check if either file is uploaded or reconcile note is provided
+        if (!uploadedFile && !reconcileArea.value.trim()) {
+          errors.push(
+            "Please upload a receipt/photo or provide reconciliation notes"
+          );
+        }
+
+        return errors;
+      }
+
+      // Validation function for transfers
+      function validateTransferForm(
+        transferInput,
+        uploadedFile,
+        reconcileArea,
+        transferAmount
+      ) {
+        const errors = [];
+        const amount = parseFloat(transferInput.value);
+
+        if (!transferInput.value.trim() || isNaN(amount) || amount <= 0) {
+          errors.push("Please enter a valid amount to clear");
+        }
+
+        if (amount !== parseFloat(transferAmount)) {
+          errors.push(
+            `Amount must be exactly ${formatCurrency(transferAmount, "USD")}`
+          );
+        }
+
         if (!uploadedFile && !reconcileArea.value.trim()) {
           errors.push(
             "Please upload a receipt/photo or provide reconciliation notes"
@@ -497,11 +545,9 @@
 
       // Function to display validation errors
       function displayErrors(container, errors) {
-        // Remove existing error messages
         const existingErrors = container.querySelectorAll(".error-message");
         existingErrors.forEach((error) => error.remove());
 
-        // Add new error messages
         errors.forEach((error) => {
           const errorElement = document.createElement("div");
           errorElement.className = "error-message";
@@ -510,6 +556,7 @@
         });
       }
 
+      // Fetch pending receipts for a user
       async function fetchReceiptsFor(userId) {
         const token = localStorage.getItem("token");
         const res = await fetch(
@@ -529,7 +576,6 @@
           const balanceColor = receipt.balance > 0 ? "red" : "green";
           const remainingBalance = parseFloat(receipt.balance);
 
-          // Format amounts using the currency code
           const formattedAmount = formatCurrency(
             receipt.amount,
             receipt.currency_code
@@ -540,28 +586,29 @@
           );
 
           container.innerHTML = `
-        <h3>Reference: ${receipt.reference}</h3>
-        <p><strong>Total Amount:</strong> ${formattedAmount}</p>
-        <p><strong>Remaining Balance:</strong> <span style="color: ${balanceColor}">${formattedBalance}</span></p>
-        <p><strong>Date:</strong> ${new Date(
-          receipt.submission_time
-        ).toLocaleString()}</p>
-        <button class="clear-btn">Clear</button>
-        <div class="extra-buttons" style="display: none;">
-          <button class="photo-btn">Take Photo</button>
-          <button class="upload-btn">Upload File</button>
-          <button class="reconcile-btn">Write Reconcile</button>
-        </div>
-        <input type="number" class="receipt-input" placeholder="Enter amount to clear (max: ${
-          receipt.balance
-        })" 
-               style="display: none;" step="0.01" min="0.01" max="${
-                 receipt.balance
-               }" />
-        <textarea class="reconcile-area" rows="4" style="display: none;" placeholder="Reconciliation notes (optional)"></textarea>
-        <p class="file-display" style="display: none;"></p>
-        <button class="submit-btn" style="display: none;" disabled>Submit to Clear</button>
-      `;
+            <h3>Reference: ${receipt.reference}</h3>
+            <p><strong>Category:</strong> ${receipt.category || "N/A"}</p>
+            <p><strong>Total Amount:</strong> ${formattedAmount}</p>
+            <p><strong>Remaining Balance:</strong> <span style="color: ${balanceColor}">${formattedBalance}</span></p>
+            <p><strong>Date:</strong> ${new Date(
+              receipt.submission_time
+            ).toLocaleString()}</p>
+            <button class="clear-btn">Clear</button>
+            <div class="extra-buttons" style="display: none;">
+              <button class="photo-btn">Take Photo</button>
+              <button class="upload-btn">Upload File</button>
+              <button class="reconcile-btn">Write Reconcile</button>
+            </div>
+            <input type="number" class="receipt-input" placeholder="Enter amount to clear (max: ${
+              receipt.balance
+            })" 
+                   style="display: none;" step="0.01" min="0.01" max="${
+                     receipt.balance
+                   }" />
+            <textarea class="reconcile-area" rows="4" style="display: none;" placeholder="Reconciliation notes (optional)"></textarea>
+            <p class="file-display" style="display: none;"></p>
+            <button class="submit-btn" style="display: none;" disabled>Submit to Clear</button>
+          `;
 
           const clearBtn = container.querySelector(".clear-btn");
           const extraButtons = container.querySelector(".extra-buttons");
@@ -575,9 +622,8 @@
 
           let uploadedFile = null;
 
-          // Function to validate and enable/disable submit button
           function validateAndToggleSubmit() {
-            const errors = validateForm(
+            const errors = validateReceiptForm(
               receiptInput,
               uploadedFile,
               reconcileArea,
@@ -587,7 +633,6 @@
             if (errors.length === 0) {
               submitBtn.disabled = false;
               receiptInput.classList.remove("error");
-              // Remove error messages
               const existingErrors =
                 container.querySelectorAll(".error-message");
               existingErrors.forEach((error) => error.remove());
@@ -605,7 +650,6 @@
             submitBtn.style.display = "block";
           });
 
-          // Add real-time validation on input change
           receiptInput.addEventListener("input", validateAndToggleSubmit);
           reconcileArea.addEventListener("input", validateAndToggleSubmit);
 
@@ -613,7 +657,7 @@
             uploadedFile = file;
             fileDisplay.style.display = "block";
             fileDisplay.textContent = `Selected: ${file.name}`;
-            validateAndToggleSubmit(); // Re-validate when file is uploaded
+            validateAndToggleSubmit();
           }
 
           photoBtn.addEventListener("click", () => {
@@ -648,14 +692,13 @@
 
           reconcileBtn.addEventListener("click", () => {
             reconcileArea.style.display = "block";
-            validateAndToggleSubmit(); // Re-validate when reconcile area is shown
+            validateAndToggleSubmit();
           });
 
           submitBtn.addEventListener("click", async () => {
             const amount = parseFloat(receiptInput.value);
 
-            // Final validation before submission
-            const errors = validateForm(
+            const errors = validateReceiptForm(
               receiptInput,
               uploadedFile,
               reconcileArea,
@@ -676,7 +719,6 @@
             let fileName = null;
 
             try {
-              // Upload receipt file
               if (uploadedFile) {
                 const formData = new FormData();
                 formData.append("attachment", uploadedFile);
@@ -689,9 +731,7 @@
                 driveLink = uploadData.driveLink;
                 fileType = "receipt";
                 fileName = uploadedFile.name;
-              }
-              // Upload reconcile note
-              else if (reconcileArea.value.trim()) {
+              } else if (reconcileArea.value.trim()) {
                 const blob = new Blob([reconcileArea.value.trim()], {
                   type: "text/plain",
                 });
@@ -712,7 +752,6 @@
                 fileName = file.name;
               }
 
-              // Send clearance request
               const clearRes = await fetch(`${BASE_URL}/api/receipts/clear`, {
                 method: "POST",
                 headers: {
@@ -737,7 +776,7 @@
               if (submitBtn.contains(spinner)) {
                 submitBtn.removeChild(spinner);
               }
-              fetchReceiptsFor(userId); // Refresh list
+              fetchReceiptsFor(userId);
             }
           });
 
@@ -745,18 +784,241 @@
         });
       }
 
+      // Fetch uncleared transfers for a user
+      async function fetchTransfersFor(userId) {
+        const token = localStorage.getItem("token");
+        const res = await fetch(
+          `${BASE_URL}/api/transfers/uncleared?userId=${userId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        const transfers = await res.json();
+
+        const transfersSection = document.getElementById("transfers-section");
+        transfersSection.innerHTML = "";
+
+        transfers.forEach((transfer) => {
+          const container = document.createElement("div");
+          container.className = "container";
+          const transferAmount = parseFloat(transfer.total_amount);
+
+          const formattedAmount = formatCurrency(
+            transfer.total_amount,
+            transfer.currency_code
+          );
+
+          container.innerHTML = `
+            <h3>Transfer Reference: ${transfer.id}</h3>
+            <p><strong>Receipt Reference:</strong> ${
+              transfer.receipts_table_request_type_id
+            }</p>
+            <p><strong>Transfer Category:</strong> ${transfer.category}</p>
+            <p><strong>Transfer Date:</strong> ${new Date(
+              transfer.created_at
+            ).toLocaleString()}</p>
+            <p><strong>Transfer Amount:</strong> ${formattedAmount}</p>
+            <button class="clear-btn">Clear Transfer</button>
+            <div class="extra-buttons" style="display: none;">
+              <button class="photo-btn">Take Photo</button>
+              <button class="upload-btn">Upload File</button>
+              <button class="reconcile-btn">Write Reconcile</button>
+            </div>
+            <input type="number" class="receipt-input" placeholder="Enter amount to clear (must be: ${
+              transfer.total_amount
+            })" 
+                   style="display: none;" step="0.01" value="${
+                     transfer.total_amount
+                   }" readonly />
+            <textarea class="reconcile-area" rows="4" style="display: none;" placeholder="Reconciliation notes (optional)"></textarea>
+            <p class="file-display" style="display: none;"></p>
+            <button class="submit-btn" style="display: none;" disabled>Submit to Clear</button>
+          `;
+
+          const clearBtn = container.querySelector(".clear-btn");
+          const extraButtons = container.querySelector(".extra-buttons");
+          const photoBtn = container.querySelector(".photo-btn");
+          const uploadBtn = container.querySelector(".upload-btn");
+          const reconcileBtn = container.querySelector(".reconcile-btn");
+          const receiptInput = container.querySelector(".receipt-input");
+          const reconcileArea = container.querySelector(".reconcile-area");
+          const submitBtn = container.querySelector(".submit-btn");
+          const fileDisplay = container.querySelector(".file-display");
+
+          let uploadedFile = null;
+
+          function validateAndToggleSubmit() {
+            const errors = validateTransferForm(
+              receiptInput,
+              uploadedFile,
+              reconcileArea,
+              transferAmount
+            );
+
+            if (errors.length === 0) {
+              submitBtn.disabled = false;
+              receiptInput.classList.remove("error");
+              const existingErrors =
+                container.querySelectorAll(".error-message");
+              existingErrors.forEach((error) => error.remove());
+            } else {
+              submitBtn.disabled = true;
+              receiptInput.classList.add("error");
+              displayErrors(container, errors);
+            }
+          }
+
+          clearBtn.addEventListener("click", () => {
+            clearBtn.style.display = "none";
+            extraButtons.style.display = "flex";
+            receiptInput.style.display = "block";
+            submitBtn.style.display = "block";
+          });
+
+          reconcileArea.addEventListener("input", validateAndToggleSubmit);
+
+          function handleFileUpload(file) {
+            uploadedFile = file;
+            fileDisplay.style.display = "block";
+            fileDisplay.textContent = `Selected: ${file.name}`;
+            validateAndToggleSubmit();
+          }
+
+          photoBtn.addEventListener("click", () => {
+            const input = document.createElement("input");
+            input.type = "file";
+            input.setAttribute("accept", "image/*");
+            input.setAttribute("capture", "environment");
+            input.style.display = "none";
+            document.body.appendChild(input);
+            input.click();
+            input.addEventListener("change", () => {
+              if (input.files.length > 0) {
+                handleFileUpload(input.files[0]);
+              }
+              document.body.removeChild(input);
+            });
+          });
+
+          uploadBtn.addEventListener("click", () => {
+            const input = document.createElement("input");
+            input.type = "file";
+            input.style.display = "none";
+            document.body.appendChild(input);
+            input.click();
+            input.addEventListener("change", () => {
+              if (input.files.length > 0) {
+                handleFileUpload(input.files[0]);
+              }
+              document.body.removeChild(input);
+            });
+          });
+
+          reconcileBtn.addEventListener("click", () => {
+            reconcileArea.style.display = "block";
+            validateAndToggleSubmit();
+          });
+
+          submitBtn.addEventListener("click", async () => {
+            const amount = parseFloat(receiptInput.value);
+
+            const errors = validateTransferForm(
+              receiptInput,
+              uploadedFile,
+              reconcileArea,
+              transferAmount
+            );
+            if (errors.length > 0) {
+              displayErrors(container, errors);
+              return;
+            }
+
+            const spinner = document.createElement("span");
+            spinner.className = "loading-spinner";
+            submitBtn.appendChild(spinner);
+            submitBtn.disabled = true;
+
+            let driveLink = null;
+            let fileType = null;
+            let fileName = null;
+
+            try {
+              if (uploadedFile) {
+                const formData = new FormData();
+                formData.append("attachment", uploadedFile);
+                const uploadRes = await fetch(`${BASE_URL}/api/upload`, {
+                  method: "POST",
+                  headers: { Authorization: `Bearer ${token}` },
+                  body: formData,
+                });
+                const uploadData = await uploadRes.json();
+                driveLink = uploadData.driveLink;
+                fileType = "receipt";
+                fileName = uploadedFile.name;
+              } else if (reconcileArea.value.trim()) {
+                const blob = new Blob([reconcileArea.value.trim()], {
+                  type: "text/plain",
+                });
+                const file = new File([blob], `reconcile_${Date.now()}.txt`, {
+                  type: "text/plain",
+                });
+
+                const formData = new FormData();
+                formData.append("attachment", file);
+                const uploadRes = await fetch(`${BASE_URL}/api/upload`, {
+                  method: "POST",
+                  headers: { Authorization: `Bearer ${token}` },
+                  body: formData,
+                });
+                const uploadData = await uploadRes.json();
+                driveLink = uploadData.driveLink;
+                fileType = "reconcile";
+                fileName = file.name;
+              }
+
+              const clearRes = await fetch(`${BASE_URL}/api/transfers/clear`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                  transferId: transfer.id,
+                  amount,
+                  driveLink,
+                  fileType,
+                  fileName,
+                }),
+              });
+
+              const result = await clearRes.json();
+              alert(result.message);
+            } catch (error) {
+              console.error("Transfer clearance error:", error);
+              alert("Transfer clearance failed: " + error.message);
+            } finally {
+              if (submitBtn.contains(spinner)) {
+                submitBtn.removeChild(spinner);
+              }
+              fetchTransfersFor(userId);
+            }
+          });
+
+          transfersSection.appendChild(container);
+        });
+      }
+
+      // Load user options for dropdown
       async function loadUserOptions() {
         const token = localStorage.getItem("token");
         const currentUser = JSON.parse(localStorage.getItem("user"));
         const selector = document.getElementById("user-selector");
 
-        // Fetch users from same country
         const res = await fetch(`${BASE_URL}/api/users/same-country`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const users = await res.json();
 
-        // Populate dropdown
         users.forEach((user) => {
           const opt = document.createElement("option");
           opt.value = user.Id;
@@ -764,165 +1026,20 @@
           selector.appendChild(opt);
         });
 
-        // Set current user as default
         selector.value = currentUser.Id;
 
-        // Listen for change and fetch relevant receipts
         selector.addEventListener("change", () => {
-          fetchReceiptsFor(selector.value);
+          const selectedUserId = selector.value;
+          fetchReceiptsFor(selectedUserId);
+          fetchTransfersFor(selectedUserId);
         });
 
-        // Initial fetch
+        // Initial fetch for both receipts and transfers
         fetchReceiptsFor(selector.value);
+        fetchTransfersFor(selector.value);
       }
 
-      // Call the function to initialize the dropdown and data
-      loadUserOptions();
-
-      function populateDropdown(data) {
-        const uniqueNames = [...new Set(data.map((item) => item.Name))];
-        uniqueNames.forEach((name) => {
-          if (name) {
-            const option = document.createElement("option");
-            option.value = name;
-            option.textContent = name;
-            nameDropdown.appendChild(option);
-          }
-        });
-      }
-
-      function setupDropdownListener(data) {
-        nameDropdown.addEventListener("change", () => {
-          const selectedName = nameDropdown.value;
-          resultsSection.innerHTML = "";
-
-          const filteredData = data.filter((row) => row.Name === selectedName);
-
-          filteredData.forEach((row) => {
-            const container = document.createElement("div");
-            container.classList.add("container");
-
-            // Format amounts with currency if available
-            const formattedAmount = row.currencyCode
-              ? formatCurrency(row.TotalAmount, row.currencyCode)
-              : row.TotalAmount;
-
-            container.innerHTML = `
-                          <h3>${row.Name}</h3>
-                          <p><strong>Date:</strong> ${row.Date}</p>
-                          <p><strong>Total Amount:</strong> ${formattedAmount}</p>
-                          <p><strong>Reference:</strong> ${row.Reference}</p>
-                          <button class="clear-btn">Clear</button>
-                          <div class="extra-buttons" style="display: none;">
-                              <button class="photo-btn">Add Photo</button>
-                              <button class="upload-btn">Upload File</button>
-                              <button class="reconcile-btn">Reconcile</button>
-                          </div>
-                          <input type="number" class="receipt-input" placeholder="Enter receipt amount" style="display: none; width: 100%; margin-top: 10px;">
-                          <textarea class="reconcile-area" rows="4" cols="30" style="display: none;" placeholder="Enter reconciliation details (optional)"></textarea>
-                          <p class="file-display" style="display: none; font-size: 0.9rem; color: green;"></p>
-                          <button class="submit-btn" style="display: none;">Submit to Clear</button>
-                      `;
-
-            const clearBtn = container.querySelector(".clear-btn");
-            const extraButtons = container.querySelector(".extra-buttons");
-            const photoBtn = container.querySelector(".photo-btn");
-            const uploadBtn = container.querySelector(".upload-btn");
-            const reconcileBtn = container.querySelector(".reconcile-btn");
-            const receiptInput = container.querySelector(".receipt-input");
-            const reconcileArea = container.querySelector(".reconcile-area");
-            const fileDisplay = container.querySelector(".file-display");
-            const submitBtn = container.querySelector(".submit-btn");
-
-            clearBtn.addEventListener("click", () => {
-              clearBtn.style.display = "none";
-              extraButtons.style.display = "flex";
-              receiptInput.style.display = "block";
-              submitBtn.style.display = "block";
-            });
-
-            photoBtn.addEventListener("click", () => {
-              const input = document.createElement("input");
-              input.type = "file";
-              input.accept = "image/*";
-              input.capture = "camera";
-              input.style.display = "none"; // Hide the input element
-              document.body.appendChild(input);
-              input.click();
-
-              input.addEventListener("change", () => {
-                if (input.files.length > 0) {
-                  const fileParagraph = document.createElement("p");
-                  fileParagraph.textContent = `Photo Added: ${input.files[0].name}`;
-                  fileParagraph.style.cssText = `
-                  font-size: 0.9rem;
-                  color: green;
-                  margin-top: 5px;
-              `;
-                  container.appendChild(fileParagraph);
-                }
-                document.body.removeChild(input);
-              });
-            });
-
-            uploadBtn.addEventListener("click", () => {
-              const input = document.createElement("input");
-              input.type = "file";
-              input.style.display = "none"; // Hide the input element
-              document.body.appendChild(input);
-              input.click();
-
-              input.addEventListener("change", () => {
-                if (input.files.length > 0) {
-                  const fileParagraph = document.createElement("p");
-                  fileParagraph.textContent = `File Uploaded: ${input.files[0].name}`;
-                  fileParagraph.style.cssText = `
-                  font-size: 0.9rem;
-                  color: green;
-                  margin-top: 5px;
-              `;
-                  container.appendChild(fileParagraph);
-                }
-                document.body.removeChild(input);
-              });
-            });
-
-            reconcileBtn.addEventListener("click", () => {
-              reconcileArea.style.display = "block";
-            });
-
-            submitBtn.addEventListener("click", () => {
-              const receiptValue = receiptInput.value.trim();
-
-              let errorMessage = container.querySelector(".error-message");
-              if (errorMessage) {
-                errorMessage.remove();
-              }
-
-              if (
-                receiptValue === "" ||
-                isNaN(receiptValue) ||
-                receiptValue <= 0
-              ) {
-                errorMessage = document.createElement("p");
-                errorMessage.className = "error-message";
-                errorMessage.innerText = "Please enter a valid receipt amount.";
-                errorMessage.style.cssText = `
-                                  color: red;
-                                  font-size: 0.9rem;
-                                  margin-top: 10px;
-                              `;
-                container.appendChild(errorMessage);
-                return;
-              }
-
-              container.innerHTML = `<p>Task completed and cleared.</p>`;
-            });
-
-            resultsSection.appendChild(container);
-          });
-        });
-      }
+      // Initialize the page
       document.addEventListener("DOMContentLoaded", () => {
         const savedTheme = localStorage.getItem("theme") || "light";
         if (savedTheme === "dark") {
@@ -930,6 +1047,8 @@
         } else {
           document.body.classList.remove("dark-mode");
         }
+
+        loadUserOptions();
       });
     </script>
   </body>

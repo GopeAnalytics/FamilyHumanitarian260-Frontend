@@ -251,14 +251,17 @@
       .table-header,
       .table-row,
       .receipt-header,
-      .receipt-row {
+      .receipt-row,
+      .transfer-header,
+      .transfer-row {
         display: grid;
         width: 100%;
         min-width: 800px; /* Ensures content isn't crushed on small screens */
       }
 
       .table-header,
-      .receipt-header {
+      .receipt-header,
+      .transfer-header {
         font-weight: bold;
         background-color: #f2f2f2;
         border-bottom: 2px solid #ddd;
@@ -273,7 +276,12 @@
 
       .receipt-header,
       .receipt-row {
-        grid-template-columns: repeat(6, minmax(120px, 1fr));
+        grid-template-columns: repeat(7, minmax(120px, 1fr));
+      }
+
+      .transfer-header,
+      .transfer-row {
+        grid-template-columns: repeat(8, minmax(120px, 1fr));
       }
 
       .table-row {
@@ -291,18 +299,22 @@
       }
 
       .table-row:hover,
-      .receipt-row:hover {
+      .receipt-row:hover,
+      .transfer-row:hover {
         background-color: #f8f9fa;
       }
 
-      .receipt-row {
+      .receipt-row,
+      .transfer-row {
         padding: 12px 15px;
         border-bottom: 1px solid #e0e0e0;
         align-items: center;
       }
 
       .receipt-header > div,
-      .receipt-row > div {
+      .receipt-row > div,
+      .transfer-header > div,
+      .transfer-row > div {
         padding: 8px;
         text-align: center;
       }
@@ -385,7 +397,9 @@
         .table-header,
         .table-row,
         .receipt-header,
-        .receipt-row {
+        .receipt-row,
+        .transfer-header,
+        .transfer-row {
           min-width: 800px; /* Ensures tables scroll horizontally on mobile */
         }
 
@@ -438,12 +452,45 @@
         color: #003366;
         font-size: 24px;
       }
+
+      .receipt-link {
+        color: #007bff;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .receipt-link:hover {
+        text-decoration: underline;
+      }
+
+      .highlighted {
+        background-color: #ffffcc !important;
+        transition: background-color 0.5s ease;
+        animation: pulse 2s infinite;
+      }
+
+      @keyframes pulse {
+        0% {
+          background-color: #ffffcc;
+        }
+        50% {
+          background-color: #ffff66;
+        }
+        100% {
+          background-color: #ffffcc;
+        }
+      }
+
+      .loading {
+        opacity: 0.7;
+        pointer-events: none;
+      }
     </style>
   </head>
   <body>
     <header>
       <div class="logo">
-        <img src="./assets/images/logo.png" alt="KCAU Logo" />
+        <img src="./logo.png" alt="KCAU Logo" />
       </div>
     </header>
 
@@ -463,8 +510,10 @@
 
       <div class="filters">
         <select id="receiptTypeFilter">
+          <option value="All">All</option>
           <option value="Uploaded">Uploaded</option>
           <option value="Pending">Pending</option>
+          <option value="Transferred">Transferred</option>
         </select>
 
         <select id="countryFilter">
@@ -483,12 +532,50 @@
           <div>Date</div>
           <div>Total Amount</div>
           <div>Balance</div>
+          <div>Category</div>
           <div>Applicant</div>
           <div>Receipt Link</div>
         </div>
 
         <div id="receiptsSection" class="receipts-section">
           <!-- Receipts will render here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- New Transfers Section -->
+    <div class="admin-section">
+      <h2>Transfers</h2>
+
+      <div class="filters">
+        <select id="transferStatusFilter">
+          <option value="uncleared">Uncleared</option>
+          <option value="cleared">Cleared</option>
+        </select>
+
+        <select id="transferCountryFilter">
+          <option value="All">All</option>
+        </select>
+
+        <select id="transferUserFilter">
+          <option value="All">All</option>
+        </select>
+      </div>
+
+      <div class="table-container">
+        <div class="transfer-header">
+          <div>Transfer Reference Number</div>
+          <div>Receipt Reference Number</div>
+          <div>Receipt Amount</div>
+          <div>Transfer Category</div>
+          <div>Transfer Amount</div>
+          <div>Transfer Date</div>
+          <div>Applicant</div>
+          <div>Receipt Link</div>
+        </div>
+
+        <div id="transfersSection" class="transfers-section">
+          <!-- Transfers will render here -->
         </div>
       </div>
     </div>
@@ -519,6 +606,6 @@
         <a href="home.html">Home</a>
       </p>
     </footer>
-    <script src="js/admin-script.js"></script>
+    <script src="admin-script.js"></script>
   </body>
 </html>

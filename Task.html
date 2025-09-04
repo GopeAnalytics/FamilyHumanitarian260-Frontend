@@ -3,29 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta property="og:title" content="Fh260-Africa" />
-    <meta
-      property="og:description"
-      content="Digitalising Fh260-Africa Operations"
-    />
-    <meta property="og:image" content="https://fh260.org/og-fhlogo.jpeg" />
-    <meta property="og:url" content="https://fh260.org" />
     <title>Task Planner & Reminder</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="manifest" href="/site.webmanifest" />
-    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="./css/styles.css" />
     <style>
       /* CSS Variables for theme colors */
       :root {
         --primary-color: #004080;
         --task-color: #28a745;
-        --appointment-color: #ffc107;
         --danger-color: #dc3545;
         --success-color: #28a745;
 
@@ -68,9 +56,8 @@
         --footer-gradient-end: #34495e;
       }
 
-      /* Task page specific styles wrapped to avoid conflicts */
+      /* Task page specific styles */
       .task-container {
-        all: initial;
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         background: var(--bg-primary);
         color: var(--text-primary);
@@ -181,63 +168,6 @@
         transform: translateY(-2px);
       }
 
-      /* Colleague selector styles */
-      .colleague-selector {
-        background: var(--bg-secondary);
-        padding: 20px;
-        border-radius: 12px;
-        margin: 30px 0;
-        box-shadow: 0 3px 8px var(--shadow-color);
-        transition: background-color 0.3s ease, box-shadow 0.3s ease;
-      }
-
-      .colleague-selector h3 {
-        margin: 0 0 15px 0;
-        color: var(--text-primary);
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-        text-align: left;
-      }
-
-      .colleague-dropdown {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        flex-wrap: wrap;
-      }
-
-      .colleague-dropdown select {
-        flex: 1;
-        min-width: 200px;
-        padding: 12px;
-        border: 1px solid var(--border-color);
-        border-radius: 8px;
-        font-size: 1rem;
-        background: var(--bg-secondary);
-        color: var(--text-primary);
-        transition: background-color 0.3s ease, border-color 0.3s ease,
-          color 0.3s ease;
-      }
-
-      .colleague-dropdown select:focus {
-        outline: none;
-        border-color: var(--primary-color);
-      }
-
-      .view-own-btn {
-        background: var(--primary-color);
-        color: white;
-        border: none;
-        padding: 12px 20px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 1rem;
-        transition: transform 0.2s ease;
-      }
-
-      .view-own-btn:hover {
-        transform: translateY(-2px);
-      }
-
       .task-section-title {
         font-size: 1.8rem;
         color: var(--text-tertiary);
@@ -246,16 +176,6 @@
         text-align: left;
         font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         transition: color 0.3s ease;
-      }
-
-      .viewing-indicator {
-        background: linear-gradient(45deg, #667eea, #764ba2);
-        color: white;
-        padding: 10px 20px;
-        border-radius: 20px;
-        margin: 10px 0;
-        font-size: 0.9rem;
-        display: inline-block;
       }
 
       .task-list {
@@ -269,29 +189,12 @@
         padding: 20px;
         border-radius: 10px;
         box-shadow: 0 3px 8px var(--shadow-color);
-        transition: background-color 0.3s ease, box-shadow 0.3s ease;
-      }
-      .task-card.task {
         border-left: 6px solid var(--task-color);
-      }
-      .task-card.appointment {
-        border-left: 6px solid var(--appointment-color);
-      }
-      .task-card.readonly {
-        opacity: 0.8;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
         position: relative;
       }
-      .task-card.readonly::before {
-        content: "👀 View Only";
-        position: absolute;
-        top: 10px;
-        right: 15px;
-        background: rgba(102, 126, 234, 0.8);
-        color: white;
-        padding: 2px 8px;
-        border-radius: 12px;
-        font-size: 0.75rem;
-        font-weight: bold;
+      .task-card.own-task {
+        border-left: 6px solid var(--primary-color);
       }
       .task-card h3 {
         margin: 0 0 10px;
@@ -319,16 +222,10 @@
         font-weight: bold;
         flex-grow: 1;
         transition: transform 0.2s ease;
+        background: var(--task-color);
       }
       .complete-btn:hover {
         transform: translateY(-1px);
-      }
-      .task .complete-btn {
-        background: var(--task-color);
-      }
-      .appointment .complete-btn {
-        background: var(--appointment-color);
-        color: #333;
       }
       .icon-btn {
         background: none;
@@ -380,12 +277,7 @@
       .progress-bar-inner {
         height: 20px;
         transition: width 0.5s ease-in-out;
-      }
-      #taskProgressBar {
         background: var(--task-color);
-      }
-      #appointmentProgressBar {
-        background: var(--appointment-color);
       }
 
       .task-footer-banner {
@@ -646,42 +538,32 @@
           bottom: 80px;
           right: 15px;
         }
-        .colleague-dropdown {
-          flex-direction: column;
-          align-items: stretch;
-        }
-        .colleague-dropdown select {
-          min-width: unset;
-        }
         .datetime-group {
           grid-template-columns: 1fr;
         }
       }
-      .dark-mode footer {
-        background-color: #1e1e1e;
-        color: #e0e0e0;
-      }
 
-      .dark-mode footer a {
-        color: #e0e0e0;
+      .creator-badge {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        background: rgba(102, 126, 234, 0.8);
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: bold;
       }
-
-      .dark-mode footer a:hover {
-        color: #81d4fa;
-      }
-
-      /* Dark mode adjustments for specific elements */
-      [data-theme="dark"] .tool-info .rating {
-        background: var(--bg-tertiary);
-      }
-
-      [data-theme="dark"] .footer-logo {
-        filter: brightness(1.5) contrast(1.2);
+      .completed-text {
+        color: var(--success-color);
+        font-weight: bold;
+        padding: 10px 20px;
+        border-radius: 30px;
+        background: rgba(40, 167, 69, 0.1);
       }
     </style>
   </head>
   <body>
-    <!-- Use the same header structure as home page -->
     <header class="top-nav">
       <div class="logo">
         <img
@@ -699,6 +581,7 @@
         <a href="downloads.html">Downloads</a>
         <a href="receipts.html">Receipts</a>
         <a href="Task.html" class="active">Reminder</a>
+        <a href="fundsTransfer.html">Transfers</a>
       </nav>
 
       <!-- Desktop User Profile (visible on desktop only) -->
@@ -750,6 +633,7 @@
         <a href="downloads.html">Downloads</a>
         <a href="receipts.html">Receipts</a>
         <a href="Task.html" class="active">Reminder</a>
+        <a href="fundsTransfer.html">Transfers</a>
       </nav>
     </header>
 
@@ -759,6 +643,7 @@
         <section class="task-hero">
           <div class="text">
             <h1>📅 Task Management Tool</h1>
+            <p>Viewing all tasks from your country</p>
           </div>
           <div class="notification-bell">
             <span class="icon">🔔</span>
@@ -785,43 +670,10 @@
               Add Task +
             </button>
           </div>
-          <div class="tool-card">
-            <div class="tool-info">
-              <h2>Appointment <span class="rating">100%</span></h2>
-              <ul>
-                <li>✔️ Tracking Name/Place</li>
-                <li>✔️ Tracking Time</li>
-              </ul>
-            </div>
-            <button class="add-btn" onclick="openModalForCreate('appointment')">
-              Add Appointment +
-            </button>
-          </div>
         </section>
 
-        <!-- Colleague Selector -->
-        <section class="colleague-selector">
-          <h3>👥 View Colleague's Reminders</h3>
-          <div class="colleague-dropdown">
-            <select id="colleagueSelect">
-              <option value="">Select a colleague...</option>
-            </select>
-            <button class="view-own-btn" onclick="viewOwnReminders()">
-              View My Reminders
-            </button>
-          </div>
-          <div
-            id="viewingIndicator"
-            class="viewing-indicator"
-            style="display: none"
-          ></div>
-        </section>
-
-        <h2 class="task-section-title">📌 Pending Tasks</h2>
+        <h2 class="task-section-title">📌 All Tasks from Your Country</h2>
         <div class="task-list" id="taskList"><p>Loading...</p></div>
-
-        <h2 class="task-section-title">🗓️ Pending Appointments</h2>
-        <div class="task-list" id="appointmentList"><p>Loading...</p></div>
 
         <div class="task-summaries">
           <div class="task-summary">
@@ -832,16 +684,6 @@
             </p>
             <div class="progress-bar">
               <div class="progress-bar-inner" id="taskProgressBar"></div>
-            </div>
-          </div>
-          <div class="task-summary">
-            <h2>📊 Appointment Completion Summary</h2>
-            <p>
-              Completed: <strong id="completedAppointmentCount">0</strong> of
-              <strong id="totalAppointmentCount">0</strong>
-            </p>
-            <div class="progress-bar">
-              <div class="progress-bar-inner" id="appointmentProgressBar"></div>
             </div>
           </div>
         </div>
@@ -859,7 +701,7 @@
       </div>
     </div>
 
-    <!-- Modal for adding/editing tasks and appointments -->
+    <!-- Modal for adding/editing tasks -->
     <div class="modal-overlay" id="formModal">
       <div class="modal-content">
         <button class="modal-close" onclick="closeModal()">×</button>
@@ -868,7 +710,7 @@
       </div>
     </div>
 
-    <!-- Profile Modal (same as home page) -->
+    <!-- Profile Modal -->
     <div id="profileModal" class="modal">
       <div class="modal-content">
         <span class="close-btn" id="closeModal">&times;</span>
@@ -920,7 +762,6 @@
       </div>
     </div>
 
-    <!-- Use the same footer structure as home page -->
     <footer>
       <p>&copy; 2025 Fh260. All rights reserved.</p>
       <div class="footer-links">
@@ -928,8 +769,6 @@
         <a href="admin.html">Admin</a>
       </div>
     </footer>
-
-    <!-- Include the same scripts as home page -->
     <script src="js/global-nav.js"></script>
     <script src="js/profile-handler.js"></script>
 
@@ -937,9 +776,7 @@
     <script>
       const token = localStorage.getItem("token");
       const BASE_URL = "http://localhost:3000";
-      let currentUser = null;
-      let viewingUserId = null;
-      let colleagues = [];
+      let currentUserId = null;
 
       // --- UTILITY & HELPER FUNCTIONS ---
       function showToast(message, type = "success") {
@@ -954,6 +791,7 @@
         }, 3000);
       }
 
+      // FIXED: Better API request handling without reading response multiple times
       async function apiRequest(endpoint, method = "GET", body = null) {
         try {
           const options = {
@@ -964,44 +802,46 @@
             },
           };
           if (body) options.body = JSON.stringify(body);
+
+          console.log(
+            `Making API request: ${method} ${BASE_URL}/api${endpoint}`
+          );
+
           const response = await fetch(`${BASE_URL}/api${endpoint}`, options);
-          if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || "API request failed");
+          console.log(`Response status: ${response.status}`);
+
+          // Clone the response to read it as text first
+          const responseClone = response.clone();
+          let responseData;
+
+          try {
+            responseData = await response.json();
+          } catch (e) {
+            // If JSON parsing fails, try to read as text
+            const textResponse = await responseClone.text();
+            throw new Error(
+              `Server error (${response.status}): ${textResponse.substring(
+                0,
+                100
+              )}...`
+            );
           }
-          if (
-            response.status === 204 ||
-            response.headers.get("content-length") === "0"
-          )
-            return { message: "Action completed successfully." };
-          return response.json();
+
+          if (!response.ok) {
+            const errorMessage =
+              responseData.message ||
+              responseData.error ||
+              "API request failed";
+            throw new Error(errorMessage);
+          }
+
+          console.log("API response data:", responseData);
+          return responseData;
         } catch (error) {
+          console.error("API request error:", error);
           showToast(error.message || "An unexpected error occurred.", "error");
           return null;
         }
-      }
-
-      // --- COLLEAGUE FUNCTIONALITY ---
-      async function loadColleagues() {
-        const data = await apiRequest("/colleagues");
-        if (data && data.colleagues) {
-          colleagues = data.colleagues;
-          const select = document.getElementById("colleagueSelect");
-          select.innerHTML = '<option value="">Select a colleague...</option>';
-          colleagues.forEach((colleague) => {
-            const option = document.createElement("option");
-            option.value = colleague.id;
-            option.textContent = `${colleague.name} (${colleague.email})`;
-            select.appendChild(option);
-          });
-        }
-      }
-
-      function viewOwnReminders() {
-        viewingUserId = null;
-        document.getElementById("colleagueSelect").value = "";
-        document.getElementById("viewingIndicator").style.display = "none";
-        refreshAllData();
       }
 
       // --- MODAL & FORM LOGIC ---
@@ -1015,54 +855,46 @@
       }
 
       function getFormFields(type) {
-        const taskFields = `
-              <input type="hidden" name="id">
-              <label for="title">Title</label><input type="text" id="title" name="title" required>
-              <label for="description">Description</label><textarea id="description" name="description" rows="3"></textarea>
+        return `
+          <input type="hidden" name="id">
+          <label for="title">Title</label><input type="text" id="title" name="title" required>
+          <label for="description">Description</label><textarea id="description" name="description" rows="3"></textarea>
+          <div class="datetime-group">
+            <div>
               <label for="dueDate">Due Date</label><input type="date" id="dueDate" name="dueDate" required>
+            </div>
+            <div>
               <label for="dueTime">Due Time</label><input type="time" id="dueTime" name="dueTime" required>
-              <label for="priority">Priority</label><select id="priority" name="priority"><option>Low</option><option>Medium</option><option>High</option></select>
-              <label for="reminder">Reminder</label><select id="reminder" name="reminder" required><option value="30min">30 Mins Before</option><option value="1hr">1 Hour Before</option><option value="24hr">24 Hours Before</option></select>
-              <button type="submit" class="add-btn">Save Task</button>`;
-
-        const appointmentFields = `
-              <input type="hidden" name="id">
-              <label for="name">Name/Place</label><input type="text" id="name" name="name" required>
-              <label for="time">Time</label><input type="datetime-local" id="time" name="time" required>
-              <label for="reminder">Reminder</label><select id="reminder" name="reminder" required><option value="30min">30 Mins Before</option><option value="1hr">1 Hour Before</option><option value="24hr">24 Hours Before</option></select>
-              <button type="submit" class="add-btn">Save Appointment</button>`;
-
-        return type === "task" ? taskFields : appointmentFields;
+            </div>
+          </div>
+          <label for="priority">Priority</label><select id="priority" name="priority"><option>Low</option><option>Medium</option><option>High</option></select>
+          <label for="reminder">Reminder</label><select id="reminder" name="reminder" required><option value="30min">30 Mins Before</option><option value="1hr">1 Hour Before</option><option value="24hr">24 Hours Before</option></select>
+          <button type="submit" class="add-btn">Save Task</button>`;
       }
 
       async function openModalForEdit(type, id) {
-        // Only allow editing own items
-        if (viewingUserId) {
-          showToast("You can only edit your own reminders", "error");
-          return;
-        }
-
-        const data = await apiRequest(`/${type}s/${id}`);
+        const data = await apiRequest(`/tasks/${id}`);
         if (!data) return;
 
         currentEdit = { type, id };
-        modalTitle.textContent = `Edit ${
-          type.charAt(0).toUpperCase() + type.slice(1)
-        }`;
+        modalTitle.textContent = `Edit Task`;
         modalForm.innerHTML = getFormFields(type);
 
-        Object.keys(data).forEach((key) => {
-          const input = modalForm.querySelector(`[name="${key}"]`);
-          if (input) {
-            if (key === "time" && type === "appointment") {
-              const datetime = new Date(data[key]);
-              if (!isNaN(datetime.getTime())) {
-                const isoString = datetime.toISOString().slice(0, 16);
-                input.value = isoString;
-              }
-            } else {
-              input.value = data[key];
-            }
+        // Map the API response to form fields
+        const fieldMappings = {
+          title: "title",
+          description: "description",
+          dueDate: "dueDate",
+          dueTime: "dueTime",
+          priority: "priority",
+          reminder: "reminder",
+        };
+
+        Object.keys(fieldMappings).forEach((apiField) => {
+          const formField = fieldMappings[apiField];
+          const input = modalForm.querySelector(`[name="${formField}"]`);
+          if (input && data[apiField] !== undefined) {
+            input.value = data[apiField];
           }
         });
 
@@ -1070,15 +902,8 @@
       }
 
       function openModalForCreate(type) {
-        if (viewingUserId) {
-          showToast("You can only create your own reminders", "error");
-          return;
-        }
-
         currentEdit = { type, id: null };
-        modalTitle.textContent = `Add New ${
-          type.charAt(0).toUpperCase() + type.slice(1)
-        }`;
+        modalTitle.textContent = `Add New Task`;
         modalForm.innerHTML = getFormFields(type);
         modal.style.display = "flex";
       }
@@ -1088,7 +913,7 @@
         const formData = Object.fromEntries(new FormData(e.target).entries());
         const { type, id } = currentEdit;
 
-        const endpoint = id ? `/${type}s/${id}` : `/${type}s`;
+        const endpoint = id ? `/tasks/${id}` : `/tasks`;
         const method = id ? "PUT" : "POST";
 
         const result = await apiRequest(endpoint, method, formData);
@@ -1100,48 +925,11 @@
       };
 
       // --- DATA RENDERING ---
-      function renderTasks(tasks) {
-        const isViewing = viewingUserId !== null;
-        const readonlyClass = isViewing ? "readonly" : "";
-
-        document.getElementById("taskList").innerHTML =
-          tasks && tasks.length
-            ? tasks
-                .map(
-                  (task) => `
-              <div class="task-card task ${readonlyClass}">
-                  <h3>${task.title}</h3>
-                  <p><strong>Due Date:</strong> ${formatDate(task.due_date)}</p>
-                  <p><strong>Due Time:</strong> ${formatTime(task.due_time)}</p>
-                  <p><strong>Priority:</strong> ${task.priority}</p>
-                  ${
-                    task.description
-                      ? `<p><strong>Description:</strong> ${task.description}</p>`
-                      : ""
-                  }
-                  ${
-                    isViewing
-                      ? ""
-                      : `
-                  <div class="card-actions">
-                      <button class="complete-btn" data-type="task" data-id="${task.id}">✓ Complete</button>
-                      <button class="icon-btn" onclick="openModalForEdit('task', ${task.id})">✏️</button>
-                      <button class="icon-btn" onclick="handleDelete('task', ${task.id})">🗑️</button>
-                  </div>`
-                  }
-              </div>`
-                )
-                .join("")
-            : "<p>No pending tasks.</p>";
-      }
-
       function formatDate(dateString) {
         if (!dateString) return "No date set";
-
         try {
           const date = new Date(dateString);
           if (isNaN(date.getTime())) return "Invalid date";
-
           return date.toLocaleDateString("en-US", {
             year: "numeric",
             month: "short",
@@ -1156,18 +944,13 @@
 
       function formatTime(timeString) {
         if (!timeString) return "No time set";
-
         try {
-          // timeString format should be "HH:MM:SS" from database
           const [hours, minutes] = timeString.split(":");
           const hour24 = parseInt(hours, 10);
           const minute = parseInt(minutes, 10);
-
-          // Convert to 12-hour format
           const hour12 = hour24 === 0 ? 12 : hour24 > 12 ? hour24 - 12 : hour24;
           const ampm = hour24 >= 12 ? "PM" : "AM";
           const minuteStr = minute.toString().padStart(2, "0");
-
           return `${hour12}:${minuteStr} ${ampm}`;
         } catch (error) {
           console.error("Time formatting error:", error);
@@ -1175,37 +958,66 @@
         }
       }
 
-      function renderAppointments(appointments) {
-        const isViewing = viewingUserId !== null;
-        const readonlyClass = isViewing ? "readonly" : "";
+      function renderTasks(tasks) {
+        const taskList = document.getElementById("taskList");
 
-        document.getElementById("appointmentList").innerHTML =
-          appointments && appointments.length
-            ? appointments
-                .map(
-                  (app) => `
-              <div class="task-card appointment ${readonlyClass}">
-                  <h3>${app.name}</h3>
-                  <p><strong>When:</strong> ${new Date(
-                    app.appointment_time
-                  ).toLocaleString()}</p>
-                  ${
-                    isViewing
-                      ? ""
-                      : `
+        if (!tasks || tasks.length === 0) {
+          taskList.innerHTML =
+            "<p>No pending tasks found for your country.</p>";
+          return;
+        }
+
+        taskList.innerHTML = tasks
+          .map((task) => {
+            return `
+              <div class="task-card ${
+                task.user_id === currentUserId ? "own-task" : ""
+              }">
+                ${
+                  task.user_id === currentUserId
+                    ? '<div class="creator-badge">Your Task</div>'
+                    : ""
+                }
+                <h3>${task.title} ${
+              task.user_id !== currentUserId
+                ? `<small>(by ${task.creator_name || "Unknown"})</small>`
+                : ""
+            }</h3>
+                <p><strong>Due Date:</strong> ${formatDate(task.due_date)}</p>
+                <p><strong>Due Time:</strong> ${formatTime(task.due_time)}</p>
+                <p><strong>Priority:</strong> ${task.priority}</p>
+                <p><strong>Status:</strong> ${task.status || "pending"}</p>
+                ${
+                  task.description
+                    ? `<p><strong>Description:</strong> ${task.description}</p>`
+                    : ""
+                }
+                
+                ${
+                  task.user_id === currentUserId
+                    ? `
                   <div class="card-actions">
-                      <button class="complete-btn" data-type="appointment" data-id="${app.id}">✓ Complete</button>
-                      <button class="icon-btn" onclick="openModalForEdit('appointment', ${app.id})">✏️</button>
-                      <button class="icon-btn" onclick="handleDelete('appointment', ${app.id})">🗑️</button>
+                    ${
+                      task.status !== "completed"
+                        ? `<button class="complete-btn" data-type="task" data-id="${task.id}">✓ Complete</button>`
+                        : `<span class="completed-text">✓ Completed</span>`
+                    }
+                    <button class="icon-btn" onclick="openModalForEdit('task', ${
+                      task.id
+                    })" title="Edit Task">✏️</button>
+                    <button class="icon-btn" onclick="handleDelete('task', ${
+                      task.id
+                    })" title="Delete Task">🗑️</button>
                   </div>`
-                  }
-              </div>`
-                )
-                .join("")
-            : "<p>No pending appointments.</p>";
+                    : ""
+                }
+              </div>
+            `;
+          })
+          .join("");
       }
 
-      function renderSummaries(taskSummary, appSummary) {
+      function renderTaskSummary(taskSummary) {
         if (taskSummary) {
           document.getElementById("completedTaskCount").textContent =
             taskSummary.completed;
@@ -1214,15 +1026,6 @@
           document.getElementById(
             "taskProgressBar"
           ).style.width = `${taskSummary.completionRate}%`;
-        }
-        if (appSummary) {
-          document.getElementById("completedAppointmentCount").textContent =
-            appSummary.completed;
-          document.getElementById("totalAppointmentCount").textContent =
-            appSummary.total;
-          document.getElementById(
-            "appointmentProgressBar"
-          ).style.width = `${appSummary.completionRate}%`;
         }
       }
 
@@ -1238,9 +1041,9 @@
           ? events
               .map(
                 (event) =>
-                  `<li><strong>${
-                    event.title
-                  }</strong><br><small>Today at ${new Date(
+                  `<li><strong>${event.title}</strong> ${
+                    event.creator_name ? `(by ${event.creator_name})` : ""
+                  }<br><small>Today at ${new Date(
                     event.event_time
                   ).toLocaleTimeString([], {
                     hour: "2-digit",
@@ -1253,11 +1056,6 @@
 
       // --- EVENT HANDLERS ---
       async function handleDelete(type, id) {
-        if (viewingUserId) {
-          showToast("You cannot delete colleague's reminders", "error");
-          return;
-        }
-
         if (confirm(`Are you sure you want to delete this ${type}?`)) {
           const result = await apiRequest(`/${type}s/${id}`, "DELETE");
           if (result) {
@@ -1269,14 +1067,9 @@
 
       document.body.addEventListener("click", async (event) => {
         if (event.target.matches(".complete-btn")) {
-          if (viewingUserId) {
-            showToast("You cannot complete colleague's reminders", "error");
-            return;
-          }
-
           const button = event.target;
           const result = await apiRequest(
-            `/${button.dataset.type}s/${button.dataset.id}/complete`,
+            `/tasks/${button.dataset.id}/complete`,
             "PUT"
           );
           if (result) {
@@ -1286,43 +1079,18 @@
         }
       });
 
-      // --- COLLEAGUE SELECTION HANDLER ---
-      document
-        .getElementById("colleagueSelect")
-        .addEventListener("change", function () {
-          const selectedId = this.value;
-          if (selectedId) {
-            viewingUserId = parseInt(selectedId);
-            const colleague = colleagues.find((c) => c.id === viewingUserId);
-            document.getElementById("viewingIndicator").style.display = "block";
-            document.getElementById(
-              "viewingIndicator"
-            ).textContent = `👀 Viewing ${colleague.name}'s reminders`;
-          } else {
-            viewingUserId = null;
-            document.getElementById("viewingIndicator").style.display = "none";
-          }
-          refreshAllData();
-        });
-
       // --- INITIALIZATION ---
       async function refreshAllData() {
-        const userParam = viewingUserId ? `?userId=${viewingUserId}` : "";
-
-        const [tasks, appointments, taskSummary, appSummary] =
-          await Promise.all([
-            apiRequest(`/tasks/pending${userParam}`),
-            apiRequest(`/appointments/pending${userParam}`),
-            apiRequest(`/tasks/summary${userParam}`),
-            apiRequest(`/appointments/summary${userParam}`),
-          ]);
+        const [tasks, taskSummary] = await Promise.all([
+          apiRequest("/tasks/pending"),
+          apiRequest("/tasks/summary"),
+        ]);
 
         renderTasks(tasks);
-        renderAppointments(appointments);
-        renderSummaries(taskSummary, appSummary);
+        renderTaskSummary(taskSummary);
       }
 
-      document.addEventListener("DOMContentLoaded", () => {
+      document.addEventListener("DOMContentLoaded", async () => {
         if (!token) {
           document.body.innerHTML =
             "<h1>Please log in to use the Task Manager.</h1>";
@@ -1332,12 +1100,15 @@
           return;
         }
 
-        // Initialize profile handler which will handle theme
-        if (window.profileHandler) {
-          window.profileHandler.loadProfileData();
+        // Get current user ID from JWT token
+        try {
+          const payload = JSON.parse(atob(token.split(".")[1]));
+          currentUserId = payload.Id || payload.id || payload.userId;
+          console.log("Current user ID:", currentUserId);
+        } catch (error) {
+          console.error("Failed to parse user ID from token:", error);
         }
 
-        loadColleagues();
         refreshAllData();
         fetchAndShowNotifications();
         setInterval(fetchAndShowNotifications, 60000);
